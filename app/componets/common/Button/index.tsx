@@ -21,7 +21,6 @@ const ButtonComponent = ({
       variant={variant}
       size={size}
       onClick={handleClick}
-      borderRadius="0px"
     >
       {value}
     </Button>

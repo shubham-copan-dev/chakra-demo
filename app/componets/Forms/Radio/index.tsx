@@ -11,6 +11,7 @@ const defaultProps = {
 
 const RadioButtons = ({ items, color, size }: RadioBoxProps) => {
   const [value, setValue] = React.useState("1");
+  console.log("Radio:", value);
 
   return (
     <RadioGroup onChange={setValue} value={value}>

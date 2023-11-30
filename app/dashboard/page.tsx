@@ -17,6 +17,9 @@ const Dashboard = () => {
   const click = (item: any) => {
     console.log(item);
   };
+  const handleInput = () => {
+    console.log("Input changed");
+  };
 
   return (
     <div>
@@ -35,7 +38,7 @@ const Dashboard = () => {
       </ButtonGroup>
       <br />
       <br />
-      <InputComponent htmlSize={40} />
+      <InputComponent htmlSize={40} handleOnchange={handleInput} />
       <br />
       <CheckBox label="Checkbox" size="lg" color="green" />
       <br />
