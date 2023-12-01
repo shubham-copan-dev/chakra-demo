@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo } from 'react';
-import { Control, RegisterOptions, useController } from 'react-hook-form';
+import { memo } from "react";
+import { Control, RegisterOptions, useController } from "react-hook-form";
 
 /**
  * @property types
@@ -8,7 +7,10 @@ import { Control, RegisterOptions, useController } from 'react-hook-form';
 interface Field {
   name: string;
   control: Control | any;
-  rules?: Omit<RegisterOptions, 'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'>;
+  rules?: Omit<
+    RegisterOptions,
+    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+  >;
   defaultValue?: string | number;
 }
 
@@ -16,7 +18,7 @@ interface Field {
  * @property defaults
  */
 const defaultProps = {
-  defaultValue: '',
+  defaultValue: "",
   rules: {},
 };
 
@@ -26,7 +28,12 @@ const defaultProps = {
  * @returns entered input
  */
 
-function HiddenField({ name, control, rules, defaultValue }: Field & typeof defaultProps) {
+function HiddenField({
+  name,
+  control,
+  rules,
+  defaultValue,
+}: Field & typeof defaultProps) {
   // use hooks
   const { field } = useController({
     name,

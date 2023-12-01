@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { errorType } from '@/utilities/constants';
-import { memo } from 'react';
-import { RegisterOptions, useController } from 'react-hook-form';
+import { errorType } from "@/utilities/constants";
+import { memo } from "react";
+import { RegisterOptions, useController } from "react-hook-form";
 
 /**
  * @property types
@@ -16,7 +15,10 @@ interface Field {
   label: string;
   control: any;
   options: Options[];
-  rules?: Omit<RegisterOptions, 'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'>;
+  rules?: Omit<
+    RegisterOptions,
+    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+  >;
   defaultValue?: string | number;
   normalize?: any;
   mainClass?: string;
@@ -31,12 +33,12 @@ interface Field {
  * @property defaults
  */
 const defaultProps = {
-  defaultValue: '',
+  defaultValue: "",
   rules: {},
-  mainClass: 'col-sm-4',
-  labelClass: 'form-label',
-  inputClass: 'form-check-input',
-  errorClass: 'error-msg',
+  mainClass: "col-sm-4",
+  labelClass: "form-label",
+  inputClass: "form-check-input",
+  errorClass: "error-msg",
   normalize: (value: any) => value,
   onChange: (value: any) => value,
   inputProps: {},
@@ -85,7 +87,11 @@ function MultipleRadioButtonField({
     <div className={mainClass}>
       <label htmlFor={name} className={labelClass}>
         {label}
-        {rules?.required ? <span className="forms-req-symbol">*</span> : ' (Optional)'}
+        {rules?.required ? (
+          <span className="forms-req-symbol">*</span>
+        ) : (
+          " (Optional)"
+        )}
       </label>
       <div className="custom-radio">
         {options?.map((op) => (
@@ -93,9 +99,9 @@ function MultipleRadioButtonField({
             <input
               id={`${op?.value}`}
               type="radio"
-              className={`${inputClass} ${error && 'required-field-error'}`}
+              className={`${inputClass} ${error && "required-field-error"}`}
               onChange={() => onInputChange(op?.value)}
-              checked={field.value !== '' && op?.value === field.value}
+              checked={field.value !== "" && op?.value === field.value}
               {...inputProps}
             />
             <label htmlFor={`${op?.value}`} className="form-check-label">
@@ -106,7 +112,7 @@ function MultipleRadioButtonField({
         {errorType?.map(
           (type) =>
             error?.type === type &&
-            error?.message !== '' && (
+            error?.message !== "" && (
               <p key={type} className={errorClass}>
                 {error?.message}
               </p>

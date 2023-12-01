@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { errorType } from '@/utilities/constants';
-import { memo } from 'react';
-import { Control, RegisterOptions, useController } from 'react-hook-form';
-import Select from 'react-select';
+import { errorType } from "@/utilities/constants";
+import { memo } from "react";
+import { Control, RegisterOptions, useController } from "react-hook-form";
+import Select from "react-select";
 
 /**
  * @property types
@@ -18,7 +17,10 @@ interface Field {
   label: string;
   control: Control | any;
   options: Options[];
-  rules?: Omit<RegisterOptions, 'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'>;
+  rules?: Omit<
+    RegisterOptions,
+    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+  >;
   defaultValue?: string | number;
   mainClass?: string;
   labelClass?: string;
@@ -33,12 +35,12 @@ interface Field {
  * @property defaults
  */
 const defaultProps = {
-  defaultValue: '',
+  defaultValue: "",
   rules: {},
-  mainClass: 'col-sm-4',
-  labelClass: 'form-label',
-  selectClass: 'simpledropdown form-select',
-  errorClass: 'error-msg',
+  mainClass: "col-sm-4",
+  labelClass: "form-label",
+  selectClass: "simpledropdown form-select",
+  errorClass: "error-msg",
   onSelect: (value: { value: string } | { value: string }[]) => value,
   selectProps: {},
   isMulti: false,
@@ -81,14 +83,15 @@ function ReactSelectField({
   const onSelectChange = (val: any) => {
     onSelect(val); // send value to provided func
 
-    if (isMulti) return onChange(val?.map((c: { value: string | number }) => c?.value));
+    if (isMulti)
+      return onChange(val?.map((c: { value: string | number }) => c?.value));
     return onChange(val?.value);
   };
 
   // handling value
   const handleValue = (val: string | string[]) => {
-    if (val === '') {
-      return '';
+    if (val === "") {
+      return "";
     }
     if (isMulti) return options?.filter?.((c) => val?.includes?.(c?.value));
     return options?.find?.((c) => c.value === val);
@@ -99,21 +102,25 @@ function ReactSelectField({
       <div className="select-dropdown">
         <label htmlFor={name} className={labelClass}>
           {label}
-          {rules?.required ? <span className="forms-req-symbol">*</span> : ' (Optional)'}
+          {rules?.required ? (
+            <span className="forms-req-symbol">*</span>
+          ) : (
+            " (Optional)"
+          )}
         </label>
         <Select
           value={handleValue(value)}
           onChange={onSelectChange}
           options={options}
           isMulti={isMulti}
-          className={`${selectClass} ${error && 'required-field-error'}`}
+          className={`${selectClass} ${error && "required-field-error"}`}
           classNamePrefix="custom-react-select"
           {...selectProps}
         />
         {errorType?.map(
           (type) =>
             error?.type === type &&
-            error?.message !== '' && (
+            error?.message !== "" && (
               <p key={type} className={errorClass}>
                 {error?.message}
               </p>
