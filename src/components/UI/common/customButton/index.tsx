@@ -1,7 +1,8 @@
-import { Button, useStyleConfig } from '@chakra-ui/react';
+import { Button, useStyleConfig } from "@chakra-ui/react";
 
 function CustomButton({ variant, size, text, onClick }: any) {
-  const styles = useStyleConfig('CustomButton', { variant }); // Apply the styles based on the variant
+  const styles = useStyleConfig("CustomButton", { variant }); // Apply the styles based on the variant
+  console.log(variant, "styles:", styles);
 
   return (
     <Button

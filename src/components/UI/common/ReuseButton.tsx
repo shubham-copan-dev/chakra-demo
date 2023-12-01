@@ -1,77 +1,80 @@
-import { Button } from '@chakra-ui/react';
+import { Button } from "@chakra-ui/react";
 
 function ReuseButton({ variantType, text }: any) {
   const baseProperties = {
-    size: 'sm',
-    borderRadius: 'sm',
-    pt: 'px',
-    pb: 'px',
-    ps: '1',
-    pe: '1',
+    size: "sm",
+    borderRadius: "sm",
+    pt: "px",
+    pb: "px",
+    ps: "1",
+    pe: "1",
 
-    fontWeight: 'medium',
-    lineHeight: '1px',
-    cursor: 'default',
+    fontWeight: "medium",
+    lineHeight: "1px",
+    cursor: "default",
   };
 
   let dynamicProperties;
 
   switch (variantType) {
-    case 'primary':
+    case "primary":
       dynamicProperties = {
-        color: 'bgClr.LightLow',
-        bg: '#36b984',
-        variant: 'primary',
-        fontSize: 'xs',
-
-        // Add more properties for the "primary" variant
+        color: "bgClr.NeutralColorWhite",
+        bg: "bgClr.PrimaryActions",
+        variant: "primary",
+        fontSize: "md",
+        size: "lg",
+        px: 10,
+        py: 2,
+        borderRadius: "8",
+        cursor: "pointer",
       };
       break;
 
-    case 'secondary':
+    case "secondary":
       dynamicProperties = {
-        color: 'bgClr.LightLow',
-        bg: '#f19100',
-        variant: 'secondary',
-        fontSize: 'xs',
+        color: "bgClr.LightLow",
+        bg: "#f19100",
+        variant: "secondary",
+        fontSize: "xs",
 
         // Add more properties for the "secondary" variant
       };
       break;
 
-    case 'outline':
+    case "outline":
       dynamicProperties = {
-        color: 'BaseClr.LightSecondary',
-        bg: 'transparent',
-        variant: 'outline',
-        border: '1px',
-        borderColor: 'BaseClr.LightSecondary',
-        fontSize: 'xs',
+        color: "BaseClr.LightSecondary",
+        bg: "transparent",
+        variant: "outline",
+        border: "1px",
+        borderColor: "BaseClr.LightSecondary",
+        fontSize: "xs",
       };
       break;
 
-    case 'apply':
+    case "apply":
       dynamicProperties = {
-        color: 'bgClr.LightLow',
-        variant: 'primary',
-        fontSize: 'sm',
-        bg: 'hoverClr.primaryHover',
-        p: '2',
+        color: "bgClr.LightLow",
+        variant: "primary",
+        fontSize: "sm",
+        bg: "hoverClr.primaryHover",
+        p: "2",
       };
       break;
-    case 'discard':
+    case "discard":
       dynamicProperties = {
-        color: 'hoverClr.primaryHover',
-        variant: 'primary',
-        fontSize: 'sm',
-        border: '1px',
-        bg: 'bgClr.LightLow',
-        p: '2',
+        color: "hoverClr.primaryHover",
+        variant: "primary",
+        fontSize: "sm",
+        border: "1px",
+        bg: "bgClr.LightLow",
+        p: "2",
       };
       break;
 
     default:
-      return '';
+      return "";
   }
 
   const mergedProperties = { ...baseProperties, ...dynamicProperties };
