@@ -14,7 +14,7 @@ interface Options {
 
 interface Field {
   name: string;
-  label: string;
+  label?: string;
   control: Control | any;
   options: Options[];
   rules?: Omit<
@@ -29,6 +29,7 @@ interface Field {
   onSelect?: () => void;
   isMulti?: boolean;
   selectProps?: unknown;
+  placeholder: any;
 }
 
 /**
@@ -67,6 +68,7 @@ function ReactSelectField({
   onSelect,
   selectProps,
   isMulti,
+  placeholder,
 }: Field & typeof defaultProps) {
   // use hooks
   const {
@@ -102,11 +104,7 @@ function ReactSelectField({
       <div className="select-dropdown">
         <label htmlFor={name} className={labelClass}>
           {label}
-          {rules?.required ? (
-            <span className="forms-req-symbol">*</span>
-          ) : (
-            " (Optional)"
-          )}
+          {rules?.required ? <span className="forms-req-symbol">*</span> : ""}
         </label>
         <Select
           value={handleValue(value)}
@@ -116,6 +114,8 @@ function ReactSelectField({
           className={`${selectClass} ${error && "required-field-error"}`}
           classNamePrefix="custom-react-select"
           {...selectProps}
+          placeholder={placeholder}
+          id="demo"
         />
         {errorType?.map(
           (type) =>

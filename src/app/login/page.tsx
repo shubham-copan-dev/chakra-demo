@@ -1,21 +1,60 @@
-// import { SecureIcon } from "@/chakraConfig/icons";
+"use client";
+import { useState, useEffect } from "react";
 import ReuseButton from "@/components/UI/common/ReuseButton";
-// Ensure the correct import path for ReactSelectField
+import { SecureIcon } from "@/chakraConfig/icons";
 import ReactSelectField from "@/components/formFields/ReactSelectField";
 import { Box, Flex, Image, Text, Divider } from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
+import "./login.css";
+import { tenant } from "@/axios/actions/tenants";
 
 const Login = () => {
+  const [tenants, setTenants] = useState([]);
+  const { control } = useForm();
   const options = [
     { label: "Label 1", value: "value1", id: 1 },
     { label: "Label 2", value: "value2", id: 2 },
   ];
+  const placeholder = (
+    <Flex p={2} gap="1rem">
+      <Image src="/assets/images/salesforce-group.png" />
+      <Box>
+        <Text
+          fontSize="16px"
+          fontWeight="500"
+          lineHeight="120%"
+          color="bgClr.Grey700"
+        >
+          Salesforce
+        </Text>
+        <Text fontSize="12px" fontWeight="500" color="bgClr.Grey600">
+          Stay connected and make life easier with Salesforce.
+        </Text>
+      </Box>
+    </Flex>
+  );
+  const getTenants = async () => {
+    const response = await tenant({ method: "GET" });
+    console.log("login page:", response);
+    setTenants(response.data);
+  };
+
+  useEffect(() => {
+    getTenants();
+  }, []);
+
+  const handleSignIn = () => {
+    console.log("hello world!");
+  };
 
   return (
     <Flex>
       <Flex width="50vw" justifyContent="center" pt={170}>
-        <Flex flexDirection="column" gap="50px" align="center">
+        <Flex flexDirection="column" gap="30px" align="center">
           <Box textAlign="center">
-            <Image src="/assets/images/logo.png" alt="Logo" />
+            <Flex justifyContent="center">
+              <Image src="/assets/images/logo.png" alt="Logo" />
+            </Flex>
             <Text
               fontSize="sm"
               fontWeight="regular"
@@ -34,17 +73,23 @@ const Login = () => {
           >
             Update your pipeline in seconds
           </Text>
-          <ReuseButton variantType="primary" text="Sign In" mx="auto" mt={5} />
-          {/* Uncomment and adjust properties for ReactSelectField if needed */}
-          {/* <ReactSelectField
+          <ReactSelectField
             name="yourFieldName"
-            label="Your Label"
-            control={null} // Replace with actual control
+            control={control}
             options={options}
-          /> */}
-          <Divider my={5} />
+            placeholder={placeholder}
+          />
+          <ReuseButton
+            variantType="primary"
+            text="Sign In"
+            mx="auto"
+            mt={5}
+            handleClick={handleSignIn}
+          />
+
+          <Divider />
           <Box textAlign="center">
-            {/* <SecureIcon /> */}
+            <SecureIcon />
             <Text
               fontSize="xs"
               fontWeight="medium"

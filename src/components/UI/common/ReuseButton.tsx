@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 
-function ReuseButton({ variantType, text }: any) {
+function ReuseButton({ variantType, text, handleClick }: any) {
   const baseProperties = {
     size: "sm",
     borderRadius: "sm",
@@ -79,7 +79,11 @@ function ReuseButton({ variantType, text }: any) {
 
   const mergedProperties = { ...baseProperties, ...dynamicProperties };
 
-  return <Button {...mergedProperties}>{text}</Button>;
+  return (
+    <Button {...mergedProperties} onClick={handleClick}>
+      {text}
+    </Button>
+  );
 }
 
 export default ReuseButton;
