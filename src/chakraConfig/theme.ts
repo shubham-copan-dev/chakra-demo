@@ -1,6 +1,9 @@
 import { extendTheme } from '@chakra-ui/react';
 
 export const theme = extendTheme({
+  fonts: {
+    body: 'Poppins, sans-serif',
+  },
   colors: {
     bgClr: {
       Grey200: '#EBF1FA',
@@ -52,9 +55,6 @@ export const theme = extendTheme({
       SuccessEarth:'#40BF63',
     },
   },
-  fontFamily: {
-    body: 'Poppins',
-  },
   fontSizes: {
     xs: '12px',
     sm: '14px',
@@ -85,6 +85,7 @@ export const theme = extendTheme({
   },
   sizes: {
     full: '100%',
+    '1xs':'13px',
     '3xs': '14px',
     '2xs': '16px',
     xs: '20px',

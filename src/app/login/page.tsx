@@ -17,7 +17,7 @@ const Login = () => {
   ];
   const placeholder = (
     <Flex p={2} gap="1rem">
-      <Image src="/assets/images/salesforce-group.png" />
+      <Image src="/assets/images/salesforce-group.png" alt="salesforce-logo" />
       <Box>
         <Text
           fontSize="16px"

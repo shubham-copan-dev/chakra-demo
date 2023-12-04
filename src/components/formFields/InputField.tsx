@@ -1,6 +1,6 @@
-import { errorType } from '@/utilities/constants';
-import React, { memo } from 'react';
-import { RegisterOptions, useController } from 'react-hook-form';
+import { errorType } from "@/utilities/constants";
+import React, { memo } from "react";
+import { RegisterOptions, useController } from "react-hook-form";
 
 /**
  * @property types
@@ -10,7 +10,10 @@ interface Field {
   label?: string;
   control: any;
   type?: string;
-  rules?: Omit<RegisterOptions, 'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'>;
+  rules?: Omit<
+    RegisterOptions,
+    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+  >;
   defaultValue?: string | number;
   normalize?: any;
   mainClass?: string;
@@ -30,22 +33,22 @@ interface Field {
  * @property defaults
  */
 const defaultProps = {
-  defaultValue: '',
-  label: '',
+  defaultValue: "",
+  label: "",
   rules: {},
-  type: 'text',
-  mainClass: 'col-sm-4',
+  type: "text",
+  mainClass: "col-sm-4",
   mainStyle: {},
-  labelClass: 'form-label',
-  inputClass: 'form-control',
-  errorClass: 'required-error',
+  labelClass: "form-label",
+  inputClass: "form-control",
+  errorClass: "required-error",
   normalize: (value: any) => value,
   onChange: (value: any) => value,
   inputProps: {},
-  placeHolder: '',
-  bg: '',
-  imageUrl: '',
-  placeholderStyle: '',
+  placeHolder: "",
+  bg: "",
+  imageUrl: "",
+  placeholderStyle: "",
 };
 
 /**
@@ -89,7 +92,7 @@ function InputField({
     const { value } = e.target;
     const { valid } = e.target.validity;
 
-    if (valid || type === 'email') {
+    if (valid || type === "email") {
       onChange(normalize(value)); // send value to provided func
       field.onChange(normalize(value)); // send value to hook form
     }
@@ -104,28 +107,45 @@ function InputField({
 
   return (
     <div className={mainClass} style={mainStyle}>
-      {label !== '' && (
+      {label !== "" && (
         <label htmlFor={name} className={labelClass}>
           {label}
-          {rules?.required ? <span className="forms-req-symbol">*</span> : ' (Optional)'}
+          {rules?.required ? (
+            <span className="forms-req-symbol">*</span>
+          ) : (
+            " (Optional)"
+          )}
         </label>
       )}
       <input
         {...field}
         id={name}
         type={type}
-        className={`${inputClass} ${error && 'required-field-error'}`}
+        className={`${inputClass} ${error && "required-field-error"}`}
         onChange={onInputChange}
         {...inputProps}
         onBlur={onInputBlur}
         placeholder={placeHolder}
-        // background={bg}
-        // _placeholder={placeholderStyle}
+        style={{
+          width: "325px",
+          padding: "8px 10px",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: "10px",
+          borderRadius: "8px",
+          background: "var(--grey-200, #EBF1FA)",
+          outline: "none",
+          fontFamily: "Poppins",
+          fontSize: "13px",
+          fontStyle: "normal",
+          fontWeight: 400,
+          lineHeight: "120%",
+        }}
       />
       {errorType?.map(
         (err) =>
           error?.type === err &&
-          error?.message !== '' && (
+          error?.message !== "" && (
             <div key={err} className={errorClass}>
               {error?.message}
             </div>

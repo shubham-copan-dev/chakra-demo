@@ -1,5 +1,6 @@
 .custom-react-select__control {
   background-color: #ebf1fa !important;
+  min-width: 450px;
 }
 .css-tj5bde-Svg {
   color: #000 !important;

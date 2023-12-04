@@ -1,6 +1,8 @@
 import { Button } from "@chakra-ui/react";
 
-function ReuseButton({ variantType, text, handleClick }: any) {
+function ReuseButton({ variantType, text, handleClick, px, py, fs, h }: any) {
+  console.log(px, py, fs);
+
   const baseProperties = {
     size: "sm",
     borderRadius: "sm",
@@ -22,10 +24,11 @@ function ReuseButton({ variantType, text, handleClick }: any) {
         color: "bgClr.NeutralColorWhite",
         bg: "bgClr.PrimaryActions",
         variant: "primary",
-        fontSize: "md",
+        fontSize: fs,
         size: "lg",
-        px: 10,
-        py: 2,
+        px: px,
+        py: py,
+        h: h,
         borderRadius: "8",
         cursor: "pointer",
       };
