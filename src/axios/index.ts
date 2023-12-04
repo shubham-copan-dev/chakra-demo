@@ -36,8 +36,8 @@ axiosIntercept.interceptors.response.use(
           break;
       }
     } else {
-      console.log("hellow world!");
-      alert(error.message);
+      console.log(error);
+      // alert(error.message);
     }
 
     return Promise.reject(error);
