@@ -10,7 +10,8 @@ const DashboardPage = ({ params }: any) => {
   const router = useRouter();
   const path = usePathname();
   const searchParams = useSearchParams()!;
-  console.log(path, "router");
+  const paramsObj = Object.fromEntries(searchParams.entries());
+  console.log(paramsObj, "router");
 
   const page = params.pages[0];
   const dashboard = page.charAt(0).toUpperCase() + page.slice(1);
@@ -29,6 +30,7 @@ const DashboardPage = ({ params }: any) => {
     },
     [searchParams]
   );
+  console.log(searchParams, "search");
 
   useEffect(() => {
     dispatch(
@@ -38,19 +40,18 @@ const DashboardPage = ({ params }: any) => {
         params: { view: "grid" },
       })
     );
-  }, [dispatch]);
+  }, [dashboard, dispatch]);
 
   useEffect(() => {
-    // /63cf14a705e7ffa4f72e5fd1?page=1&limit=20
-    if (gridViewId !== null) {
+    if (gridViewId !== null && !paramsObj.page)
       router.push(
         path +
           "/" +
-          createQueryString({ sort: "asc", page: "10" }) +
-          "&tab=view"
+          `${gridViewId}` +
+          "?" +
+          createQueryString({ page: "10", limit: "20" })
       );
-    }
-  }, [gridViewId]);
+  }, [createQueryString, gridViewId, path, router]);
 
   return (
     <div>
