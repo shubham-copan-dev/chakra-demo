@@ -1,5 +1,6 @@
 import {
   BackIcon,
+  ContactIcon,
   HomeIcon,
   LeadIcon,
   PipelineIcon,
@@ -62,11 +63,7 @@ const Sidenav = () => {
               {renderMenuItem(HomeIcon, "Home")}
             </Flex>
           </Link>
-          <Link href="/dashboard/lead">
-            <Flex direction="column" alignItems="center" gap="5px">
-              {renderMenuItem(LeadIcon, "Lead")}
-            </Flex>
-          </Link>
+
           <Link href="/dashboard/account">
             <Flex direction="column" alignItems="center" gap="5px">
               {renderMenuItem(UserIcon, "Account")}
@@ -75,6 +72,16 @@ const Sidenav = () => {
           <Link href="/dashboard/pipeline">
             <Flex direction="column" alignItems="center" gap="5px">
               {renderMenuItem(PipelineIcon, "Pipeline")}
+            </Flex>
+          </Link>
+          <Link href="/dashboard/lead">
+            <Flex direction="column" alignItems="center" gap="5px">
+              {renderMenuItem(LeadIcon, "Lead")}
+            </Flex>
+          </Link>
+          <Link href="/dashboard/lead">
+            <Flex direction="column" alignItems="center" gap="5px">
+              {renderMenuItem(ContactIcon, "Contact")}
             </Flex>
           </Link>
         </Flex>

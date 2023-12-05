@@ -1,22 +1,25 @@
 import { createSlice,createAsyncThunk  } from '@reduxjs/toolkit';
 import { salesforce } from '@/axios/actions/salesforce';
+import { Props } from '@/axios/interface';
 
 export const fetchSalesforceData:any = createAsyncThunk(
   'salesforce/fetchData',
-  async () => {
+  async (props:Props) => {
     try {
-      const response = await salesforce({ method: 'GET', url: 'objects' });
-      console.log(response,"From Thunk...");
+      const response = await salesforce(props);
+      console.log(response, "From Thunk...");
       return response.data;
-    } catch (error:any) {
+    } catch (error) {
       console.log(error);
-      throw error
+      throw error;
     }
   }
 );
 
+
 const initialState = {
-  data: null,
+  viewGridData: [],
+  gridViewId:null,
   loading: false,
   error: null,  
 }
@@ -27,7 +30,7 @@ const salesforceSlice = createSlice({
   reducers: {
     setSalesForce(init,action){
       const state = init;
-      state.data = action.payload
+      state.viewGridData = action.payload
     }
   }, 
   extraReducers: (builder) => {
@@ -37,7 +40,8 @@ const salesforceSlice = createSlice({
       })
       .addCase(fetchSalesforceData.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.viewGridData = action.payload.data;
+        state.gridViewId = action.payload.data[0]._id;
         state.error = null;
       })
       .addCase(fetchSalesforceData.rejected, (state, action) => {
