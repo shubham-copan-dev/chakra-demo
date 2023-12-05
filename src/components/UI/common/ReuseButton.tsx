@@ -1,8 +1,6 @@
 import { Button } from "@chakra-ui/react";
 
 function ReuseButton({ variantType, text, handleClick, px, py, fs, h }: any) {
-  console.log(px, py, fs);
-
   const baseProperties = {
     size: "sm",
     borderRadius: "sm",

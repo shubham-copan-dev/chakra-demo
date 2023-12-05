@@ -10,11 +10,10 @@ import { tenant } from "@/axios/actions/tenants";
 
 const Login = () => {
   const [tenants, setTenants] = useState([]);
+  const [selectedTenant, setSelectedTenant] = useState<any>([]);
   const { control } = useForm();
-  const options = [
-    { label: "Label 1", value: "value1", id: 1 },
-    { label: "Label 2", value: "value2", id: 2 },
-  ];
+  const [options, setOptions] = useState([]);
+
   const placeholder = (
     <Flex p={2} gap="1rem">
       <Image src="/assets/images/salesforce-group.png" alt="salesforce-logo" />
@@ -35,18 +34,30 @@ const Login = () => {
   );
   const getTenants = async () => {
     const response = await tenant({ method: "GET" });
-    console.log("login page:", response);
-    setTenants(response.data);
+    setTenants(response.data.data);
+    const labels = response.data.data.map((item: any) => ({
+      label: item.label,
+      id: item._id,
+      value: item.name,
+    }));
+    setOptions(labels);
   };
-
   useEffect(() => {
     getTenants();
   }, []);
+  useEffect(() => {
+    console.log(selectedTenant, "heloo");
+  }, [selectedTenant]);
 
   const handleSignIn = () => {
-    console.log("hello world!");
+    const redirectTenant = selectedTenant[0];
+    const redirectURL = `${redirectTenant?.loginUri}?response_type=${redirectTenant?.responseType}&client_id=${redirectTenant?.clientId}&redirect_uri=${process.env.NEXT_PUBLIC_REDIRECT_URI}&state=${redirectTenant?.state}`;
+    window.location.href = redirectURL;
   };
-
+  const handleChnage = (label: any) => {
+    const tenant = tenants.filter((item: any) => item._id === label.id);
+    setSelectedTenant(tenant);
+  };
   return (
     <Flex>
       <Flex width="50vw" justifyContent="center" pt={170}>
@@ -78,6 +89,7 @@ const Login = () => {
             control={control}
             options={options}
             placeholder={placeholder}
+            handleChnage={handleChnage}
           />
           <ReuseButton
             variantType="primary"

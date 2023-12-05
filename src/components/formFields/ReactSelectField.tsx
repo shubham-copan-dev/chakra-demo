@@ -30,6 +30,7 @@ interface Field {
   isMulti?: boolean;
   selectProps?: unknown;
   placeholder: any;
+  handleChnage?: any;
 }
 
 /**
@@ -69,6 +70,7 @@ function ReactSelectField({
   selectProps,
   isMulti,
   placeholder,
+  handleChnage,
 }: Field & typeof defaultProps) {
   // use hooks
   const {
@@ -83,6 +85,8 @@ function ReactSelectField({
 
   // handling select change
   const onSelectChange = (val: any) => {
+    handleChnage(val);
+
     onSelect(val); // send value to provided func
 
     if (isMulti)
