@@ -37,7 +37,7 @@ export default function RootLayout({
 
   //API calls on Grid tab click
   const handleTabClick = (item: any) => {
-    dispatch(setGridId(item._id));
+    // dispatch(setGridId(item._id));
     dispatch(
       fetchSalesforceData({
         method: "POST",

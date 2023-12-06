@@ -50,12 +50,19 @@ const Sidenav = () => {
       <Text sx={textStyle}>{label}</Text>
     </>
   );
-  const handleClick = () => {
+  const handleClick = (dashboard: string) => {
     dispatch(
       fetchSalesforceData({
         method: "GET",
         url: `object/${dashboard}/views`,
         params: { view: "tab" },
+      })
+    );
+    dispatch(
+      fetchSalesforceData({
+        method: "GET",
+        url: `object/${dashboard}/views`,
+        params: { view: "grid" },
       })
     );
   };
@@ -84,25 +91,24 @@ const Sidenav = () => {
               {renderMenuItem(HomeIcon, "Home")}
             </Flex>
           </Link>
-
+          <Link href="/dashboard/Opportunity">
+            <Flex
+              direction="column"
+              alignItems="center"
+              gap="5px"
+              onClick={() => handleClick("Opportunity")}
+            >
+              {renderMenuItem(PipelineIcon, "Opportunity")}
+            </Flex>
+          </Link>
           <Link href="/dashboard/Account">
             <Flex
               direction="column"
               alignItems="center"
               gap="5px"
-              onClick={handleClick}
+              onClick={() => handleClick("Account")}
             >
               {renderMenuItem(UserIcon, "Account")}
-            </Flex>
-          </Link>
-          <Link href="/dashboard/Pipeline">
-            <Flex
-              direction="column"
-              alignItems="center"
-              gap="5px"
-              onClick={handleClick}
-            >
-              {renderMenuItem(PipelineIcon, "Pipeline")}
             </Flex>
           </Link>
           <Link href="/dashboard/lead">
@@ -110,7 +116,7 @@ const Sidenav = () => {
               direction="column"
               alignItems="center"
               gap="5px"
-              onClick={handleClick}
+              onClick={() => handleClick("lead")}
             >
               {renderMenuItem(LeadIcon, "Lead")}
             </Flex>
@@ -120,7 +126,7 @@ const Sidenav = () => {
               direction="column"
               alignItems="center"
               gap="5px"
-              onClick={handleClick}
+              onClick={() => handleClick("contact")}
             >
               {renderMenuItem(ContactIcon, "Contact")}
             </Flex>
