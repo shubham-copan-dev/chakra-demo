@@ -69,4 +69,20 @@ const buttonStyle = defineStyleConfig({
   defaultProps: {},
 });
 
+const btnStyle = {
+  display: "flex",
+  padding: "12px 10px",
+  alignItems: "center",
+  gap: "6px",
+  borderRadius: "8px 8px 0px 0px",
+  background: "bgClr.Grey200", // Assuming bgClr.Grey200 refers to a Chakra UI color token
+  boxShadow: "0px 1px 20px 0px rgba(233, 234, 239, 0.90)",
+  color: "#394256",
+  fontSize: "13px",
+  fontStyle: "normal",
+  fontWeight: "500",
+  lineHeight: "130%"
+};
+
+export {btnStyle};
 export default buttonStyle;

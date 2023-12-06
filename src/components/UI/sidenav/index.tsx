@@ -44,7 +44,7 @@ const Sidenav = () => {
     label: string
   ): JSX.Element => (
     <>
-      <Flex {...iconStyles}>
+      <Flex {...iconStyles} backgroundColor="transparent" fontSize="23px">
         <IconComponent />
       </Flex>
       <Text sx={textStyle}>{label}</Text>
@@ -77,10 +77,15 @@ const Sidenav = () => {
       color="typoClr.NeutralColorWhite"
     >
       <Flex direction="column" gap="50px" alignItems="center">
-        <Flex {...iconStyles}>
+        <Flex
+          {...iconStyles}
+          fontSize="25px"
+          justifyContent="center"
+          alignItems="center"
+        >
           <BackIcon />
         </Flex>
-        <Flex direction="column" gap="15px">
+        <Flex direction="column" gap="20px">
           <Link href="/dashboard">
             <Flex
               direction="column"
@@ -121,7 +126,7 @@ const Sidenav = () => {
               {renderMenuItem(LeadIcon, "Lead")}
             </Flex>
           </Link>
-          <Link href="/dashboard/lead">
+          <Link href="/dashboard/contact">
             <Flex
               direction="column"
               alignItems="center"

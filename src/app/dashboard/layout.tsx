@@ -5,10 +5,14 @@ import Sidenav from "@/components/UI/sidenav";
 import React, { useEffect, useState, useCallback } from "react";
 import { fetchSalesforceData } from "@/redux/slices/salesForce";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { Box, Flex, ButtonGroup } from "@chakra-ui/react";
+import { Box, Flex, ButtonGroup, Container, Button } from "@chakra-ui/react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import ReuseButton from "@/components/UI/common/ReuseButton";
 import { setGridId } from "@/redux/slices/salesForce";
+import { btnStyle } from "@/components/UI/common/customButton/buttonStyle";
+import { fetchRecords } from "@/redux/slices/gridrecords";
+import { fetchMetaData } from "@/redux/slices/gridmetadata";
+import GridDemo from "@/components/aggrid";
 
 export const updateUrl = (id: string, queryParamsObject: any) => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -34,12 +38,14 @@ export default function RootLayout({
   const { viewGridData, gridViewId } = useAppSelector(
     (state: any) => state.salesforce
   );
+  const { records } = useAppSelector((state: any) => state.records);
+  const { metadata } = useAppSelector((state: any) => state.metadata);
 
   //API calls on Grid tab click
   const handleTabClick = (item: any) => {
     // dispatch(setGridId(item._id));
     dispatch(
-      fetchSalesforceData({
+      fetchRecords({
         method: "POST",
         url: `sf/object/records`,
         params: { id: item._id, page: 1, perPage: item.query.limit },
@@ -53,7 +59,7 @@ export default function RootLayout({
       })
     );
     dispatch(
-      fetchSalesforceData({
+      fetchMetaData({
         method: "GET",
         url: `sf/object/metadata`,
         params: { id: item._id, filter: true },
@@ -73,30 +79,38 @@ export default function RootLayout({
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboard, dispatch]);
+  useEffect(() => {
+    console.log("columns::", metadata, "rows:", records);
+  }, [records, metadata]);
 
   return (
     <html lang="en">
       <body>
         <Flex>
           <Sidenav />
-          <Box w="100%">
+          <Box w="100%" px={5}>
             <Navbar />
-            <h1>this is common layout..</h1>
-            <ButtonGroup gap="4">
+            <ButtonGroup
+              display="flex"
+              alignItems="flex-start"
+              gap="1px"
+              flex="1 0 0"
+            >
               {viewGridData.length &&
-                viewGridData?.map((item: any) => {
+                viewGridData?.map((item: any, index: number) => {
                   return (
-                    <ReuseButton
+                    <Button
+                      sx={btnStyle}
                       key={item.label}
-                      variantType="primary"
-                      text={item.label}
-                      mx="auto"
-                      mt={2}
-                      handleClick={() => handleTabClick(item)}
-                    />
+                      onClick={() => handleTabClick(item)}
+                    >
+                      {item.label}
+                    </Button>
                   );
                 })}
+              {viewGridData.length && <Button sx={btnStyle}>View as...</Button>}
             </ButtonGroup>
+            {/* <GridDemo rowData={records} colDefs={metadata} /> */}
             {children}
           </Box>
         </Flex>

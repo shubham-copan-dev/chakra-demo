@@ -96,6 +96,7 @@ const Login = () => {
             text="Sign In"
             mx="auto"
             mt={5}
+            px={10}
             handleClick={handleSignIn}
           />
 

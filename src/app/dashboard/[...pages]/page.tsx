@@ -4,32 +4,32 @@ import { fetchSalesforceData } from "@/redux/slices/salesForce";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useToast, Spinner, Box, Flex } from "@chakra-ui/react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { defaultGridView } from "@/utilities/constants";
 import { updateUrl } from "../layout";
+import { fetchRecords } from "@/redux/slices/gridrecords";
+import { fetchMetaData } from "@/redux/slices/gridmetadata";
 
 const DashboardPage = ({ params }: any) => {
   const dispatch = useAppDispatch();
-  const { viewGridData, gridViewId } = useAppSelector(
-    (state: any) => state.salesforce
-  );
-  const defaultGridId = defaultGridView._id;
+  const { defaultGridViewId, viewGridData, gridViewId, defaultGrid } =
+    useAppSelector((state: any) => state.salesforce);
   const path = usePathname();
   const page = path.split("/");
   const dashboard = page[2];
 
   //this useEffect will make all four API's (grid,tab,records,metadata), if gridTabId is null
   useEffect(() => {
+    console.log(gridViewId, "sefhyc");
     if (gridViewId !== null) return;
     if (gridViewId === null || gridViewId === undefined) {
       //API call for getting records
       dispatch(
-        fetchSalesforceData({
+        fetchRecords({
           method: "POST",
           url: `sf/object/records`,
           params: {
-            id: defaultGridId,
+            id: defaultGridViewId,
             page: 1,
-            perPage: defaultGridView?.query.limit,
+            perPage: defaultGrid?.query?.limit,
           },
         })
       );
@@ -39,7 +39,7 @@ const DashboardPage = ({ params }: any) => {
           method: "GET",
           url: `sf/object/metadata`,
           params: {
-            id: defaultGridId,
+            id: defaultGridViewId,
             object: dashboard,
             filter: false,
           },
@@ -47,25 +47,30 @@ const DashboardPage = ({ params }: any) => {
       );
       //API call for getting metadata
       dispatch(
-        fetchSalesforceData({
+        fetchMetaData({
           method: "GET",
           url: `sf/object/metadata`,
-          params: { id: defaultGridId, filter: true },
+          params: { id: defaultGridViewId, filter: true },
         })
       );
-      updateUrl(defaultGridId, {
-        page: "1",
-        limit: defaultGridView.query.limit,
+      updateUrl(defaultGridViewId, {
+        page: 1,
+        limit: defaultGrid[0]?.query?.limit,
       });
     }
-  }, [dashboard, defaultGridId, dispatch, gridViewId, viewGridData]);
+  }, [
+    dashboard,
+    defaultGrid,
+    defaultGridViewId,
+    dispatch,
+    gridViewId,
+    viewGridData,
+  ]);
 
   return (
     <div>
-      <Box textAlign="center">{params.pages[0]} Page...</Box>
-
       <Flex h="80vh" w="100%" justifyContent="center" alignItems="center">
-        <Spinner />
+        {/* <Spinner /> */}
       </Flex>
     </div>
   );

@@ -42,14 +42,16 @@ const salesforceSlice = createSlice({
       .addCase(fetchSalesforceData.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchSalesforceData.fulfilled, (state, action) => {
+      .addCase(fetchSalesforceData.fulfilled, (init, action) => {
+        const state = init
         state.loading = false;
         state.viewGridData = action.payload.data;
         state.defaultGrid = action.payload.data[0];
         state.defaultGridViewId = action.payload.data[0]._id;
         state.error = null;
       })
-      .addCase(fetchSalesforceData.rejected, (state, action) => {
+      .addCase(fetchSalesforceData.rejected, (init, action) => {
+        const state = init
         state.loading = false;
         console.log("failed", action);
         (state.error as any) = action.error.message;

@@ -7,10 +7,16 @@ import { Box } from "@chakra-ui/react";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
+  // const { records } = useAppSelector((state: any) => state.records);
+  // const { metadata } = useAppSelector((state: any) => state.metadata);
 
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
+
+  // useEffect(() => {
+  //   console.log(metadata, "metadata", records);
+  // }, [records, metadata]);
 
   return (
     <Box textAlign="center" p={10}>
