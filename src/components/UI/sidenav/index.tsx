@@ -9,8 +9,16 @@ import {
 import { Avatar, Flex, Text, FlexProps, Box } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
+import { fetchSalesforceData } from "@/redux/slices/salesForce";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { usePathname } from "next/navigation";
 
 const Sidenav = () => {
+  const dispatch = useAppDispatch();
+  const path = usePathname();
+  const page = path.split("/");
+  const dashboard = page[2];
+
   const iconStyles: FlexProps = {
     height: "2rem",
     width: "2rem",
@@ -42,7 +50,15 @@ const Sidenav = () => {
       <Text sx={textStyle}>{label}</Text>
     </>
   );
-
+  const handleClick = () => {
+    dispatch(
+      fetchSalesforceData({
+        method: "GET",
+        url: `object/${dashboard}/views`,
+        params: { view: "tab" },
+      })
+    );
+  };
   return (
     <Flex
       direction="column"
@@ -59,28 +75,53 @@ const Sidenav = () => {
         </Flex>
         <Flex direction="column" gap="15px">
           <Link href="/dashboard">
-            <Flex direction="column" alignItems="center" gap="5px">
+            <Flex
+              direction="column"
+              alignItems="center"
+              gap="5px"
+              onClick={handleClick}
+            >
               {renderMenuItem(HomeIcon, "Home")}
             </Flex>
           </Link>
 
-          <Link href="/dashboard/account">
-            <Flex direction="column" alignItems="center" gap="5px">
+          <Link href="/dashboard/Account">
+            <Flex
+              direction="column"
+              alignItems="center"
+              gap="5px"
+              onClick={handleClick}
+            >
               {renderMenuItem(UserIcon, "Account")}
             </Flex>
           </Link>
-          <Link href="/dashboard/pipeline">
-            <Flex direction="column" alignItems="center" gap="5px">
+          <Link href="/dashboard/Pipeline">
+            <Flex
+              direction="column"
+              alignItems="center"
+              gap="5px"
+              onClick={handleClick}
+            >
               {renderMenuItem(PipelineIcon, "Pipeline")}
             </Flex>
           </Link>
           <Link href="/dashboard/lead">
-            <Flex direction="column" alignItems="center" gap="5px">
+            <Flex
+              direction="column"
+              alignItems="center"
+              gap="5px"
+              onClick={handleClick}
+            >
               {renderMenuItem(LeadIcon, "Lead")}
             </Flex>
           </Link>
           <Link href="/dashboard/lead">
-            <Flex direction="column" alignItems="center" gap="5px">
+            <Flex
+              direction="column"
+              alignItems="center"
+              gap="5px"
+              onClick={handleClick}
+            >
               {renderMenuItem(ContactIcon, "Contact")}
             </Flex>
           </Link>
