@@ -5,16 +5,20 @@ import Sidenav from "@/components/UI/sidenav";
 import React, { useEffect, useState, useCallback } from "react";
 import { fetchSalesforceData } from "@/redux/slices/salesForce";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import {
-  useToast,
-  Spinner,
-  Box,
-  Flex,
-  ButtonGroup,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Flex, ButtonGroup } from "@chakra-ui/react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import ReuseButton from "@/components/UI/common/ReuseButton";
+import { setGridId } from "@/redux/slices/salesForce";
+
+export const updateUrl = (id: string, queryParamsObject: any) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("id", id);
+  Object.entries(queryParamsObject).forEach(([key, value]: any) => {
+    urlParams.set(key, value);
+  });
+  const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+  window.history.replaceState({}, "", newUrl);
+};
 
 export default function RootLayout({
   children,
@@ -22,47 +26,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const path = usePathname();
   const searchParams = useSearchParams()!;
-  const paramsObj = Object.fromEntries(searchParams.entries());
-  console.log(path, "router");
-
   const page = path.split("/");
   const dashboard = page[2];
 
-  const { loading, error, viewGridData, gridViewId } = useAppSelector(
+  const { viewGridData, gridViewId } = useAppSelector(
     (state: any) => state.salesforce
   );
-  // const toast = useToast();
 
-  const createQueryString = (
-    searchString: string,
-    params: { [key: string]: string },
-    idString: string
-  ): string => {
-    const queryParams = new URLSearchParams(searchString);
-
-    // Clear all existing parameters if needed
-    queryParams.forEach((_, key) => {
-      if (!(key in params)) {
-        queryParams.delete(key);
-      }
-    });
-
-    // Set new parameters
-    Object.entries(params).forEach(([key, value]) => {
-      queryParams.set(key, value);
-    });
-
-    return `${idString}?${queryParams.toString()}`;
-  };
-
-  const renderRecords = (item: any) => {
-    console.log(item);
-  };
-
-  const handleSignIn = (item: any) => {
+  //API calls on Grid tab click
+  const handleTabClick = (item: any) => {
+    dispatch(setGridId(item._id));
     dispatch(
       fetchSalesforceData({
         method: "POST",
@@ -74,27 +49,17 @@ export default function RootLayout({
       fetchSalesforceData({
         method: "GET",
         url: `sf/object/metadata`,
-        params: { id: item._id, object: dashboard, filter: true },
+        params: { id: item._id, object: dashboard, filter: false },
       })
     );
-
-    const queryParams = createQueryString(
-      searchParams.toString(), // Use existing search parameters here
-      { page: "50", limit: "30" },
-      item._id // Replace item._id in the URL
+    dispatch(
+      fetchSalesforceData({
+        method: "GET",
+        url: `sf/object/metadata`,
+        params: { id: item._id, filter: true },
+      })
     );
-
-    const url = new URL(window.location.href);
-    const pathSegments = url.pathname.split("/");
-
-    // Replace the first ID in the URL path with the new ID
-    pathSegments.splice(3, 1, item._id); // Assuming the first ID is at index 3 in the path
-
-    url.pathname = pathSegments.join("/");
-    url.search = queryParams;
-
-    // Replace the entire URL
-    window.history.replaceState({}, "", url.href);
+    updateUrl(item._id, { page: 1, limit: item.query.limit });
   };
 
   useEffect(() => {
@@ -106,29 +71,8 @@ export default function RootLayout({
           params: { view: "grid" },
         })
       );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboard, dispatch]);
-
-  useEffect(() => {
-    if (gridViewId !== null && !paramsObj.page) {
-      const queryParams = createQueryString(
-        searchParams.toString(), // Use existing search parameters here
-        { page: "10", limit: "20" },
-        gridViewId // Replace gridViewId in the URL
-      );
-
-      const url = new URL(window.location.href);
-      const pathSegments = url.pathname.split("/");
-
-      // Replace the first ID in the URL path with the gridViewId
-      pathSegments.splice(3, 1, gridViewId); // Assuming the first ID is at index 3 in the path
-
-      url.pathname = pathSegments.join("/");
-      url.search = queryParams;
-
-      // Replace the entire URL
-      window.history.replaceState({}, "", url.href);
-    }
-  }, [gridViewId, paramsObj.page, searchParams]);
 
   return (
     <html lang="en">
@@ -139,17 +83,19 @@ export default function RootLayout({
             <Navbar />
             <h1>this is common layout..</h1>
             <ButtonGroup gap="4">
-              {viewGridData.map((item: any) => {
-                return (
-                  <ReuseButton
-                    variantType="primary"
-                    text={item.label}
-                    mx="auto"
-                    mt={2}
-                    handleClick={() => handleSignIn(item)}
-                  />
-                );
-              })}
+              {viewGridData.length &&
+                viewGridData?.map((item: any) => {
+                  return (
+                    <ReuseButton
+                      key={item.label}
+                      variantType="primary"
+                      text={item.label}
+                      mx="auto"
+                      mt={2}
+                      handleClick={() => handleTabClick(item)}
+                    />
+                  );
+                })}
             </ButtonGroup>
             {children}
           </Box>

@@ -1,55 +1,53 @@
-// - form validations - -
-export const errorType: string[] = [
-  'manual',
-  'required',
-  'pattern',
-  'validate',
-  'minLength',
-  'maxLength',
-  'max',
-  'min',
-  'positive',
-  'lessThanTen',
-  'greaterThan',
-  'checkUrl',
-];
-
-// ag grid field types
-export const fieldTypes = {
-  REFERENCE: 'reference',
-  BOOLEAN: 'boolean',
-  STRING: 'string', // done
-  TEXTAREA: 'textarea', // done
-  PICKLIST: 'picklist', // done
-  CURRENCY: 'currency', // done
-  PERCENT: 'percent',
-  DOUBLE: 'double',
-  DATE: 'date',
-  DATETIME: 'datetime',
-  EDITFORM: 'editForm',
-  INT: 'int',
-  // new changes
-  BRONZE: 'Bronze',
-  SILVER: 'Silver',
-  GOLD: 'Gold',
-  PLATINUM: 'Platinum',
-  ACTIVE: 'Active',
-  INACTIVE: 'Inactive',
-  CUSTOMERNAME: 'customername',
-  TIER: 'tier',
-  EXPERIENCELEVEL: 'experiencelevel',
-  STATUS: 'status',
-  LIFECYCLE: 'lifecyclestage',
-  ACTION: 'action',
-  CIS: 'cis',
-  PROJECT: 'project',
-  BDM: 'bdm',
-  GUIDELINES: 'guidelines',
-  GPB: 'gbp',
-  ROCKS: 'rocks',
-  MS: 'ms',
-  NNB: 'nnb',
-  ON: 'on',
-  JOB: 'job',
-  COMS: 'coms',
-};
+export const defaultGridView = {
+  "_id": "63cf14a705e7ffa4f72e5fd1",
+  "isActive": true,
+  "columnDetails": [
+      {
+          "name": "Name",
+          "isVisible": true,
+          "columnOrder": 1
+      },
+      {
+          "name": "Type",
+          "isVisible": true,
+          "columnOrder": "2"
+      }
+  ],
+  "user": "005Dn000003HOOPIA4",
+  "isDefault": true,
+  "view": "grid",
+  "visibility": "private",
+  "tenant": "00DDn000006AGagMAG",
+  "name": "My Accounts",
+  "description": "A list of my accounts",
+  "filter": null,
+  "label": "My Accounts",
+  "defaultFieldUIData": {
+      "name": null,
+      "isVisible": false,
+      "columnOrder": null
+  },
+  "sfObject": "Account",
+  "query": {
+      "type": "SELECT",
+      "fields": [
+          {
+              "name": "Id",
+              "columnOrder": null,
+              "isVisible": true,
+              "width": 300,
+              "isGroupable": false
+          },
+          {
+              "name": "Name",
+              "columnOrder": 1,
+              "isVisible": true,
+              "width": 300,
+              "isGroupable": false
+          }
+      ],
+      "object": "Account",
+      "limit": "20"
+  },
+  "updatedAt": "2023-11-24T12:04:54.073Z"
+}

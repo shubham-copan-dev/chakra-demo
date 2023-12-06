@@ -27,7 +27,7 @@ const Sidenav = () => {
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    flexDirection: ["column", "row"], // Setting 'column' for mobile and 'row' for larger screens
+    flexDirection: ["column", "row"],
   };
 
   const textStyle = {
@@ -79,7 +79,7 @@ const Sidenav = () => {
               direction="column"
               alignItems="center"
               gap="5px"
-              onClick={handleClick}
+              // onClick={handleClick}
             >
               {renderMenuItem(HomeIcon, "Home")}
             </Flex>

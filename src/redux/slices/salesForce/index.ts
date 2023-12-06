@@ -7,7 +7,6 @@ export const fetchSalesforceData: any = createAsyncThunk(
   async (props: Props) => {
     try {
       const response = await salesforce(props);
-      console.log(response, "From Thunk...");
       return response.data;
     } catch (error) {
       console.log(error);
@@ -19,6 +18,8 @@ export const fetchSalesforceData: any = createAsyncThunk(
 const initialState = {
   viewGridData: [],
   gridViewId: null,
+  defaultGridViewId: null,
+  defaultGrid: [],
   loading: false,
   error: null,
 };
@@ -27,7 +28,7 @@ const salesforceSlice = createSlice({
   name: "salesforce",
   initialState,
   reducers: {
-    setSalesForce(init, action) {
+    setGridData(init, action) {
       const state = init;
       state.viewGridData = action.payload;
     },
@@ -44,18 +45,18 @@ const salesforceSlice = createSlice({
       .addCase(fetchSalesforceData.fulfilled, (state, action) => {
         state.loading = false;
         state.viewGridData = action.payload.data;
-        state.gridViewId = action.payload.data[0]._id;
+        state.defaultGrid = action.payload.data[0];
+        state.defaultGridViewId = action.payload.data[0]._id;
         state.error = null;
       })
       .addCase(fetchSalesforceData.rejected, (state, action) => {
         state.loading = false;
         console.log("failed", action);
-
         (state.error as any) = action.error.message;
       });
   },
 });
 
 // reducers exports
-export const { setSalesForce, setGridId } = salesforceSlice.actions;
+export const { setGridData, setGridId } = salesforceSlice.actions;
 export default salesforceSlice.reducer;

@@ -29,6 +29,10 @@ axiosIntercept.interceptors.response.use(
           localStorage.clear();
           document.location.href = "/login";
           break;
+        case 403:
+          localStorage.clear();
+          document.location.href = "/login";
+          break;
         case 400:
           alert(error.response.data.error.message);
           break;
