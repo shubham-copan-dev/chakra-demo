@@ -15,7 +15,7 @@ const Dashboard = () => {
   }, [dispatch]);
 
   // useEffect(() => {
-  //   console.log(metadata, "metadata", records);
+  //   console.log("metadata::", metadata, "records::", records);
   // }, [records, metadata]);
 
   return (

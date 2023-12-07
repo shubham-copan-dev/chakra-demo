@@ -17,7 +17,7 @@ export const fetchMetaData: any = createAsyncThunk(
 
 const initialState = {
   metadata: null,
-  loading: false,
+  metaLoader: false,
   error: null,
 };
 
@@ -33,17 +33,18 @@ const metaDataSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchMetaData.pending, (init) => {
-        const state = init
-        state.loading = true;
+        const state = init;
+        state.metaLoader = true;
       })
       .addCase(fetchMetaData.fulfilled, (init, action) => {
-        const state = init
-        state.loading = false;
+        const state = init;
+        state.metadata = null;
+        state.metaLoader = false;
         state.metadata = action.payload.data.data.columns;
       })
       .addCase(fetchMetaData.rejected, (init, action) => {
-        const state = init
-        state.loading = false;
+        const state = init;
+        state.metaLoader = false;
         console.log("failed", action);
         (state.error as any) = action.error.message;
       });

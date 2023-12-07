@@ -43,6 +43,8 @@ export default function RootLayout({
 
   //API calls on Grid tab click
   const handleTabClick = (item: any) => {
+    console.log(item);
+
     // dispatch(setGridId(item._id));
     dispatch(
       fetchRecords({
@@ -79,9 +81,10 @@ export default function RootLayout({
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboard, dispatch]);
-  useEffect(() => {
-    console.log("columns::", metadata, "rows:", records);
-  }, [records, metadata]);
+
+  // useEffect(() => {
+  //   console.log("columns::", metadata, "rows:", records);
+  // }, [records, metadata]);
 
   return (
     <html lang="en">
