@@ -24,6 +24,7 @@ import { setSelectedGridTab } from "@/redux/slices/salesForce";
 import { SettingsIcon } from "@chakra-ui/icons";
 import { buttonData } from "@/utilities/constants";
 import DynamicButtons from "@/components/UI/common/customButton/DynamicButtons";
+import { RightArrowIcon, RowIcon } from "@/chakraConfig/icons";
 
 export const updateUrl = (id: string, queryParamsObject: any) => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -140,6 +141,22 @@ export default function RootLayout({
             {/* grid button navigation */}
             {selectedNav !== "Home" && metadata?.length && (
               <DynamicButtons buttonData={buttonData} />
+            )}
+            {selectedNav !== "Home" && metadata?.length && (
+              <Flex marginBottom="3rem" gap="5px">
+                <RowIcon fontSize={12} />
+                <Text
+                  color="var(--grey-600, #394256)"
+                  textAlign="center"
+                  fontFamily="Poppins"
+                  fontSize="12px"
+                  fontStyle="normal"
+                  fontWeight="500"
+                  lineHeight="120%"
+                >
+                  Drag here to set row groups
+                </Text>
+              </Flex>
             )}
             {children}
           </Box>
