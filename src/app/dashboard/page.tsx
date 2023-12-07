@@ -3,26 +3,24 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { fetchUser } from "@/redux/slices/auth";
-import { Box } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import useAuthorized from "@/hooks/auth";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
-  // const { records } = useAppSelector((state: any) => state.records);
-  // const { metadata } = useAppSelector((state: any) => state.metadata);
+  const router = useRouter();
+  const auth = useAuthorized();
 
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   console.log("metadata::", metadata, "records::", records);
-  // }, [records, metadata]);
+  useEffect(() => {
+    if (!auth) router.push("/login");
+  }, [auth, router]);
 
-  return (
-    <Box textAlign="center" p={10}>
-      This is Default Home Page...
-    </Box>
-  );
+  return <Box textAlign="center">Default dashboard</Box>;
 };
 
 export default Dashboard;

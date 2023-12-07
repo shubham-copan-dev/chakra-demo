@@ -20,6 +20,7 @@ const DashboardPage = ({ params }: any) => {
   const { metadata, metaLoader } = useAppSelector(
     (state: any) => state.metadata
   );
+  const { selectedNav } = useAppSelector((state: any) => state.common);
   const path = usePathname();
   const page = path.split("/");
   const dashboard = page[2];
@@ -99,13 +100,13 @@ const DashboardPage = ({ params }: any) => {
   return (
     <div>
       <Flex h="80vh" w="100%" justifyContent="center" alignItems="center">
-        {records?.length && metadata?.length && (
+        {metadata?.length && selectedNav !== "Home" && (
           <GridDemo
             columnDefs={filterVisibleColumns(metadata)}
             records={records}
           />
         )}
-        {!records?.length && !metadata?.length && (
+        {!metadata?.length && (
           <Flex height="100vh" alignItems="center">
             <Spinner />
           </Flex>

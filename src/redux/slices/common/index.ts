@@ -1,24 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { CommonState } from './interface';
-
 // initial state
 const initialState = {
-  fullscreen: false,
-} as CommonState;
+  selectedNav:'Home',
+};
 
 const CommonSlice = createSlice({
   name: 'common',
   initialState,
   reducers: {
-    setFullscreen(init, action) {
+    setSelectedNav(init, action) {
       const state = init;
-      state.fullscreen = action.payload;
+      state.selectedNav = action.payload;
     },
   },
 });
 
 // reducers exports
-export const { setFullscreen } = CommonSlice.actions;
+export const { setSelectedNav } = CommonSlice.actions;
 
 export default CommonSlice.reducer;

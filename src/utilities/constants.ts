@@ -1,53 +1,42 @@
-export const defaultGridView = {
-  "_id": "63cf14a705e7ffa4f72e5fd1",
-  "isActive": true,
-  "columnDetails": [
-      {
-          "name": "Name",
-          "isVisible": true,
-          "columnOrder": 1
-      },
-      {
-          "name": "Type",
-          "isVisible": true,
-          "columnOrder": "2"
-      }
-  ],
-  "user": "005Dn000003HOOPIA4",
-  "isDefault": true,
-  "view": "grid",
-  "visibility": "private",
-  "tenant": "00DDn000006AGagMAG",
-  "name": "My Accounts",
-  "description": "A list of my accounts",
-  "filter": null,
-  "label": "My Accounts",
-  "defaultFieldUIData": {
-      "name": null,
-      "isVisible": false,
-      "columnOrder": null
-  },
-  "sfObject": "Account",
-  "query": {
-      "type": "SELECT",
-      "fields": [
-          {
-              "name": "Id",
-              "columnOrder": null,
-              "isVisible": true,
-              "width": 300,
-              "isGroupable": false
-          },
-          {
-              "name": "Name",
-              "columnOrder": 1,
-              "isVisible": true,
-              "width": 300,
-              "isGroupable": false
-          }
-      ],
-      "object": "Account",
-      "limit": "20"
-  },
-  "updatedAt": "2023-11-24T12:04:54.073Z"
-}
+import {
+    ContactIcon,
+    HomeIcon,
+    LeadIcon,
+    PipelineIcon,
+    UserIcon,
+  } from "@/chakraConfig/icons";
+
+export const dashboards:any = [
+    { href: '/dashboard', icon: HomeIcon, label: 'Home',action: "Home" },
+    { href: '/dashboard/Opportunity', icon: PipelineIcon, label: 'Opportunity', action: "Opportunity" },
+    { href: '/dashboard/Account', icon: UserIcon, label: 'Account', action: "Account" },
+    { href: '/dashboard/lead', icon: LeadIcon, label: 'Lead', action: "lead" },
+    { href: '/dashboard/contact', icon: ContactIcon, label: 'Contact', action: "contact" },
+  ];
+
+export const iconStyles = {
+    height: "2rem",
+    width: "2rem",
+    borderRadius: "50%",
+    bg: "bgClr.Grey500",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    flexDirection: ["column", "row"],
+  };
+
+export  const textStyle = {
+    color: "bgClr.Grey400",
+    textAlign: "center",
+    fontSize: "11px",
+    fontStyle: "normal",
+    fontWeight: 500,
+    lineHeight: "130%",
+  };
+
+export  const buttonData = [
+    { text: 'Filters' },
+    { text: 'Manage Columns' },
+    { text: 'Show Metrices' },
+    { text: '... More' },
+  ];

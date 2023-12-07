@@ -1,45 +1,21 @@
-import {
-  BackIcon,
-  ContactIcon,
-  HomeIcon,
-  LeadIcon,
-  PipelineIcon,
-  UserIcon,
-} from "@/chakraConfig/icons";
+import { BackIcon } from "@/chakraConfig/icons";
 import { Avatar, Flex, Text, FlexProps, Box } from "@chakra-ui/react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { fetchSalesforceData, setGridId } from "@/redux/slices/salesForce";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { usePathname } from "next/navigation";
 import { setRecordData } from "@/redux/slices/gridrecords";
 import { setMetaData } from "@/redux/slices/gridmetadata";
+import { dashboards, iconStyles, textStyle } from "@/utilities/constants";
+import { setSelectedNav } from "@/redux/slices/common";
 
 const Sidenav = () => {
   const dispatch = useAppDispatch();
   const path = usePathname();
   const page = path.split("/");
   const dashboard = page[2];
-
-  const iconStyles: FlexProps = {
-    height: "2rem",
-    width: "2rem",
-    borderRadius: "50%",
-    bg: "bgClr.Grey500",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    flexDirection: ["column", "row"],
-  };
-
-  const textStyle = {
-    color: "bgClr.Grey400",
-    textAlign: "center",
-    fontSize: "11px",
-    fontStyle: "normal",
-    fontWeight: 500,
-    lineHeight: "130%",
-  };
+  const { selectedNav } = useAppSelector((state: any) => state.common);
 
   const renderMenuItem = (
     IconComponent: React.ComponentType<any>,
@@ -53,8 +29,13 @@ const Sidenav = () => {
     </>
   );
   const handleClick = (dashboard: string) => {
+    if (dashboard === selectedNav);
+    console.log(selectedNav, "jhvhj");
+    dispatch(setSelectedNav(dashboard));
     dispatch(setRecordData(null));
     dispatch(setMetaData(null));
+    dispatch(setGridId(null));
+
     dispatch(
       fetchSalesforceData({
         method: "GET",
@@ -70,7 +51,10 @@ const Sidenav = () => {
       })
     );
   };
-  dispatch(setGridId(null));
+  useEffect(() => {
+    console.log(selectedNav, "nav");
+  }, [selectedNav]);
+
   return (
     <Flex
       direction="column"
@@ -78,7 +62,7 @@ const Sidenav = () => {
       h="100vh"
       justifyContent="space-between"
       py={5}
-      px={1}
+      px={0}
       color="typoClr.NeutralColorWhite"
     >
       <Flex direction="column" gap="50px" alignItems="center">
@@ -91,56 +75,23 @@ const Sidenav = () => {
           <BackIcon />
         </Flex>
         <Flex direction="column" gap="20px">
-          <Link href="/dashboard">
-            <Flex
-              direction="column"
-              alignItems="center"
-              gap="5px"
-              // onClick={handleClick}
-            >
-              {renderMenuItem(HomeIcon, "Home")}
-            </Flex>
-          </Link>
-          <Link href="/dashboard/Opportunity">
-            <Flex
-              direction="column"
-              alignItems="center"
-              gap="5px"
-              onClick={() => handleClick("Opportunity")}
-            >
-              {renderMenuItem(PipelineIcon, "Opportunity")}
-            </Flex>
-          </Link>
-          <Link href="/dashboard/Account">
-            <Flex
-              direction="column"
-              alignItems="center"
-              gap="5px"
-              onClick={() => handleClick("Account")}
-            >
-              {renderMenuItem(UserIcon, "Account")}
-            </Flex>
-          </Link>
-          <Link href="/dashboard/lead">
-            <Flex
-              direction="column"
-              alignItems="center"
-              gap="5px"
-              onClick={() => handleClick("lead")}
-            >
-              {renderMenuItem(LeadIcon, "Lead")}
-            </Flex>
-          </Link>
-          <Link href="/dashboard/contact">
-            <Flex
-              direction="column"
-              alignItems="center"
-              gap="5px"
-              onClick={() => handleClick("contact")}
-            >
-              {renderMenuItem(ContactIcon, "Contact")}
-            </Flex>
-          </Link>
+          {dashboards.map((item: any, index: any) => (
+            <Link key={index} href={item.href}>
+              <Flex
+                direction="column"
+                alignItems="center"
+                gap="5px"
+                onClick={() => handleClick(item.label)}
+                backgroundColor={
+                  item.label === selectedNav ? "bgClr.Grey800" : ""
+                }
+                py={1}
+              >
+                {/* {console.log(item.label, "sujhbsc")} */}
+                {renderMenuItem(item.icon, item.label)}
+              </Flex>
+            </Link>
+          ))}
         </Flex>
       </Flex>
       <Text>

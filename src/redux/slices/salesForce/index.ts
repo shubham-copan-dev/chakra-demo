@@ -19,6 +19,7 @@ const initialState = {
   viewGridData: [],
   gridViewId: null,
   defaultGridViewId: null,
+  selectedGridTab:null,
   defaultGrid: [],
   loading: false,
   error: null,
@@ -36,6 +37,10 @@ const salesforceSlice = createSlice({
       const state = init;
       state.gridViewId = action.payload;
     },
+    setSelectedGridTab(init, action) {
+      const state = init;
+      state.selectedGridTab = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -48,6 +53,7 @@ const salesforceSlice = createSlice({
         state.viewGridData = action.payload.data;
         state.defaultGrid = action.payload.data[0];
         state.defaultGridViewId = action.payload.data[0]._id;
+        state.selectedGridTab = action.payload.data[0]._id;
         state.error = null;
       })
       .addCase(fetchSalesforceData.rejected, (init, action) => {
@@ -60,5 +66,5 @@ const salesforceSlice = createSlice({
 });
 
 // reducers exports
-export const { setGridData, setGridId } = salesforceSlice.actions;
+export const { setGridData, setGridId,setSelectedGridTab } = salesforceSlice.actions;
 export default salesforceSlice.reducer;
