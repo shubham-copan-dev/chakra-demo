@@ -24,34 +24,26 @@ const DashboardPage = ({ params }: any) => {
   const page = path.split("/");
   const dashboard = page[2];
 
-  const generateColumnDefs = (data: any[]) => {
-    return data?.map((column: any) => {
-      const colDef = {
-        field: column.name,
-        headerName: column.label,
-        sortable: column.sortable || false,
-        filter: column.filterable || false,
-        rowGroup: column.groupable || false,
-        valueGetter: (params: any) => {
-          if (
-            params &&
-            params.data &&
-            column &&
-            column.name &&
-            params.data[column.name]
-          ) {
-            return params.data[column.name];
-          }
-          return undefined; // Or handle the case when data or column name is not found
-        },
-      };
-      return colDef;
-    });
-  };
+  function filterVisibleColumns(columns: any) {
+    return columns
+      .filter((column: any) => column.uiMetadata && column.uiMetadata.isVisible)
+      .map((column: any) => {
+        const {
+          uiMetadata: { name, width, isGroupable },
+          ...rest
+        } = column;
+        return {
+          field: name,
+          headerName: name,
+          width,
+          groupable: isGroupable,
+          ...rest,
+        };
+      });
+  }
 
   //this useEffect will make all four API's (grid,tab,records,metadata), if gridTabId is null
   useEffect(() => {
-    console.log(gridViewId, "sefhyc");
     if (gridViewId !== null) return;
     if (gridViewId === null || gridViewId === undefined) {
       //API call for getting records
@@ -109,9 +101,14 @@ const DashboardPage = ({ params }: any) => {
       <Flex h="80vh" w="100%" justifyContent="center" alignItems="center">
         {records?.length && metadata?.length && (
           <GridDemo
-            columnDefs={generateColumnDefs(metadata)}
+            columnDefs={filterVisibleColumns(metadata)}
             records={records}
           />
+        )}
+        {!records?.length && !metadata?.length && (
+          <Flex height="100vh" alignItems="center">
+            <Spinner />
+          </Flex>
         )}
       </Flex>
     </div>

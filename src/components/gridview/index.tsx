@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
@@ -17,6 +16,7 @@ const GridDemo = ({ records, columnDefs }: any) => {
       style={{
         width: "100%",
         height: "100vh",
+        marginTop: "7rem",
       }}
     >
       <AgGridReact

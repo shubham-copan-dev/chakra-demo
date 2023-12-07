@@ -9,9 +9,11 @@ import {
 import { Avatar, Flex, Text, FlexProps, Box } from "@chakra-ui/react";
 import Link from "next/link";
 import React from "react";
-import { fetchSalesforceData } from "@/redux/slices/salesForce";
+import { fetchSalesforceData, setGridId } from "@/redux/slices/salesForce";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { usePathname } from "next/navigation";
+import { setRecordData } from "@/redux/slices/gridrecords";
+import { setMetaData } from "@/redux/slices/gridmetadata";
 
 const Sidenav = () => {
   const dispatch = useAppDispatch();
@@ -51,6 +53,8 @@ const Sidenav = () => {
     </>
   );
   const handleClick = (dashboard: string) => {
+    dispatch(setRecordData(null));
+    dispatch(setMetaData(null));
     dispatch(
       fetchSalesforceData({
         method: "GET",
@@ -66,6 +70,7 @@ const Sidenav = () => {
       })
     );
   };
+  dispatch(setGridId(null));
   return (
     <Flex
       direction="column"

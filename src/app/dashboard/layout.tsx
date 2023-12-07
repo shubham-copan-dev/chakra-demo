@@ -10,8 +10,8 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import ReuseButton from "@/components/UI/common/ReuseButton";
 import { setGridId } from "@/redux/slices/salesForce";
 import { btnStyle } from "@/components/UI/common/customButton/buttonStyle";
-import { fetchRecords } from "@/redux/slices/gridrecords";
-import { fetchMetaData } from "@/redux/slices/gridmetadata";
+import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
+import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
 import GridDemo from "@/components/aggrid";
 
 export const updateUrl = (id: string, queryParamsObject: any) => {
@@ -43,9 +43,9 @@ export default function RootLayout({
 
   //API calls on Grid tab click
   const handleTabClick = (item: any) => {
-    console.log(item);
-
-    // dispatch(setGridId(item._id));
+    dispatch(setGridId(item._id));
+    dispatch(setRecordData(null));
+    dispatch(setMetaData(null));
     dispatch(
       fetchRecords({
         method: "POST",
@@ -79,7 +79,6 @@ export default function RootLayout({
           params: { view: "grid" },
         })
       );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboard, dispatch]);
 
   // useEffect(() => {
@@ -93,14 +92,16 @@ export default function RootLayout({
           <Sidenav />
           <Box w="100%" px={5}>
             <Navbar />
-            <ButtonGroup
-              display="flex"
+            <Flex
               alignItems="flex-start"
               gap="1px"
               flex="1 0 0"
+              marginBottom="3rem"
+              flexWrap="wrap"
             >
-              {viewGridData.length &&
-                viewGridData?.map((item: any, index: number) => {
+              {records?.length &&
+                metadata?.length &&
+                viewGridData?.map((item: any) => {
                   return (
                     <Button
                       sx={btnStyle}
@@ -111,8 +112,10 @@ export default function RootLayout({
                     </Button>
                   );
                 })}
-              {viewGridData.length && <Button sx={btnStyle}>View as...</Button>}
-            </ButtonGroup>
+              {records?.length && metadata?.length && (
+                <Button sx={btnStyle}>View as...</Button>
+              )}
+            </Flex>
             {/* <GridDemo rowData={records} colDefs={metadata} /> */}
             {children}
           </Box>

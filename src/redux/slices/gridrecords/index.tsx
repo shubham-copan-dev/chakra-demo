@@ -29,6 +29,10 @@ const recordDataSlice = createSlice({
       const state = init;
       state.records = action.payload;
     },
+    setRecordLoading(init, action) {
+      const state = init;
+      state.recordLoading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
