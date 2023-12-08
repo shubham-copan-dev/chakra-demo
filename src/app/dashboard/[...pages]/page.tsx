@@ -99,7 +99,13 @@ const DashboardPage = ({ params }: any) => {
 
   return (
     <div>
-      <Flex h="80vh" w="100%" justifyContent="center" alignItems="center">
+      <Flex
+        h="80vh"
+        w="100%"
+        justifyContent="center"
+        alignItems="center"
+        px={5}
+      >
         {metadata?.length && selectedNav !== "Home" && (
           <GridDemo
             columnDefs={filterVisibleColumns(metadata)}

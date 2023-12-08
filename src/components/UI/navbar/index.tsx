@@ -10,8 +10,8 @@ const Navbar = () => {
     <Flex
       justifyContent="space-between"
       padding="5px 5px 3px 19px"
-      mb={6}
       py={4}
+      backgroundColor="bgClr.Grey100"
     >
       <Flex>
         <Image src="/assets/images/logo.png" alt="Logo" boxSize="40px" />

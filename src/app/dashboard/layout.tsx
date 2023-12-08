@@ -106,7 +106,7 @@ export default function RootLayout({
       <body>
         <Flex>
           <Sidenav />
-          <Box w="100%" px={5}>
+          <Box w="100%">
             <Navbar />
             {/* grid tab buttons */}
             <Flex
@@ -114,6 +114,7 @@ export default function RootLayout({
               gap="5px"
               flex="1 0 0"
               flexWrap="wrap"
+              px={5}
             >
               {selectedNav !== "Home" &&
                 metadata?.length &&
@@ -143,7 +144,7 @@ export default function RootLayout({
               <DynamicButtons buttonData={buttonData} />
             )}
             {selectedNav !== "Home" && metadata?.length && (
-              <Flex marginBottom="3rem" gap="5px">
+              <Flex marginBottom="3rem" gap="5px" px={5}>
                 <RowIcon fontSize={12} />
                 <Text
                   color="var(--grey-600, #394256)"
