@@ -2,6 +2,18 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { salesforce } from "@/axios/actions/salesforce";
 import { Props } from "@/axios/interface";
 
+const initialState = {
+  dashboards: [],
+  viewGridData: [],
+  gridViewId: null,
+  defaultGridViewId: null,
+  selectedGridTab: null,
+  defaultGrid: [],
+  isSucess: false,
+  loading: false,
+  error: null,
+};
+
 export const fetchSalesforceData: any = createAsyncThunk(
   "salesforce/fetchData",
   async (props: Props) => {
@@ -14,16 +26,6 @@ export const fetchSalesforceData: any = createAsyncThunk(
     }
   }
 );
-
-const initialState = {
-  viewGridData: [],
-  gridViewId: null,
-  defaultGridViewId: null,
-  selectedGridTab:null,
-  defaultGrid: [],
-  loading: false,
-  error: null,
-};
 
 const salesforceSlice = createSlice({
   name: "salesforce",
@@ -46,10 +48,12 @@ const salesforceSlice = createSlice({
     builder
       .addCase(fetchSalesforceData.pending, (state) => {
         state.loading = true;
+        state.isSucess = false;
       })
       .addCase(fetchSalesforceData.fulfilled, (init, action) => {
-        const state = init
+        const state = init;
         state.loading = false;
+        state.isSucess = true;
         state.viewGridData = action.payload.data;
         state.defaultGrid = action.payload.data[0];
         state.defaultGridViewId = action.payload.data[0]._id;
@@ -57,8 +61,9 @@ const salesforceSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchSalesforceData.rejected, (init, action) => {
-        const state = init
+        const state = init;
         state.loading = false;
+        state.isSucess = true;
         console.log("failed", action);
         (state.error as any) = action.error.message;
       });
@@ -66,5 +71,6 @@ const salesforceSlice = createSlice({
 });
 
 // reducers exports
-export const { setGridData, setGridId,setSelectedGridTab } = salesforceSlice.actions;
+export const { setGridData, setGridId, setSelectedGridTab } =
+  salesforceSlice.actions;
 export default salesforceSlice.reducer;
