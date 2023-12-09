@@ -21,10 +21,11 @@ export const icons = [PipelineIcon, UserIcon];
 //method for updating URL with path /id and set queryparms (page,limit)
 export const updateUrl = (id: string, queryParamsObject: any) => {
   const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("id", id);
   Object.entries(queryParamsObject).forEach(([key, value]: any) => {
     urlParams.set(key, value);
   });
-  const newUrl = `${window.location.pathname}/${id}?${urlParams.toString()}`;
+  const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
   window.history.replaceState({}, "", newUrl);
 };
 

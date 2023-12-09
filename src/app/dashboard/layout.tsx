@@ -65,29 +65,9 @@ export default function RootLayout({
     dispatch(fetchNavData({ method: "GET", url: "objects" }));
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   console.log(urlParams, "jwvwjevs");
-  //   if (urlParams.id !== null) {
-  //     dispatch(setRecordData(null));
-  //     dispatch(setMetaData(null));
-  //     dispatch(
-  //       fetchMetaData({
-  //         method: "GET",
-  //         url: `sf/object/metadata`,
-  //         params: { id: urlParams.id, filter: true },
-  //       })
-  //     );
-  //     dispatch(
-  //       fetchRecords({
-  //         method: "POST",
-  //         url: `sf/object/records`,
-  //         params: urlParams,
-  //       })
-  //     );
-  //   } else {
-  //     router.push("/dashboard");
-  //   }
-  // }, [dispatch, router, urlParams]);
+  useEffect(() => {
+    router.push("/dashboard");
+  }, []);
 
   return (
     <html lang="en">
