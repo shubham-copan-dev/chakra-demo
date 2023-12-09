@@ -4,7 +4,7 @@ import { fetchSalesforceData } from "@/redux/slices/salesForce";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { useToast, Spinner, Box, Flex } from "@chakra-ui/react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { updateUrl } from "@/utilities/constants";
+import { updateUrl } from "../layout";
 import { fetchRecords } from "@/redux/slices/gridrecords";
 import { fetchMetaData } from "@/redux/slices/gridmetadata";
 import GridView from "@/components/UI/grid";
@@ -42,6 +42,56 @@ const DashboardPage = ({ params }: any) => {
         };
       });
   }
+
+  //this useEffect will make all four API's (grid,tab,records,metadata), if gridTabId is null
+  useEffect(() => {
+    if (gridViewId !== null) return;
+    if (gridViewId === null || gridViewId === undefined) {
+      //API call for getting records
+      dispatch(
+        fetchRecords({
+          method: "POST",
+          url: `sf/object/records`,
+          params: {
+            id: defaultGridViewId,
+            page: 1,
+            perPage: defaultGrid?.query?.limit,
+          },
+        })
+      );
+      //API call for getting metadata
+      dispatch(
+        fetchSalesforceData({
+          method: "GET",
+          url: `sf/object/metadata`,
+          params: {
+            id: defaultGridViewId,
+            object: dashboard,
+            filter: false,
+          },
+        })
+      );
+      //API call for getting metadata
+      dispatch(
+        fetchMetaData({
+          method: "GET",
+          url: `sf/object/metadata`,
+          params: { id: defaultGridViewId, filter: true },
+        })
+      );
+      updateUrl(defaultGridViewId, {
+        page: 1,
+        limit: defaultGrid[0]?.query?.limit,
+      });
+    }
+  }, [
+    dashboard,
+    defaultGrid,
+    defaultGridViewId,
+    dispatch,
+    gridViewId,
+    viewGridData,
+  ]);
 
   useEffect(() => {
     console.log("column::", metadata, "records", records);

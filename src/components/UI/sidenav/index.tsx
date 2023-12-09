@@ -1,20 +1,14 @@
-import { BackIcon, HomeIcon } from "@/chakraConfig/icons";
-import { Avatar, Flex, Text, FlexProps, Box, Spinner } from "@chakra-ui/react";
+import { BackIcon } from "@/chakraConfig/icons";
+import { Avatar, Flex, Text, FlexProps, Box } from "@chakra-ui/react";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { fetchSalesforceData, setGridId } from "@/redux/slices/salesForce";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { usePathname } from "next/navigation";
-import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
-import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
-import {
-  staticDashboards,
-  iconStyles,
-  textStyle,
-  icons,
-} from "@/utilities/constants";
+import { setRecordData } from "@/redux/slices/gridrecords";
+import { setMetaData } from "@/redux/slices/gridmetadata";
+import { dashboards, iconStyles, textStyle } from "@/utilities/constants";
 import { setSelectedNav } from "@/redux/slices/common";
-import { updateUrl } from "@/utilities/constants";
 
 const Sidenav = () => {
   const dispatch = useAppDispatch();
@@ -22,9 +16,6 @@ const Sidenav = () => {
   const page = path.split("/");
   const dashboard = page[2];
   const { selectedNav } = useAppSelector((state: any) => state.common);
-  const { dashboards } = useAppSelector((state: any) => state.navdata);
-  const { isSucess, defaultGridViewId, viewGridData, gridViewId, defaultGrid } =
-    useAppSelector((state: any) => state.salesforce);
 
   const renderMenuItem = (
     IconComponent: React.ComponentType<any>,
@@ -37,9 +28,9 @@ const Sidenav = () => {
       <Text sx={textStyle}>{label}</Text>
     </>
   );
-
-  // onclick functionality on navigation click
   const handleClick = (dashboard: string) => {
+    if (dashboard === selectedNav);
+    console.log(selectedNav, "jhvhj");
     dispatch(setSelectedNav(dashboard));
     dispatch(setRecordData(null));
     dispatch(setMetaData(null));
@@ -49,36 +40,20 @@ const Sidenav = () => {
       fetchSalesforceData({
         method: "GET",
         url: `object/${dashboard}/views`,
+        params: { view: "tab" },
+      })
+    );
+    dispatch(
+      fetchSalesforceData({
+        method: "GET",
+        url: `object/${dashboard}/views`,
         params: { view: "grid" },
       })
     );
   };
-
   useEffect(() => {
-    if (isSucess) {
-      dispatch(
-        fetchMetaData({
-          method: "GET",
-          url: `sf/object/metadata`,
-          params: { id: defaultGridViewId, filter: true },
-        })
-      );
-      dispatch(
-        fetchRecords({
-          method: "POST",
-          url: `sf/object/records`,
-          params: {
-            id: defaultGridViewId,
-            page: 1,
-            perPage: defaultGrid?.query?.limit,
-          },
-        })
-      );
-      updateUrl(defaultGrid._id, { page: 1, limit: defaultGrid.query.limit });
-    }
-  }, [isSucess]);
-
-  console.log(dashboards, "dash");
+    console.log(selectedNav, "nav");
+  }, [selectedNav]);
 
   return (
     <Flex
@@ -89,8 +64,6 @@ const Sidenav = () => {
       py={5}
       px={0}
       color="typoClr.NeutralColorWhite"
-      position="fixed"
-      zIndex={999}
     >
       <Flex direction="column" gap="50px" alignItems="center">
         <Flex
@@ -102,56 +75,20 @@ const Sidenav = () => {
           <BackIcon />
         </Flex>
         <Flex direction="column" gap="20px">
-          <Link href="/dashboard">
-            <Flex
-              direction="column"
-              alignItems="center"
-              gap="5px"
-              onClick={() => handleClick("Home")}
-              backgroundColor={"Home" === selectedNav ? "bgClr.Grey800" : ""}
-              py={1}
-            >
-              {/* {console.log(item.label, "sujhbsc")} */}
-              {renderMenuItem(HomeIcon, "Home")}
-            </Flex>
-          </Link>
-          {dashboards?.length ? (
-            dashboards.map((item: any, index: any) => (
-              <Link key={item._id} href={`/dashboard/${item.objectType}`}>
-                <Flex
-                  direction="column"
-                  alignItems="center"
-                  gap="5px"
-                  onClick={() => handleClick(item.objectType)}
-                  backgroundColor={
-                    item.label === selectedNav ? "bgClr.Grey800" : ""
-                  }
-                  py={1}
-                >
-                  {renderMenuItem(icons[index], item.objectType)}
-                </Flex>
-              </Link>
-            ))
-          ) : (
-            <Flex justifyContent="center">
-              <Spinner />
-            </Flex>
-          )}
-
-          {staticDashboards.map((item: any, index: any) => (
+          {dashboards.map((item: any, index: any) => (
             <Link key={index} href={item.href}>
               <Flex
                 direction="column"
                 alignItems="center"
                 gap="5px"
-                onClick={() => handleClick(item.action)}
+                onClick={() => handleClick(item.label)}
                 backgroundColor={
                   item.label === selectedNav ? "bgClr.Grey800" : ""
                 }
                 py={1}
               >
                 {/* {console.log(item.label, "sujhbsc")} */}
-                {renderMenuItem(item.icon, item.action)}
+                {renderMenuItem(item.icon, item.label)}
               </Flex>
             </Link>
           ))}
