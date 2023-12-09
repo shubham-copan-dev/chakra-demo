@@ -16,10 +16,6 @@ const Dashboard = () => {
   const currentTime = moment().format("hh:mm A");
 
   useEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
-
-  useEffect(() => {
     if (!auth) router.push("/login");
   }, [auth, router]);
 
