@@ -4,7 +4,7 @@ import { ChevronDownIcon, RowIcon } from "@/chakraConfig/icons";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   return (
-    <Flex justifyContent="space-between">
+    <Flex justifyContent="space-between" px={5}>
       <Flex>
         {buttonData.map((item, index) => (
           <Button
