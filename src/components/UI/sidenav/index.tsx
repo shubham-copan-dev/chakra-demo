@@ -13,7 +13,7 @@ import {
   textStyle,
   icons,
 } from "@/utilities/constants";
-import { setSelectedNav } from "@/redux/slices/common";
+import { setSelectedNav } from "@/redux/slices/dashboard";
 import { updateUrl } from "@/utilities/constants";
 
 const Sidenav = () => {
@@ -21,8 +21,9 @@ const Sidenav = () => {
   const path = usePathname();
   const page = path.split("/");
   const dashboard = page[2];
-  const { selectedNav } = useAppSelector((state: any) => state.common);
-  const { dashboards } = useAppSelector((state: any) => state.navdata);
+  const { dashboards, selectedNav } = useAppSelector(
+    (state: any) => state.navdata
+  );
   const { isSucess, defaultGridViewId, viewGridData, gridViewId, defaultGrid } =
     useAppSelector((state: any) => state.salesforce);
 
@@ -124,7 +125,7 @@ const Sidenav = () => {
                   gap="5px"
                   onClick={() => handleClick(item.objectType)}
                   backgroundColor={
-                    item.label === selectedNav ? "bgClr.Grey800" : ""
+                    item.objectType === selectedNav ? "bgClr.Grey800" : ""
                   }
                   py={1}
                 >
@@ -146,7 +147,7 @@ const Sidenav = () => {
                 gap="5px"
                 onClick={() => handleClick(item.action)}
                 backgroundColor={
-                  item.label === selectedNav ? "bgClr.Grey800" : ""
+                  item.action === selectedNav ? "bgClr.Grey800" : ""
                 }
                 py={1}
               >

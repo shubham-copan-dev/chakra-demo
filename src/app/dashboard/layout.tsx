@@ -34,7 +34,7 @@ export default function RootLayout({
     (state: any) => state.salesforce
   );
   const { metadata } = useAppSelector((state: any) => state.metadata);
-  const { selectedNav } = useAppSelector((state: any) => state.common);
+  const { selectedNav } = useAppSelector((state: any) => state.navdata);
 
   //handling click event on Grid tab click
   const handleTabClick = (item: any) => {

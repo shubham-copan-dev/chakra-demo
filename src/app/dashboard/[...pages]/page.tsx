@@ -27,7 +27,7 @@ const DashboardPage = ({ params }: any) => {
   const { metadata, metaLoader } = useAppSelector(
     (state: any) => state.metadata
   );
-  const { selectedNav } = useAppSelector((state: any) => state.common);
+  const { selectedNav } = useAppSelector((state: any) => state.navdata);
   const path = usePathname();
   const page = path.split("/");
   const dashboard = page[2];

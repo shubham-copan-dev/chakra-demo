@@ -1,27 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useRef, useState } from 'react';
-import { Spinner } from 'react-bootstrap';
-import { toast } from 'react-hot-toast';
+import { useCallback, useRef, useState } from "react";
+import { Spinner } from "react-bootstrap";
+import { toast } from "react-hot-toast";
 
 // import { ColumnRowGroupChangedEvent } from 'ag-grid-community';
 // the AG Grid React Component
-import 'ag-grid-community/styles/ag-grid.css';
+import "ag-grid-community/styles/ag-grid.css";
 // // Core grid CSS, always needed
-import 'ag-grid-community/styles/ag-theme-alpine.css';
-import 'ag-grid-enterprise';
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise";
 import {
   ColDef,
   ICellEditorParams,
   ICellRendererParams,
   ValueSetterParams,
-} from 'ag-grid-enterprise';
-import { AgGridReact } from 'ag-grid-react';
+} from "ag-grid-enterprise";
+import { AgGridReact } from "ag-grid-react";
 
-import { salesForce } from '@/axios/actions/salesForce';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { setEditedFields, setSelectedRows, updateRecord } from '@/redux/slices/salesForce';
-import { capsLetter } from '@/utilities';
-import { fieldTypes } from '@/utilities/constants';
+import { salesForce } from "@/axios/actions/salesForce";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import {
+  setEditedFields,
+  setSelectedRows,
+  updateRecord,
+} from "@/redux/slices/salesForce";
+import { capsLetter } from "@/utilities";
+import { fieldTypes } from "@/utilities/constants";
 
 import {
   ActionView,
@@ -29,10 +33,10 @@ import {
   CurrencyView,
   DateTimeView,
   PickListView,
-} from './CustomColumnView';
-import DateTimeCell from './GridCustomFields/DateTimeCell';
-import NumberField from './GridCustomFields/NumberField';
-import './gridView.css';
+} from "./CustomColumnView";
+import DateTimeCell from "./GridCustomFields/DateTimeCell";
+import NumberField from "./GridCustomFields/NumberField";
+import "./gridView.css";
 
 function GridView({ isFetching }: { isFetching: boolean }) {
   // use hooks
@@ -42,21 +46,22 @@ function GridView({ isFetching }: { isFetching: boolean }) {
   const gridRef: any = useRef();
 
   // global states
-  const { columnMeta, records, selectedViewBy, viewByMeta, fieldUpdateMode } = useAppSelector(
-    (state) => state.sales
-  );
-  const { fullscreen } = useAppSelector((state) => state.common);
+  const { columnMeta, records, selectedViewBy, viewByMeta, fieldUpdateMode } =
+    useAppSelector((state) => state.sales);
+  const { fullscreen } = useAppSelector((state) => state.navdata);
   // local states
   const [isGrouped, setIsGrouped] = useState<boolean>(false);
 
   // constants
-  const viewBySelected = viewByMeta?.find((fil) => fil?.label === selectedViewBy);
+  const viewBySelected = viewByMeta?.find(
+    (fil) => fil?.label === selectedViewBy
+  );
   const viewByNames = viewBySelected?.query?.fields?.map((item) => item?.name);
 
   // handling cell edit
   const onFieldEditDone = async (params: any) => {
     await salesForce({
-      method: 'PATCH',
+      method: "PATCH",
       url: `sf/object/${params?.data?.attributes?.type}/record/${params?.data?.Id}`,
       data: {
         prop: {
@@ -138,19 +143,22 @@ function GridView({ isFetching }: { isFetching: boolean }) {
   };
 
   // handling editor cell
-  const cellEditorSelector = (params: ICellEditorParams, pickList?: string[]) => {
+  const cellEditorSelector = (
+    params: ICellEditorParams,
+    pickList?: string[]
+  ) => {
     // console.log(params, 'params');
     switch (params?.colDef?.type) {
       case fieldTypes?.PICKLIST:
         return {
-          component: 'agRichSelectCellEditor',
+          component: "agRichSelectCellEditor",
           params: { values: pickList },
           popup: true,
         };
       case fieldTypes?.TEXTAREA:
-        console.log('textarea');
+        console.log("textarea");
         return {
-          component: 'agLargeTextCellEditor',
+          component: "agLargeTextCellEditor",
           params: {
             maxLength: 250,
             rows: 10,
@@ -175,7 +183,7 @@ function GridView({ isFetching }: { isFetching: boolean }) {
         };
       default:
         return {
-          component: 'agTextCellEditor',
+          component: "agTextCellEditor",
           params: {
             maxLength: 56,
           },
@@ -193,16 +201,16 @@ function GridView({ isFetching }: { isFetching: boolean }) {
         case fieldTypes?.CURRENCY:
         case fieldTypes?.DOUBLE:
         case fieldTypes?.INT:
-          return 'agNumberColumnFilter';
+          return "agNumberColumnFilter";
 
         case fieldTypes?.STRING:
         case fieldTypes?.TEXTAREA:
         case fieldTypes?.REFERENCE:
-          return 'agTextColumnFilter';
+          return "agTextColumnFilter";
 
         case fieldTypes?.DATE:
         case fieldTypes?.DATETIME:
-          return 'agDateColumnFilter';
+          return "agDateColumnFilter";
 
         default:
           return false;
@@ -217,10 +225,15 @@ function GridView({ isFetching }: { isFetching: boolean }) {
       debugger;
       const newColumnMeta = columnMeta
         ?.filter?.((fil) =>
-          selectedViewBy === 'all' ? fil?.uiMetadata?.isVisible : viewByNames?.includes(fil?.name)
+          selectedViewBy === "all"
+            ? fil?.uiMetadata?.isVisible
+            : viewByNames?.includes(fil?.name)
         )
         ?.sort((a, b) => {
-          return (a?.uiMetadata?.columnOrder ?? 0) - (b?.uiMetadata?.columnOrder ?? 0);
+          return (
+            (a?.uiMetadata?.columnOrder ?? 0) -
+            (b?.uiMetadata?.columnOrder ?? 0)
+          );
         })
         ?.map((item) => {
           return {
@@ -229,14 +242,15 @@ function GridView({ isFetching }: { isFetching: boolean }) {
             editable: item?.updateable,
             filter: handleFilterType(item?.type, item?.filterable),
             filterParams:
-              item?.type === fieldTypes?.DATE || item?.type === fieldTypes?.DATETIME
+              item?.type === fieldTypes?.DATE ||
+              item?.type === fieldTypes?.DATETIME
                 ? {
                     comparator: (dateFromFilter: any, cellValue: any) => {
                       if (cellValue == null) {
                         return 0;
                       }
 
-                      const dateParts = cellValue.split('-');
+                      const dateParts = cellValue.split("-");
                       const year = Number(dateParts[0]);
                       const month = Number(dateParts[1]) - 1;
                       const day = Number(dateParts[2]);
@@ -253,7 +267,7 @@ function GridView({ isFetching }: { isFetching: boolean }) {
             enableRowGroup: item?.groupable,
             maxWidth: item?.uiMetadata?.width,
             pinned: false,
-            cellClass: 'custom-cell',
+            cellClass: "custom-cell",
             cellRendererSelector: cellRendererSelector,
             cellEditorSelector: (params: ICellEditorParams) =>
               cellEditorSelector(
@@ -265,7 +279,7 @@ function GridView({ isFetching }: { isFetching: boolean }) {
             valueSetter: (params: ValueSetterParams) => {
               const newObj = { ...params.data, [item?.name]: params.newValue };
               dispatch(updateRecord(newObj));
-              if (fieldUpdateMode === 'submit') {
+              if (fieldUpdateMode === "submit") {
                 dispatch(
                   setEditedFields({
                     id: params.data.Id,
@@ -277,9 +291,9 @@ function GridView({ isFetching }: { isFetching: boolean }) {
                 );
               } else {
                 toast.promise(onFieldEditDone(params), {
-                  loading: 'Updating',
-                  success: 'Record updated successfully',
-                  error: 'An error occur while updating the record',
+                  loading: "Updating",
+                  success: "Record updated successfully",
+                  error: "An error occur while updating the record",
                 });
               }
               params.data[item.name] = params.newValue;
@@ -292,18 +306,18 @@ function GridView({ isFetching }: { isFetching: boolean }) {
       } else {
         return [
           {
-            headerName: 'Action',
-            cellClass: 'custom-cell',
+            headerName: "Action",
+            cellClass: "custom-cell",
             cellRenderer: ActionView,
             cellRendererParams: {
               allColumnData: columnMeta,
             },
-            colId: 'action',
+            colId: "action",
             editable: false,
             maxWidth: 100,
             filter: false,
-            type: 'editForm',
-            pinned: 'left',
+            type: "editForm",
+            pinned: "left",
             headerCheckboxSelection: true,
             checkboxSelection: true,
           },
@@ -328,7 +342,7 @@ function GridView({ isFetching }: { isFetching: boolean }) {
   if (isFetching)
     return (
       <Spinner
-        style={{ marginLeft: '50%', marginTop: '20%', marginBottom: '10%' }}
+        style={{ marginLeft: "50%", marginTop: "20%", marginBottom: "10%" }}
         animation="border"
         variant="dark"
       />
@@ -338,8 +352,8 @@ function GridView({ isFetching }: { isFetching: boolean }) {
       // className={`ag-theme-alpine${themeMode === 'dark' ? '-dark' : ''}`}
       className={`ag-theme-alpine`}
       style={{
-        width: '100%',
-        height: fullscreen ? '100vh' : 700,
+        width: "100%",
+        height: fullscreen ? "100vh" : 700,
       }}
     >
       <AgGridReact
