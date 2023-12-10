@@ -20,6 +20,7 @@ import DynamicButtons from "@/components/UI/common/customButton/DynamicButtons";
 import { RightArrowIcon, RowIcon } from "@/chakraConfig/icons";
 import { fetchNavData } from "@/redux/slices/dashboard";
 import { useRouter } from "next/navigation";
+import useIsHome from "@/hooks/isHome";
 
 export default function RootLayout({
   children,
@@ -29,12 +30,14 @@ export default function RootLayout({
   const dispatch = useAppDispatch();
   const urlParams = useGetUrlParams();
   const router = useRouter();
+  const isHome = useIsHome();
 
   const { viewGridData, selectedGridTab } = useAppSelector(
     (state: any) => state.salesforce
   );
   const { metadata } = useAppSelector((state: any) => state.metadata);
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
+  console.log(isHome, "home");
 
   //handling click event on Grid tab click
   const handleTabClick = (item: any) => {
@@ -75,7 +78,7 @@ export default function RootLayout({
         <Flex>
           <Sidenav />
           <Box w="100%" paddingLeft="4.1rem">
-            <Navbar />
+            {!isHome && <Navbar />}
             {/* grid tab buttons */}
             <Flex
               alignItems="flex-start"
@@ -83,7 +86,6 @@ export default function RootLayout({
               flex="1 0 0"
               flexWrap="wrap"
               px={5}
-              mb={2}
             >
               {selectedNav !== "Home" &&
                 metadata?.length &&

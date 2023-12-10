@@ -5,9 +5,18 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { fetchUser } from "@/redux/slices/auth";
 import { useRouter } from "next/navigation";
 import useAuthorized from "@/hooks/auth";
-import { Box, Container, Flex, Text, Button, Input } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Flex,
+  Text,
+  Button,
+  Input,
+  Heading,
+} from "@chakra-ui/react";
 import moment from "moment";
 import "./dashboard.css";
+import { SearchIcon, TimeIcon } from "@chakra-ui/icons";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -21,106 +30,87 @@ const Dashboard = () => {
 
   return (
     <Box
-      className="welcome-wrapper min-vh-100"
       bg="url('/assets/images/home-banner.png')"
       backgroundSize="cover"
       backgroundRepeat="no-repeat"
-      padding={{ base: "30px 20px", md: "65px 60px", lg: "65px 60px" }}
-      h="91vh"
+      backgroundAttachment="fixed"
+      color="white !important"
     >
-      <Container maxW="container.lg">
-        <Flex alignItems="center" flexDirection={{ base: "column", md: "row" }}>
-          <Box flex="1">
-            <Box
-              className="time-wishing"
-              textAlign={{ base: "center", md: "left" }}
+      <Flex
+        maxWidth="80vw"
+        margin="0 auto"
+        // height="100vh"
+        direction="column"
+        gap="7rem"
+        py="5rem"
+      >
+        <Flex justifyContent="space-between">
+          <Flex direction="column">
+            <Text fontSize="3rem">{currentTime}</Text>
+            <Text>Good Morning, James</Text>
+          </Flex>
+          <Flex direction="column">
+            <Text textAlign="end">Quote of the Day</Text>
+            <Text>“We grow fearless when we do the things we fear.”</Text>
+          </Flex>
+        </Flex>
+        <Flex justifyContent="center">
+          <Box position="relative">
+            <Text
+              position="absolute"
+              top="50%"
+              zIndex="999"
+              transform="translateY(-50%)"
+              left="8px"
             >
-              <Text
-                fontSize={{ base: "32px", md: "48px" }}
-                fontWeight="400"
-                lineHeight="1"
-                color="white"
-              >
-                {currentTime} {/* Display current time using moment.js */}
-              </Text>
-              <Text
-                fontSize={{ base: "16px", md: "20px" }}
-                fontWeight="400"
-                lineHeight="1"
-                color="white"
-                marginTop="2px"
-              >
-                Good morning, James
-              </Text>
-            </Box>
-          </Box>
-          <Box flex="1">
-            <Box
-              className="quote-top"
-              textAlign={{ base: "center", md: "right" }}
-              marginTop={{ base: "30px", md: "0" }}
-            >
-              <Text
-                fontSize="16px"
-                fontWeight="400"
-                color="#c4ccd8"
-                marginBottom="5px"
-              >
-                Quote of the Day
-              </Text>
-              <Text fontSize="16px" fontWeight="400" color="white">
-                “We grow fearless when we do the things we fear.”
-              </Text>
-            </Box>
+              <SearchIcon />
+            </Text>
+
+            <Input
+              type="text"
+              placeholder="Search"
+              bg="#80766F"
+              width="50vw"
+              padding="2rem"
+              border="none"
+              borderRadius="8px"
+              color="white" // Set text color to white
+              marginTop="5rem"
+              marginBottom="5rem"
+              _placeholder={{ color: "white" }} // Set placeholder color to white
+            />
           </Box>
         </Flex>
-      </Container>
-
-      <Box className="recent-search" paddingTop="30px">
-        <Container maxW="container.lg">
-          <Box>
-            <Text
-              fontSize="lg"
-              marginBottom="4px"
-              color="white"
-              display="flex"
-              alignItems="center"
-            >
-              <span className="icons-clock"></span> RECENT SEARCHES
-            </Text>
-          </Box>
-          <Input
-            type="text"
-            placeholder="Search"
-            width="60vw"
-            padding="2rem"
-            borderRadius="md"
-            border="1px solid #ccc"
-            _focus={{
-              borderColor: "white.500",
-              boxShadow: "0 0 0 1px #3182ce",
-            }}
-            color="white" // Set text color to white
-            marginTop="5rem"
-            marginBottom="5rem"
-            _placeholder={{ color: "white" }} // Set placeholder color to white
-          />
-          <Flex flexWrap="wrap">
-            {/* Sample recent searches */}
-            {[1, 2, 3, 4, 5, 6].map((item) => (
-              <Box
-                key={item}
-                width={{ base: "100%", md: "50%", lg: "33.33%" }}
-                padding="8px"
-              >
-                <Button width="100%" variant="outline" color="white">
-                  Walmart TAAS
-                </Button>
-              </Box>
-            ))}
+        <Flex
+          direction="column"
+          maxWidth="70%"
+          width="70%"
+          margin="0 auto"
+          gap="1rem"
+        >
+          <Flex gap="5px" alignItems="center" fontSize="12px">
+            <TimeIcon />
+            RECENT SEARCHES
           </Flex>
-        </Container>
-      </Box>
+          <Box display="grid" gridTemplateColumns="repeat(3,1fr)" gap="1rem">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <Button
+                width="100%"
+                variant="outline"
+                color="white"
+                key={item}
+                padding="2rem"
+                bg="#6F522C"
+                border="none"
+                _hover={{ bg: "#7F633D" }}
+                fontWeight="100"
+              >
+                Walmart TAAS
+              </Button>
+            ))}
+          </Box>
+        </Flex>
+      </Flex>
     </Box>
   );
 };

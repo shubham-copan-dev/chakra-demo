@@ -111,6 +111,8 @@ const Sidenav = () => {
               onClick={() => handleClick("Home")}
               backgroundColor={"Home" === selectedNav ? "bgClr.Grey800" : ""}
               py={1}
+              minWidth="4.2rem"
+              _hover={{ background: "bgClr.Grey800" }}
             >
               {/* {console.log(item.label, "sujhbsc")} */}
               {renderMenuItem(HomeIcon, "Home")}
@@ -128,6 +130,8 @@ const Sidenav = () => {
                     item.objectType === selectedNav ? "bgClr.Grey800" : ""
                   }
                   py={1}
+                  minWidth="4.2rem"
+                  _hover={{ background: "bgClr.Grey800" }}
                 >
                   {renderMenuItem(icons[index], item.objectType)}
                 </Flex>
@@ -150,6 +154,8 @@ const Sidenav = () => {
                   item.action === selectedNav ? "bgClr.Grey800" : ""
                 }
                 py={1}
+                minWidth="4.2rem"
+                _hover={{ background: "bgClr.Grey800" }}
               >
                 {/* {console.log(item.label, "sujhbsc")} */}
                 {renderMenuItem(item.icon, item.action)}
