@@ -22,12 +22,13 @@ const DashboardPage = ({ params }: any) => {
   const dispatch = useAppDispatch();
   const { defaultGridViewId, viewGridData, gridViewId, defaultGrid } =
     useAppSelector((state: any) => state.salesforce);
-  const { records, recordLoading } = useAppSelector(
+  const { records, isRecordLoaded } = useAppSelector(
     (state: any) => state.records
   );
   const { metadata, metaLoader } = useAppSelector(
     (state: any) => state.metadata
   );
+  const toast = useToast();
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
   const isHome = useIsHome();
   const path = usePathname();
@@ -95,15 +96,15 @@ const DashboardPage = ({ params }: any) => {
       //   };
       case fieldTypes?.CURRENCY:
       case fieldTypes?.DOUBLE:
-      case fieldTypes?.INT:
-        return {
-          component: NumberField,
-        };
+      // case fieldTypes?.INT:
+      //   return {
+      //     component: NumberField,
+      //   };
       case fieldTypes?.DATE:
-      case fieldTypes?.DATETIME:
-        return {
-          component: DateTimeCell,
-        };
+      // case fieldTypes?.DATETIME:
+      //   return {
+      //     component: DateTimeCell,
+      //   };
       default:
         return {
           component: "agTextCellEditor",
@@ -239,8 +240,18 @@ const DashboardPage = ({ params }: any) => {
   }
 
   useEffect(() => {
-    console.log("column::", metadata, "records", records);
-  }, [records, metadata]);
+    if (isRecordLoaded) {
+      if (records?.[0] === undefined) {
+        toast({
+          title: "No records to display",
+          description: "Zero data found",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    }
+  }, [isRecordLoaded]);
 
   return (
     <div>

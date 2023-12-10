@@ -17,7 +17,7 @@ export const fetchRecords: any = createAsyncThunk(
 
 const initialState = {
   records: null,
-  recordLoading: false,
+  isRecordLoaded: false,
   error: null,
 };
 
@@ -49,17 +49,17 @@ const recordDataSlice = createSlice({
     builder
       .addCase(fetchRecords.pending, (init) => {
         const state = init;
-        state.recordLoading = true;
+        state.isRecordLoaded = false;
       })
       .addCase(fetchRecords.fulfilled, (init, action) => {
         const state = init;
         state.records = null;
-        state.recordLoading = false;
+        state.isRecordLoaded = true;
         state.records = action.payload.data.data.records;
       })
       .addCase(fetchRecords.rejected, (init, action) => {
         const state = init;
-        state.recordLoading = false;
+        state.isRecordLoaded = true;
         console.log("failed", action);
         (state.error as any) = action.error.message;
       });
