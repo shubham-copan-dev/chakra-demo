@@ -33,6 +33,17 @@ const recordDataSlice = createSlice({
       const state = init;
       state.recordLoading = action.payload;
     },
+    updateRecord(init, action) {
+      const state = init;
+      if (state.records) {
+        const newRecords = [...state.records];
+        const indexOfRecord = newRecords?.findIndex(
+          (item) => item?.Id === action.payload?.Id
+        );
+        newRecords.splice(indexOfRecord, 1, action.payload);
+        state.records = newRecords;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -56,5 +67,5 @@ const recordDataSlice = createSlice({
 });
 
 // reducers exports
-export const { setRecordData } = recordDataSlice.actions;
+export const { setRecordData, updateRecord } = recordDataSlice.actions;
 export default recordDataSlice.reducer;
