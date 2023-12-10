@@ -344,3 +344,23 @@ export const viewByMeta = [
     updatedAt: "2023-04-12T14:38:06.977Z",
   },
 ];
+
+export const ViewBarBtnStyl = {
+  color: "var(--grey-600, #394256)",
+  textAlign: "center",
+  fontFamily: "Poppins",
+  fontSize: "12px",
+  fontStyle: "normal",
+  fontWeight: "500",
+  lineHeight: "120%",
+  display: "flex",
+  padding: "5px",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: "10px",
+  backgroundColor: "bgClr.NeutralColorWhite",
+  _hover: {
+    backgroundColor: "bgClr.NeutralColorGray",
+    // Add additional hover styles here as needed
+  },
+};

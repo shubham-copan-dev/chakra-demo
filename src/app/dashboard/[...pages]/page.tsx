@@ -239,20 +239,6 @@ const DashboardPage = ({ params }: any) => {
       });
   }
 
-  useEffect(() => {
-    if (isRecordLoaded) {
-      if (records?.[0] === undefined) {
-        toast({
-          title: "No records to display",
-          description: "Zero data found",
-          status: "error",
-          duration: 9000,
-          isClosable: true,
-        });
-      }
-    }
-  }, [isRecordLoaded]);
-
   return (
     <div>
       <Flex

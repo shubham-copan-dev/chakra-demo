@@ -1,28 +1,61 @@
 import { Flex, Button, Text, Box, Image } from "@chakra-ui/react";
 import { ArrowUpDownIcon, RepeatIcon, SettingsIcon } from "@chakra-ui/icons"; // Assuming SettingsIcon is from Chakra UI icons
 import { ChevronDownIcon, RowIcon } from "@/chakraConfig/icons";
+import { ViewBarBtnStyl } from "@/utilities/constants";
+import { salesforce } from "@/axios/actions/salesforce";
+import { toast } from "react-hot-toast";
+import { useAppSelector } from "@/hooks/redux";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
+  const { viewGridData, gridViewId } = useAppSelector(
+    (state: any) => state.salesforce
+  );
+  // handling Download CSV
+  const downloadCsv = async () => {
+    const downloadFile = ({ data, fileName, fileType }: any) => {
+      const blob = new Blob([data], { type: fileType });
+
+      const a = document.createElement("a");
+      a.download = fileName;
+      a.href = window.URL.createObjectURL(blob);
+      const clickEvt = new MouseEvent("click", {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+      });
+      a.dispatchEvent(clickEvt);
+      a.remove();
+    };
+
+    const tab = viewGridData?.find((fi: any) => fi?._id === gridViewId);
+
+    toast.promise(
+      salesforce({
+        method: "POST",
+        url: `sf/object/metadata/CSV`,
+        params: {
+          id: gridViewId,
+        },
+      }).then((resp) => {
+        downloadFile({
+          data: resp?.data,
+          fileName: `${tab?.label}.csv`,
+          fileType: "text/csv",
+        });
+      }),
+      {
+        loading: "Downloading",
+        success: "Download successful",
+        error: "Error while downloading",
+      }
+    );
+  };
+
   return (
     <Flex justifyContent="space-between" px={5}>
       <Flex>
         {buttonData.map((item, index) => (
-          <Button
-            key={index}
-            color="var(--grey-600, #394256)"
-            textAlign="center"
-            fontFamily="Poppins"
-            fontSize="12px"
-            fontStyle="normal"
-            fontWeight="500"
-            lineHeight="120%"
-            display="flex"
-            padding="5px"
-            flexDirection="column"
-            alignItems="flex-start"
-            gap="10px"
-            backgroundColor="bgClr.NeutralColorWhite"
-          >
+          <Button key={index} sx={ViewBarBtnStyl}>
             <Flex alignItems="center" gap="5px">
               <SettingsIcon />
               <Text>{item.text}</Text>
@@ -31,39 +64,17 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
         ))}
       </Flex>
       <Flex>
-        <Button
-          color="var(--grey-600, #394256)"
-          textAlign="center"
-          fontFamily="Poppins"
-          fontSize="12px"
-          fontStyle="normal"
-          fontWeight="500"
-          lineHeight="120%"
-          display="flex"
-          padding="5px"
-          flexDirection="column"
-          alignItems="flex-start"
-          gap="10px"
-          backgroundColor="bgClr.NeutralColorWhite"
-        >
+        <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             <RowIcon />
           </Flex>
         </Button>
         <Button
-          color="var(--grey-600, #394256)"
-          textAlign="center"
-          fontFamily="Poppins"
-          fontSize="12px"
-          fontStyle="normal"
-          fontWeight="500"
-          lineHeight="120%"
-          display="flex"
-          padding="5px"
-          flexDirection="column"
-          alignItems="flex-start"
-          gap="10px"
-          backgroundColor="bgClr.NeutralColorWhite"
+          sx={ViewBarBtnStyl}
+          onClick={(e) => {
+            e.preventDefault();
+            downloadCsv();
+          }}
         >
           <Flex alignItems="center" gap="5px">
             <Image
@@ -72,60 +83,18 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
             ></Image>
           </Flex>
         </Button>
-        <Button
-          color="var(--grey-600, #394256)"
-          textAlign="center"
-          fontFamily="Poppins"
-          fontSize="12px"
-          fontStyle="normal"
-          fontWeight="500"
-          lineHeight="120%"
-          display="flex"
-          padding="5px"
-          flexDirection="column"
-          alignItems="flex-start"
-          gap="10px"
-          backgroundColor="bgClr.NeutralColorWhite"
-        >
+        <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             <RepeatIcon />
           </Flex>
         </Button>
-        <Button
-          color="var(--grey-600, #394256)"
-          textAlign="center"
-          fontFamily="Poppins"
-          fontSize="12px"
-          fontStyle="normal"
-          fontWeight="500"
-          lineHeight="120%"
-          display="flex"
-          padding="5px"
-          flexDirection="column"
-          alignItems="flex-start"
-          gap="10px"
-          backgroundColor="bgClr.NeutralColorWhite"
-        >
+        <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             <ChevronDownIcon />
             <Text>View: all</Text>
           </Flex>
         </Button>
-        <Button
-          color="var(--grey-600, #394256)"
-          textAlign="center"
-          fontFamily="Poppins"
-          fontSize="12px"
-          fontStyle="normal"
-          fontWeight="500"
-          lineHeight="120%"
-          display="flex"
-          padding="5px"
-          flexDirection="column"
-          alignItems="flex-start"
-          gap="10px"
-          backgroundColor="bgClr.Grey300"
-        >
+        <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             <Text>Bulk Update</Text>
           </Flex>
