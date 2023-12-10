@@ -5,6 +5,7 @@ import {
   PipelineIcon,
   UserIcon,
 } from "@/chakraConfig/icons";
+import { FlexProps } from "@chakra-ui/react";
 
 export const staticDashboards: any = [
   { href: "/dashboard/lead", icon: LeadIcon, label: "Lead", action: "lead" },
@@ -39,8 +40,9 @@ export const iconStyles = {
   justifyContent: "center",
   alignItems: "center",
   cursor: "pointer",
-  flexDirection: ["column", "row"],
-};
+  flexDirection: ["column", null, "row"], // Responsive array for flexDirection
+  overflow: "hidden",
+} as FlexProps;
 
 export const textStyle = {
   color: "bgClr.Grey400",

@@ -1,5 +1,13 @@
 import { BackIcon, HomeIcon } from "@/chakraConfig/icons";
-import { Avatar, Flex, Text, FlexProps, Box, Spinner } from "@chakra-ui/react";
+import {
+  Avatar,
+  Flex,
+  Text,
+  FlexProps,
+  Box,
+  Spinner,
+  Image,
+} from "@chakra-ui/react";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { fetchSalesforceData, setGridId } from "@/redux/slices/salesForce";
@@ -85,8 +93,10 @@ const Sidenav = () => {
     <Flex
       direction="column"
       bg="bgClr.Grey600"
-      h="100vh"
+      minHeight="100vh"
+      height="100vh"
       justifyContent="space-between"
+      alignItems="center"
       py={5}
       px={0}
       color="typoClr.NeutralColorWhite"
@@ -100,7 +110,9 @@ const Sidenav = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <BackIcon />
+          <Text pl={0.5} pt={0.1}>
+            <BackIcon />
+          </Text>
         </Flex>
         <Flex direction="column" gap="20px">
           <Link href="/dashboard">
@@ -165,7 +177,21 @@ const Sidenav = () => {
         </Flex>
       </Flex>
       <Text>
-        <Avatar size="md" name="Kent Dodds" src="https://bit.ly/kent-c-dodds" />
+        {/* <Avatar
+          size="md"
+          name="Kent Dodds"
+          src="assets/images/profile-icon.png"
+        /> */}
+        <Flex
+          {...iconStyles}
+          fontSize="25px"
+          justifyContent="center"
+          alignItems="center"
+          height="3rem"
+          width="3rem"
+        >
+          <Image src="assets/images/profile-icon.png" alt="profile-icon" />
+        </Flex>
       </Text>
     </Flex>
   );
