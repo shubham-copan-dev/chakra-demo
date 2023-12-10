@@ -16,6 +16,7 @@ import GridView from "@/components/UI/grid";
 import GridDemo from "@/components/gridview";
 import { ValueSetterParams } from "ag-grid-community";
 import { ActionView } from "@/components/Grid/ViewPanel/GridView/CustomColumnView";
+import useIsHome from "@/hooks/isHome";
 
 const DashboardPage = ({ params }: any) => {
   const dispatch = useAppDispatch();
@@ -28,6 +29,7 @@ const DashboardPage = ({ params }: any) => {
     (state: any) => state.metadata
   );
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
+  const isHome = useIsHome();
   const path = usePathname();
   const page = path.split("/");
   const dashboard = page[2];
@@ -243,17 +245,25 @@ const DashboardPage = ({ params }: any) => {
   return (
     <div>
       <Flex
-        h="80vh"
+        h="90vh"
         w="100%"
         justifyContent="center"
         alignItems="center"
         px={5}
       >
-        {metadata?.length && selectedNav !== "Home" && (
+        {/* loader if no column data and row data */}
+        {!metadata?.length && !isHome && !records?.length && (
+          <Flex height="100vh" alignItems="center">
+            <Spinner />
+          </Flex>
+        )}
+        {/* show grid data after record fetched */}
+        {metadata?.length && !isHome && records?.length && (
           <GridDemo columnDefs={handlingColumnDefs()} records={records} />
         )}
-        {!metadata?.length && (
-          <Flex height="100vh" alignItems="center">
+        {/* loader if record fetching on pending state */}
+        {metadata?.length && !isHome && !records?.length && (
+          <Flex height="100%" alignItems="center" justifyContent="center">
             <Spinner />
           </Flex>
         )}

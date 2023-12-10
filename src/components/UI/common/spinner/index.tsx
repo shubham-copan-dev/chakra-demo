@@ -1,3 +1,4 @@
+import { flexCenter } from "@/utilities/styles";
 import { Flex, Spinner } from "@chakra-ui/react";
 
 const Loader = () => {

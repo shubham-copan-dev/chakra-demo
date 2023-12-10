@@ -21,6 +21,7 @@ import { RightArrowIcon, RowIcon } from "@/chakraConfig/icons";
 import { fetchNavData } from "@/redux/slices/dashboard";
 import { useRouter } from "next/navigation";
 import useIsHome from "@/hooks/isHome";
+import "../page.module.css";
 
 export default function RootLayout({
   children,
@@ -82,12 +83,13 @@ export default function RootLayout({
             {/* grid tab buttons */}
             <Flex
               alignItems="flex-start"
-              gap="5px"
+              gap="10px"
               flex="1 0 0"
               flexWrap="wrap"
               px={5}
+              bg="#F7F8FC"
             >
-              {selectedNav !== "Home" &&
+              {!isHome &&
                 metadata?.length &&
                 viewGridData?.map((item: any) => {
                   return (
