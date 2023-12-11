@@ -53,7 +53,7 @@ export default function RootLayout({
     dispatch(setSelectedGridTab(item._id));
     dispatch(setGridId(item._id));
     dispatch(setRecordData(null));
-    // dispatch(setMetaData(null));
+
     dispatch(
       fetchMetaData({
         method: "GET",

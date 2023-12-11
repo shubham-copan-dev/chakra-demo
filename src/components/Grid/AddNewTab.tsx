@@ -14,7 +14,10 @@ import {
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 // import { setReFetchTabs } from "@/redux/slices/salesForce";
 import { AddNewTabInterface } from "@/redux/slices/salesForce/interface";
-import { operators } from "@/utilities/constants";
+import { operators, updateUrl } from "@/utilities/constants";
+import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
+import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
+import { fetchSalesforceData, setGridData } from "@/redux/slices/salesForce";
 
 function AddNewTab({
   show,
@@ -30,8 +33,10 @@ function AddNewTab({
   // use hooks
   // const { tabId, viewId } = useParams();
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
-  const { selectedGridTab } = useAppSelector((state: any) => state.salesforce);
   const { metadata } = useAppSelector((state: any) => state.metadata);
+  const { defaultGridViewId, defaultGrid, selectedGridTab } = useAppSelector(
+    (state: any) => state.salesforce
+  );
   const dispatch = useAppDispatch();
 
   // global states
@@ -98,6 +103,39 @@ function AddNewTab({
         });
         // dispatch(setReFetchTabs());
       } else await salesforce({ method: "POST", url: "views", data: formData });
+      dispatch(setRecordData(null));
+      dispatch(setMetaData(null));
+      dispatch(setGridData(null));
+      dispatch(
+        fetchSalesforceData({
+          method: "GET",
+          url: `object/${selectedNav}/views`,
+          params: { view: "grid" },
+        })
+      );
+      setTimeout(() => {
+        dispatch(
+          fetchMetaData({
+            method: "GET",
+            url: `sf/object/metadata`,
+            params: { id: defaultGridViewId, filter: true },
+          })
+        );
+        dispatch(
+          fetchRecords({
+            method: "POST",
+            url: `sf/object/records`,
+            params: {
+              id: defaultGridViewId,
+              page: 1,
+              perPage: defaultGrid?.query?.limit,
+            },
+          })
+        );
+      }, 100);
+      // updateUrl(defaultGrid._id, { page: 1, limit: defaultGrid.query.limit });
+      console.log("sucess");
+
       if (refetch) refetch();
       onHide();
     } catch (error) {

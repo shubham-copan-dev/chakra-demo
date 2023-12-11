@@ -21,8 +21,13 @@ import AddNewTab from "@/components/Grid/AddNewTab";
 
 const DashboardPage = ({ params }: any) => {
   const dispatch = useAppDispatch();
-  const { defaultGridViewId, viewGridData, gridViewId, defaultGrid } =
-    useAppSelector((state: any) => state.salesforce);
+  const {
+    defaultGridViewId,
+    viewGridData,
+    gridViewId,
+    defaultGrid,
+    selectedGridTab,
+  } = useAppSelector((state: any) => state.salesforce);
   const { records, isRecordLoaded } = useAppSelector(
     (state: any) => state.records
   );
