@@ -17,6 +17,7 @@ import GridDemo from "@/components/gridview";
 import { ValueSetterParams } from "ag-grid-community";
 import { ActionView } from "@/components/Grid/ViewPanel/GridView/CustomColumnView";
 import useIsHome from "@/hooks/isHome";
+import AddNewTab from "@/components/Grid/AddNewTab";
 
 const DashboardPage = ({ params }: any) => {
   const dispatch = useAppDispatch();
@@ -33,7 +34,6 @@ const DashboardPage = ({ params }: any) => {
   const isHome = useIsHome();
   const path = usePathname();
   const page = path.split("/");
-  const dashboard = page[2];
   const selectedViewBy = "all";
   const fieldUpdateMode = "instant";
   const [isGrouped, setIsGrouped] = useState<boolean>(false);
@@ -220,24 +220,6 @@ const DashboardPage = ({ params }: any) => {
       }
     }
   };
-
-  function filterVisibleColumns(columns: any) {
-    return columns
-      .filter((column: any) => column.uiMetadata && column.uiMetadata.isVisible)
-      .map((column: any) => {
-        const {
-          uiMetadata: { name, width, isGroupable },
-          ...rest
-        } = column;
-        return {
-          field: name,
-          headerName: name,
-          width,
-          groupable: isGroupable,
-          ...rest,
-        };
-      });
-  }
 
   return (
     <div>

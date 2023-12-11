@@ -1,21 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
-import { Button, Modal, Spinner } from 'react-bootstrap';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
-import Select from 'react-select';
+import { useEffect, useState } from "react";
+import { Button, Modal, Spinner } from "react-bootstrap";
+import { useFieldArray, useForm } from "react-hook-form";
+// import { useParams } from 'react-router-dom';
+import Select from "react-select";
 
-import { salesForce } from '@/axios/actions/salesForce';
+import { salesforce } from "@/axios/actions/salesforce";
 import {
   InputField,
   MultipleRadioButtonField,
   ReactSelectField,
   TextareaField,
-} from '@/components/formFields';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { setReFetchTabs } from '@/redux/slices/salesForce';
-import { AddNewTabInterface } from '@/redux/slices/salesForce/interface';
-import { operators } from '@/utilities/constants';
+} from "@/components/formFields";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+// import { setReFetchTabs } from "@/redux/slices/salesForce";
+import { AddNewTabInterface } from "@/redux/slices/salesForce/interface";
+import { operators } from "@/utilities/constants";
 
 function AddNewTab({
   show,
@@ -29,14 +28,17 @@ function AddNewTab({
   defaultValues?: AddNewTabInterface;
 }) {
   // use hooks
-  const { tabId, viewId } = useParams();
+  // const { tabId, viewId } = useParams();
+  const { selectedNav } = useAppSelector((state: any) => state.navdata);
+  const { selectedGridTab } = useAppSelector((state: any) => state.salesforce);
+  const { metadata } = useAppSelector((state: any) => state.metadata);
   const dispatch = useAppDispatch();
 
   // global states
-  const { allFields } = useAppSelector((state) => state.sales);
+  // const { allFields } = useAppSelector((state) => state.sales);
 
   const fieldTypes: { [key: string]: string } = {};
-  allFields?.map((item) => (fieldTypes[item.name] = item.type));
+  metadata?.map((item: any) => (fieldTypes[item.name] = item.type));
 
   // hook form
   const {
@@ -47,14 +49,14 @@ function AddNewTab({
     formState: { isSubmitting },
   } = useForm<AddNewTabInterface>({
     defaultValues: defaultValues ?? {
-      view: 'grid',
-      label: '',
-      description: '',
+      view: "grid",
+      label: "",
+      description: "",
       query: {
-        type: 'SELECT',
-        object: tabId,
+        type: "SELECT",
+        object: selectedNav,
         filter: {
-          type: 'AND',
+          type: "AND",
           expression: [],
         },
         limit: 20,
@@ -63,26 +65,26 @@ function AddNewTab({
   });
 
   // handling hook form array fields
-  const { fields, replace } = useFieldArray({ control, name: 'query.fields' });
+  const { fields, replace } = useFieldArray({ control, name: "query.fields" });
   const {
     fields: expressionFields,
     append: expressionAppend,
     remove: expressionRemove,
   } = useFieldArray({
     control,
-    name: 'query.filter.expression',
+    name: "query.filter.expression",
   });
 
   // local states
-  const [selectedFields, setSelectedFields] = useState<{ label: string; value: string }[] | null>(
-    null
-  );
+  const [selectedFields, setSelectedFields] = useState<
+    { label: string; value: string }[] | null
+  >(null);
 
   //   onSubmit handler
   const onSubmit = async (formData: AddNewTabInterface) => {
     if (formData?.query?.filter?.expression?.length) {
       formData?.query?.filter?.expression?.map((item) => {
-        if (fieldTypes?.[item.field] !== 'boolean') {
+        if (fieldTypes?.[item.field] !== "boolean") {
           item.value = `'${item?.value}'`;
         }
       });
@@ -90,9 +92,13 @@ function AddNewTab({
 
     try {
       if (defaultValues) {
-        await salesForce({ method: 'PATCH', url: `metaData/${viewId}`, data: formData });
-        dispatch(setReFetchTabs());
-      } else await salesForce({ method: 'POST', url: 'views', data: formData });
+        await salesforce({
+          method: "PATCH",
+          url: `metaData/${selectedGridTab}`,
+          data: formData,
+        });
+        // dispatch(setReFetchTabs());
+      } else await salesforce({ method: "POST", url: "views", data: formData });
       if (refetch) refetch();
       onHide();
     } catch (error) {
@@ -103,22 +109,24 @@ function AddNewTab({
   // handling onSelectChange
   const onSelectChange = (values: any) => {
     setSelectedFields(values);
-    const newArray = values?.map((item: { label: string; value: string }, i: number) => {
-      return {
-        name: item?.value,
-        columnOrder: i + 1,
-        isVisible: true,
-        width: 300,
-      };
-    });
+    const newArray = values?.map(
+      (item: { label: string; value: string }, i: number) => {
+        return {
+          name: item?.value,
+          columnOrder: i + 1,
+          isVisible: true,
+          width: 300,
+        };
+      }
+    );
     replace(newArray);
   };
 
   // handling pick list options
   const pickListOptions = (name: string) => {
-    const list = allFields?.find((item) => item?.name === name);
+    const list = metadata?.find((item: any) => item?.name === name);
     return (
-      list?.picklistValues?.map((item, i: number) => {
+      list?.picklistValues?.map((item: any, i: number) => {
         return {
           id: i.toString(),
           label: item?.label,
@@ -140,77 +148,79 @@ function AddNewTab({
     index: number,
     options: { id: string; label: string; value: string }[]
   ) => {
-    console.log(type, 'type, fields');
+    console.log(type, "type, fields");
     switch (type) {
-      case 'picklist':
+      case "picklist":
         return (
           <ReactSelectField
             key={field.id}
             control={control}
-            label={'Operator'}
+            label={"Operator"}
             name={`query.filter.expression.${index}.value`}
             mainClass="col-md-4"
             options={options}
             rules={{
-              required: { value: false, message: '' },
+              required: { value: false, message: "" },
             }}
+            placeholder={undefined}
           />
         );
-      case 'boolean':
+      case "boolean":
         return (
           <ReactSelectField
             key={field.id}
             control={control}
-            label={'Operator'}
+            label={"Operator"}
             name={`query.filter.expression.${index}.value`}
             mainClass="col-md-4"
             options={[
-              { id: 1, label: 'True', value: 'true' },
-              { id: 1, label: 'False', value: 'false' },
+              { id: 1, label: "True", value: "true" },
+              { id: 1, label: "False", value: "false" },
             ]}
             rules={{
-              required: { value: false, message: '' },
+              required: { value: false, message: "" },
             }}
+            placeholder={undefined}
           />
         );
-      case 'currency':
-      case 'int':
-      case 'double':
+      case "currency":
+      case "int":
+      case "double":
         return (
           <InputField
             key={field.id}
             control={control}
             type="number"
-            label={'Value'}
+            label={"Value"}
             name={`query.filter.expression.${index}.value`}
             mainClass="col-md-4"
             inputProps={{
               placeholder: `Enter value`,
             }}
             rules={{
-              required: { value: true, message: '' },
+              required: { value: true, message: "" },
               maxLength: {
                 value: 30,
-                message: 'Maximum 30 length is allowed',
+                message: "Maximum 30 length is allowed",
               },
             }}
           />
         );
-      case 'date':
-      case 'datetime':
+      case "date":
+      case "datetime":
         return (
           <InputField
             key={field.id}
             control={control}
             type={type}
-            label={'Value'}
+            label={"Value"}
             name={`query.filter.expression.${index}.value`}
             mainClass="col-md-4"
             inputProps={{
               placeholder: `Enter value`,
             }}
             rules={{
-              required: { value: true, message: '' },
+              required: { value: true, message: "" },
             }}
           />
         );
@@ -219,17 +229,17 @@ function AddNewTab({
           <InputField
             key={field.id}
             control={control}
-            label={'Value'}
+            label={"Value"}
             name={`query.filter.expression.${index}.value`}
             mainClass="col-md-4"
             inputProps={{
               placeholder: `Enter value`,
             }}
             rules={{
-              required: { value: true, message: '' },
+              required: { value: true, message: "" },
               maxLength: {
                 value: 56,
-                message: 'Maximum 56 characters are allowed',
+                message: "Maximum 56 characters are allowed",
               },
             }}
           />
@@ -254,7 +264,7 @@ function AddNewTab({
     <Modal show={show} onHide={onHide} dialogClassName="custom-modal dialog-md">
       <Modal.Header closeButton>
         <Modal.Title>
-          {defaultValues ? 'Edit View of' : 'Add New View to'} {tabId}
+          {defaultValues ? "Edit View of" : "Add New View to"} {selectedNav}
         </Modal.Title>
       </Modal.Header>
       <form onSubmit={handleSubmit(onSubmit)} className="msform">
@@ -264,54 +274,54 @@ function AddNewTab({
               <div className="row g-3">
                 <InputField
                   control={control}
-                  label={'View Name'}
-                  name={'label'}
+                  label={"View Name"}
+                  name={"label"}
                   mainClass="col-sm-12"
                   inputProps={{
                     placeholder: `Enter View Name`,
                   }}
                   rules={{
-                    required: { value: true, message: '' },
+                    required: { value: true, message: "" },
                     maxLength: {
                       value: 56,
-                      message: 'Maximum 56 characters are allowed',
+                      message: "Maximum 56 characters are allowed",
                     },
                   }}
                 />
                 <TextareaField
                   control={control}
-                  label={'Description'}
-                  name={'description'}
+                  label={"Description"}
+                  name={"description"}
                   mainClass="col-sm-12"
                   inputProps={{
-                    placeholder: 'Enter Description',
+                    placeholder: "Enter Description",
                   }}
                   rules={{
-                    required: { value: true, message: '' },
+                    required: { value: true, message: "" },
                     maxLength: {
                       value: 256,
-                      message: 'Maximum 256 characters are allowed',
+                      message: "Maximum 256 characters are allowed",
                     },
                   }}
                 />
 
                 <MultipleRadioButtonField
                   control={control}
-                  label={'Filter'}
-                  name={'query.filter.type'}
+                  label={"Filter"}
+                  name={"query.filter.type"}
                   mainClass="radiobutton-switch"
                   options={[
                     {
-                      label: 'AND',
-                      value: 'AND',
+                      label: "AND",
+                      value: "AND",
                     },
                     {
-                      label: 'OR',
-                      value: 'OR',
+                      label: "OR",
+                      value: "OR",
                     },
                   ]}
                   rules={{
-                    required: { value: true, message: '' },
+                    required: { value: true, message: "" },
                   }}
                 />
                 {/* <div className="col-auto">
@@ -328,7 +338,7 @@ function AddNewTab({
                 <Select
                   value={selectedFields}
                   onChange={onSelectChange}
-                  options={allFields?.map((item) => {
+                  options={metadata?.map((item: any) => {
                     return {
                       label: item?.label,
                       value: item?.name,
@@ -359,13 +369,15 @@ function AddNewTab({
                         <ReactSelectField
                           key={field.id}
                           control={control}
-                          label={'Field'}
+                          label={"Field"}
                           name={`query.filter.expression.${index}.field`}
                           mainClass="col-md-4"
                           options={
-                            allFields
-                              ?.filter((fil) => fields.some((sm) => sm?.name === fil.name))
-                              ?.map((item) => {
+                            metadata
+                              ?.filter((fil: any) =>
+                                fields.some((sm) => sm?.name === fil.name)
+                              )
+                              ?.map((item: any) => {
                                 return {
                                   id: item?.name,
                                   label: item?.label,
@@ -374,25 +386,31 @@ function AddNewTab({
                               }) || []
                           }
                           rules={{
-                            required: { value: false, message: '' },
+                            required: { value: false, message: "" },
                           }}
+                          placeholder={undefined}
                         />
                         <ReactSelectField
                           key={field.id}
                           control={control}
-                          label={'Operator'}
+                          label={"Operator"}
                           name={`query.filter.expression.${index}.operator`}
                           mainClass="col-md-4"
                           options={operators}
                           rules={{
-                            required: { value: false, message: '' },
+                            required: { value: false, message: "" },
                           }}
+                          placeholder={undefined}
                         />
                         {renderField(
-                          fieldTypes?.[watch(`query.filter.expression.${index}.field`)],
+                          fieldTypes?.[
+                            watch(`query.filter.expression.${index}.field`)
+                          ],
                           field,
                           index,
-                          pickListOptions(watch(`query.filter.expression.${index}.field`))
+                          pickListOptions(
+                            watch(`query.filter.expression.${index}.field`)
+                          )
                         )}
                         <a
                           href="#"
@@ -414,9 +432,9 @@ function AddNewTab({
                     type="button"
                     onClick={() =>
                       expressionAppend({
-                        field: '',
-                        operator: '',
-                        value: '',
+                        field: "",
+                        operator: "",
+                        value: "",
                       })
                     }
                     disabled={fields?.length <= 0}
@@ -426,19 +444,19 @@ function AddNewTab({
                 </div>
                 <InputField
                   control={control}
-                  label={'Limit'}
+                  label={"Limit"}
                   type="number"
-                  name={'query.limit'}
+                  name={"query.limit"}
                   normalize={(value: string) => parseInt(value)}
                   mainClass="col-sm-12"
                   inputProps={{
                     placeholder: `Enter Limit`,
                   }}
                   rules={{
-                    required: { value: true, message: '' },
+                    required: { value: true, message: "" },
                     maxLength: {
                       value: 56,
-                      message: 'Maximum 56 characters are allowed',
+                      message: "Maximum 56 characters are allowed",
                     },
                   }}
                 />
@@ -469,7 +487,7 @@ function AddNewTab({
                 size="sm"
                 role="status"
                 aria-hidden="true"
-                style={{ marginLeft: '10px' }}
+                style={{ marginLeft: "10px" }}
               />
             )}
           </Button>
