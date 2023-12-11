@@ -7,14 +7,14 @@ import { toast } from "react-hot-toast";
 import { useAppSelector } from "@/hooks/redux";
 import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
 import { useDispatch } from "react-redux";
-import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
+import { setFullScreen } from "@/redux/slices/common";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
   const { viewGridData, gridViewId, selectedGridTab } = useAppSelector(
     (state: any) => state.salesforce
   );
-  console.log(gridViewId, viewGridData, selectedGridTab, "whjbjh");
+  const { isFullScreen } = useAppSelector((state: any) => state.common);
 
   // handling Download CSV
   const downloadCsv = async () => {
@@ -59,14 +59,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
 
   const handleClick = () => {
     dispatch(setRecordData(null));
-    // dispatch(setMetaData(null));
-    // dispatch(
-    //   fetchMetaData({
-    //     method: "GET",
-    //     url: `sf/object/metadata`,
-    //     params: { id: gridViewId, filter: true },
-    //   })
-    // );
+
     dispatch(
       fetchRecords({
         method: "POST",
@@ -83,19 +76,44 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   return (
     <Flex justifyContent="space-between" px={5}>
       <Flex>
-        {buttonData.map((item, index) => (
-          <Button key={index} sx={ViewBarBtnStyl}>
-            <Flex alignItems="center" gap="5px">
-              <SettingsIcon />
-              <Text>{item.text}</Text>
-            </Flex>
-          </Button>
-        ))}
-      </Flex>
-      <Flex>
         <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
-            <RowIcon />
+            <Image src="/assets/images/icon-filter.png" alt="download"></Image>
+            <Text>Filters</Text>
+          </Flex>
+        </Button>
+        <Button sx={ViewBarBtnStyl}>
+          <Flex alignItems="center" gap="5px">
+            <SettingsIcon />
+            <Text>Manage Columns</Text>
+          </Flex>
+        </Button>
+        <Button sx={ViewBarBtnStyl}>
+          <Flex alignItems="center" gap="5px">
+            <Image
+              src="/assets/images/icon-metrices.png"
+              alt="download"
+            ></Image>
+            <Text>Show metrices</Text>
+          </Flex>
+        </Button>
+        <Button sx={ViewBarBtnStyl}>
+          <Flex alignItems="center" gap="5px">
+            <Image src="/assets/images/icon-more.png" alt="download"></Image>
+            <Text>More</Text>
+          </Flex>
+        </Button>
+      </Flex>
+      <Flex>
+        <Button
+          sx={ViewBarBtnStyl}
+          onClick={() => dispatch(setFullScreen(!isFullScreen))}
+        >
+          <Flex alignItems="center" gap="5px">
+            <Image
+              src="/assets/images/icon-fullscreen.png"
+              alt="download"
+            ></Image>
           </Flex>
         </Button>
         <Button

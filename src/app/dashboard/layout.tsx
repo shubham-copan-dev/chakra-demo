@@ -44,7 +44,7 @@ export default function RootLayout({
   );
   const { metadata } = useAppSelector((state: any) => state.metadata);
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
-  console.log(isHome, "home");
+  const { isFullScreen } = useAppSelector((state: any) => state.common);
 
   //handling click event on Grid tab click
   const handleTabClick = (item: any) => {
@@ -102,9 +102,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Flex>
-          <Sidenav />
-          <Box w="100%" paddingLeft="4.1rem">
-            {!isHome && <Navbar />}
+          {!isFullScreen && <Sidenav />}
+          <Box w="100%" paddingLeft={isFullScreen ? "" : "4.1rem"}>
+            {!isHome && !isFullScreen && <Navbar />}
             {/* grid tab buttons */}
             <Flex
               alignItems="flex-start"
@@ -147,7 +147,7 @@ export default function RootLayout({
               <DynamicButtons buttonData={buttonData} />
             )}
             {selectedNav !== "Home" && metadata?.length && (
-              <Flex marginBottom="3rem" gap="5px" px={5}>
+              <Flex marginBottom="1rem" gap="5px" px={5}>
                 <RowIcon fontSize={12} />
                 <Text
                   color="var(--grey-600, #394256)"

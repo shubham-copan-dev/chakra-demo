@@ -361,6 +361,8 @@ export const ViewBarBtnStyl = {
   backgroundColor: "bgClr.NeutralColorWhite",
   _hover: {
     backgroundColor: "bgClr.NeutralColorGray",
-    // Add additional hover styles here as needed
+    '&:active': {
+      backgroundColor: 'transparent', // Set the background color to transparent on click
+    },
   },
 };
