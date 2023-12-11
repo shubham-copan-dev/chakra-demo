@@ -32,8 +32,15 @@ const Sidenav = () => {
   const { dashboards, selectedNav } = useAppSelector(
     (state: any) => state.navdata
   );
-  const { isSucess, defaultGridViewId, viewGridData, gridViewId, defaultGrid } =
-    useAppSelector((state: any) => state.salesforce);
+  const {
+    isSucess,
+    defaultGridViewId,
+    viewGridData,
+    gridViewId,
+    defaultGrid,
+    countFetch,
+  } = useAppSelector((state: any) => state.salesforce);
+  console.log(countFetch, "count");
 
   const renderMenuItem = (
     IconComponent: React.ComponentType<any>,

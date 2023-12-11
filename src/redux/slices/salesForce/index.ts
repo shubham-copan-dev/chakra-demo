@@ -10,6 +10,7 @@ const initialState = {
   selectedGridTab: null,
   defaultGrid: [],
   isSucess: false,
+  countFetch: 0,
   loading: false,
   error: null,
 };
@@ -58,6 +59,7 @@ const salesforceSlice = createSlice({
         state.defaultGrid = action.payload.data[0];
         state.defaultGridViewId = action.payload.data[0]._id;
         state.selectedGridTab = action.payload.data[0]._id;
+        state.countFetch = state.countFetch + 1;
         state.error = null;
       })
       .addCase(fetchSalesforceData.rejected, (init, action) => {

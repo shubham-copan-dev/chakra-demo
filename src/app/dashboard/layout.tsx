@@ -102,9 +102,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Flex>
-          {!isFullScreen && <Sidenav />}
-          <Box w="100%" paddingLeft={isFullScreen ? "" : "4.1rem"}>
-            {!isHome && !isFullScreen && <Navbar />}
+          <Sidenav />
+          <Box w="100%" paddingLeft="4.1rem">
+            <Navbar />
             {/* grid tab buttons */}
             <Flex
               alignItems="flex-start"
