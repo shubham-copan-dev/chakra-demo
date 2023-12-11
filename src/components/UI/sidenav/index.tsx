@@ -32,15 +32,8 @@ const Sidenav = () => {
   const { dashboards, selectedNav } = useAppSelector(
     (state: any) => state.navdata
   );
-  const {
-    isSucess,
-    defaultGridViewId,
-    viewGridData,
-    gridViewId,
-    defaultGrid,
-    countFetch,
-  } = useAppSelector((state: any) => state.salesforce);
-  console.log(countFetch, "count");
+  const { isSucess, defaultGridViewId, viewGridData, gridViewId, defaultGrid } =
+    useAppSelector((state: any) => state.salesforce);
 
   const renderMenuItem = (
     IconComponent: React.ComponentType<any>,
@@ -197,7 +190,7 @@ const Sidenav = () => {
           height="3rem"
           width="3rem"
         >
-          <Image src="assets/images/profile-icon.png" alt="profile-icon" />
+          <Image src="/assets/images/profile-icon.png" alt="profile-icon" />
         </Flex>
       </Text>
     </Flex>

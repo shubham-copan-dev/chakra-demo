@@ -104,7 +104,7 @@ export default function RootLayout({
         <Flex>
           <Sidenav />
           <Box w="100%" paddingLeft="4.1rem">
-            <Navbar />
+            {!isHome && <Navbar />}
             {/* grid tab buttons */}
             <Flex
               alignItems="flex-start"

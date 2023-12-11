@@ -1,9 +1,8 @@
-import { Flex, Button, Text, Box, Image } from "@chakra-ui/react";
+import { Flex, Button, Text, Box, Image, useToast } from "@chakra-ui/react";
 import { ArrowUpDownIcon, RepeatIcon, SettingsIcon } from "@chakra-ui/icons"; // Assuming SettingsIcon is from Chakra UI icons
 import { ChevronDownIcon, RowIcon } from "@/chakraConfig/icons";
 import { ViewBarBtnStyl } from "@/utilities/constants";
 import { salesforce } from "@/axios/actions/salesforce";
-import { toast } from "react-hot-toast";
 import { useAppSelector } from "@/hooks/redux";
 import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
 import { useDispatch } from "react-redux";
@@ -11,6 +10,7 @@ import { setFullScreen } from "@/redux/slices/common";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
+  const toast = useToast();
   const { viewGridData, gridViewId, selectedGridTab } = useAppSelector(
     (state: any) => state.salesforce
   );
@@ -31,30 +31,41 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
       });
       a.dispatchEvent(clickEvt);
       a.remove();
+
+      toast({
+        title: "Download successful",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     };
 
     const tab = viewGridData?.find((fi: any) => fi?._id === gridViewId);
 
-    toast.promise(
-      salesforce({
+    try {
+      const resp = await salesforce({
         method: "POST",
         url: `sf/object/metadata/CSV`,
         params: {
           id: gridViewId,
         },
-      }).then((resp) => {
-        downloadFile({
-          data: resp?.data,
-          fileName: `${tab?.label}.csv`,
-          fileType: "text/csv",
-        });
-      }),
-      {
-        loading: "Downloading",
-        success: "Download successful",
-        error: "Error while downloading",
-      }
-    );
+      });
+
+      downloadFile({
+        data: resp?.data,
+        fileName: `${tab?.label}.csv`,
+        fileType: "text/csv",
+      });
+    } catch (error) {
+      console.log(error);
+
+      toast({
+        title: "Error while downloading",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleClick = () => {
