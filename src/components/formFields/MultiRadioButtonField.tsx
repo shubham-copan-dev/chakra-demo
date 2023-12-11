@@ -1,6 +1,7 @@
-import { errorType } from "@/utilities/constants";
 import { memo } from "react";
 import { RegisterOptions, useController } from "react-hook-form";
+
+import { errorType } from "@/utilities/constants";
 
 /**
  * @property types

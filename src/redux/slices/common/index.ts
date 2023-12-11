@@ -2,21 +2,21 @@ import { createSlice } from '@reduxjs/toolkit';
 
 // initial state
 const initialState = {
-  selectedNav:'Home',
+  showAddPanel:false,
 };
 
 const CommonSlice = createSlice({
   name: 'common',
   initialState,
   reducers: {
-    setSelectedNav(init, action) {
+    setShowAddPanel(init, action) {
       const state = init;
-      state.selectedNav = action.payload;
+      state.showAddPanel = action.payload;
     },
   },
 });
 
 // reducers exports
-export const { setSelectedNav } = CommonSlice.actions;
+export const { setShowAddPanel } = CommonSlice.actions;
 
 export default CommonSlice.reducer;

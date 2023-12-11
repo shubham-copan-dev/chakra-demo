@@ -1,7 +1,8 @@
-import { errorType } from "@/utilities/constants";
 import { memo } from "react";
 import { Control, RegisterOptions, useController } from "react-hook-form";
 import Select from "react-select";
+
+import { errorType } from "@/utilities/constants";
 
 /**
  * @property types
@@ -14,7 +15,7 @@ interface Options {
 
 interface Field {
   name: string;
-  label?: string;
+  label: string;
   control: Control | any;
   options: Options[];
   rules?: Omit<
@@ -29,8 +30,6 @@ interface Field {
   onSelect?: () => void;
   isMulti?: boolean;
   selectProps?: unknown;
-  placeholder: any;
-  handleChnage?: any;
 }
 
 /**
@@ -69,8 +68,6 @@ function ReactSelectField({
   onSelect,
   selectProps,
   isMulti,
-  placeholder,
-  handleChnage,
 }: Field & typeof defaultProps) {
   // use hooks
   const {
@@ -85,8 +82,6 @@ function ReactSelectField({
 
   // handling select change
   const onSelectChange = (val: any) => {
-    handleChnage(val);
-
     onSelect(val); // send value to provided func
 
     if (isMulti)
@@ -108,7 +103,11 @@ function ReactSelectField({
       <div className="select-dropdown">
         <label htmlFor={name} className={labelClass}>
           {label}
-          {rules?.required ? <span className="forms-req-symbol">*</span> : ""}
+          {rules?.required ? (
+            <span className="forms-req-symbol">*</span>
+          ) : (
+            " (Optional)"
+          )}
         </label>
         <Select
           value={handleValue(value)}
@@ -118,8 +117,6 @@ function ReactSelectField({
           className={`${selectClass} ${error && "required-field-error"}`}
           classNamePrefix="custom-react-select"
           {...selectProps}
-          placeholder={placeholder}
-          id="demo"
         />
         {errorType?.map(
           (type) =>

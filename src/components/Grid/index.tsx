@@ -1,21 +1,26 @@
-import { SetStateAction, useEffect, useState } from 'react';
-import { Spinner, Tab, Tabs } from 'react-bootstrap';
-import { useQuery } from 'react-query';
-import { Outlet, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { SetStateAction, useEffect, useState } from "react";
+import { Spinner, Tab, Tabs } from "react-bootstrap";
+import { useQuery } from "react-query";
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 
-import { salesForce } from '@/axios/actions/salesForce';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { salesForce } from "@/axios/actions/salesForce";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   setColumnMeta,
   setGridTabs,
   setLimit,
   setRecords,
   setSelectedViewBy,
-} from '@/redux/slices/salesForce';
-import { TabInterface } from '@/redux/slices/salesForce/interface';
+} from "@/redux/slices/salesForce";
+import { TabInterface } from "@/redux/slices/salesForce/interface";
 
-import AddNewTab from './AddNewTab';
-import './grid.css';
+import AddNewTab from "./AddNewTab";
+import "./grid.css";
 
 export default function Grid() {
   // use hooks
@@ -30,12 +35,12 @@ export default function Grid() {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ['nav', tabId],
+    queryKey: ["nav", tabId],
     queryFn: () => {
       return salesForce({
-        method: 'GET',
+        method: "GET",
         url: `object/${tabId}/views`,
-        params: { view: 'grid' },
+        params: { view: "grid" },
       }).then((resp) => {
         return resp?.data?.data;
       });
@@ -48,13 +53,17 @@ export default function Grid() {
 
   // local states
   const [activeTab, setActiveTab] = useState<number | string>(0);
-  const [addTabModal, setAddTabModal] = useState<boolean>(false);
 
   // handling tabs
   const renderTabData = () => {
     return tabData?.map((item: TabInterface, i: number) => {
       return (
-        <Tab key={item?._id} eventKey={i} title={item?.label} className="custom-tab-content">
+        <Tab
+          key={item?._id}
+          eventKey={i}
+          title={item?.label}
+          className="custom-tab-content"
+        >
           <Outlet />
         </Tab>
       );
@@ -63,14 +72,16 @@ export default function Grid() {
 
   // handling tab changes
   const handleChange = (tab: string | SetStateAction<number> | null) => {
-    if (typeof tab === 'string' || typeof tab === 'number') {
+    if (typeof tab === "string" || typeof tab === "number") {
       setActiveTab(tab);
       dispatch(setRecords(null));
       dispatch(setColumnMeta(null));
-      dispatch(setSelectedViewBy('all'));
+      dispatch(setSelectedViewBy("all"));
       dispatch(setLimit(tabData?.[Number(tab)]?.query?.limit ?? 20));
       navigate(
-        `${tabData?.[Number(tab)]?._id}?page=1&limit=${tabData?.[Number(tab)]?.query?.limit ?? 20}`
+        `${tabData?.[Number(tab)]?._id}?page=1&limit=${
+          tabData?.[Number(tab)]?.query?.limit ?? 20
+        }`
       );
     }
   };
@@ -79,12 +90,15 @@ export default function Grid() {
   useEffect(() => {
     if (!viewId && tabData) {
       if (tabData?.[0]?.sfObject === tabId) {
-        navigate(`${tabData?.[0]?._id}?page=1&limit=${tabData?.[0]?.query?.limit}`);
+        navigate(
+          `${tabData?.[0]?._id}?page=1&limit=${tabData?.[0]?.query?.limit}`
+        );
       }
     } else if (tabData) {
-      const ind = tabData?.findIndex((item: TabInterface) => item?._id === viewId) ?? 0;
+      const ind =
+        tabData?.findIndex((item: TabInterface) => item?._id === viewId) ?? 0;
       setSearchParams((searchParams) => {
-        searchParams.set('limit', tabData?.[ind]?.query?.limit?.toString());
+        searchParams.set("limit", tabData?.[ind]?.query?.limit?.toString());
         return searchParams;
       });
       setActiveTab(ind);
@@ -102,11 +116,18 @@ export default function Grid() {
   // handling loading
   if (isLoading)
     return (
-      <Spinner style={{ marginLeft: '50%', marginTop: '20%' }} animation="border" variant="dark" />
+      <Spinner
+        style={{ marginLeft: "50%", marginTop: "20%" }}
+        animation="border"
+        variant="dark"
+      />
     );
   return (
     <>
-      <div className="min-vh-100 dashboard-inner-wrapper" style={{ paddingTop: '0px' }}>
+      <div
+        className="min-vh-100 dashboard-inner-wrapper"
+        style={{ paddingTop: "0px" }}
+      >
         <Tabs
           activeKey={activeTab}
           id="uncontrolled-tab-example"
@@ -118,7 +139,7 @@ export default function Grid() {
             <Tab
               title={
                 <Spinner
-                  style={{ height: '15px', width: '15px' }}
+                  style={{ height: "15px", width: "15px" }}
                   animation="border"
                   variant="dark"
                 />
@@ -133,13 +154,6 @@ export default function Grid() {
           />
         </Tabs>
       </div>
-      {addTabModal && (
-        <AddNewTab
-          show={addTabModal}
-          onHide={() => setAddTabModal(false)}
-          refetch={() => refetch()}
-        />
-      )}
     </>
   );
 }

@@ -3,11 +3,6 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { AgGridReact } from "ag-grid-react";
 
-interface GridViewProps {
-  columnDefs: any[]; // Define the type for columnDefs
-  records: any; // Define the type for records
-}
-
 const GridDemo = ({ records, columnDefs }: any) => {
   return (
     <div

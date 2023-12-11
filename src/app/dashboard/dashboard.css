@@ -1,6 +1,35 @@
-.welcome-wrapper{
+.modal {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff !important;
+    width: 35vw;
+    padding: 1rem;
+    max-height: 65vh;
+    overflow: auto;
+    z-index: 999;
+  }
+
+  .modal .custom-radio{
+    display: flex;
+    gap: 1rem;
+  }
+  .modal .row g-3{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding-right: 16%;
-}
+    gap: 10px;
+  }
+  .modal .btn-bordered,.btn-salesboost{
+    font-size: 13px;
+  font-weight: 500;
+  padding: 8px;
+  background-color: rgb(52, 120, 246);
+  color: #fff;
+  border-radius: 8px;
+  margin-top: 25px;
+  }
+  .modal-footer{
+    display: flex;
+    gap: 1rem;
+  }

@@ -1,6 +1,7 @@
-import { errorType } from "@/utilities/constants";
 import React, { memo } from "react";
 import { RegisterOptions, useController } from "react-hook-form";
+
+import { errorType } from "@/utilities/constants";
 
 /**
  * @property types
@@ -23,10 +24,6 @@ interface Field {
   errorClass?: string;
   onChange?: any;
   inputProps?: object;
-  placeHolder?: string;
-  bg?: string;
-  imageUrl?: any;
-  placeholderStyle?: any;
 }
 
 /**
@@ -45,10 +42,6 @@ const defaultProps = {
   normalize: (value: any) => value,
   onChange: (value: any) => value,
   inputProps: {},
-  placeHolder: "",
-  bg: "",
-  imageUrl: "",
-  placeholderStyle: "",
 };
 
 /**
@@ -71,10 +64,9 @@ function InputField({
   mainStyle,
   labelClass,
   inputClass,
-  placeHolder,
   errorClass,
   onChange,
-  inputProps, // imageUrl,
+  inputProps,
 }: Field & typeof defaultProps) {
   // use hooks
   const {
@@ -125,22 +117,6 @@ function InputField({
         onChange={onInputChange}
         {...inputProps}
         onBlur={onInputBlur}
-        placeholder={placeHolder}
-        style={{
-          width: "325px",
-          padding: "8px 10px",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          gap: "10px",
-          borderRadius: "8px",
-          background: "var(--grey-200, #EBF1FA)",
-          outline: "none",
-          fontFamily: "Poppins",
-          fontSize: "13px",
-          fontStyle: "normal",
-          fontWeight: 400,
-          lineHeight: "120%",
-        }}
       />
       {errorType?.map(
         (err) =>

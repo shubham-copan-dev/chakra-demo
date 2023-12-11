@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { errorType } from '@/utilities/constants';
-import { memo } from 'react';
-import { Control, RegisterOptions, useController } from 'react-hook-form';
+import { memo } from "react";
+import { Control, RegisterOptions, useController } from "react-hook-form";
+
+import { errorType } from "@/utilities/constants";
 
 /**
  * @property types
@@ -10,7 +10,10 @@ interface Field {
   name: string;
   label?: string;
   control: Control | any;
-  rules?: Omit<RegisterOptions, 'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'>;
+  rules?: Omit<
+    RegisterOptions,
+    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+  >;
   defaultValue?: string;
   normalize?: any;
   mainClass?: string;
@@ -26,13 +29,13 @@ interface Field {
  * @property defaults
  */
 const defaultProps = {
-  defaultValue: '',
-  label: '',
+  defaultValue: "",
+  label: "",
   rules: {},
-  mainClass: 'col-sm-4',
-  labelClass: 'form-label',
-  inputClass: 'form-control',
-  errorClass: 'required-error',
+  mainClass: "col-sm-4",
+  labelClass: "form-label",
+  inputClass: "form-control",
+  errorClass: "required-error",
   mainStyle: {},
   normalize: (value: any) => value,
   onChange: (value: any) => value,
@@ -86,16 +89,20 @@ function TextareaField({
 
   return (
     <div className={mainClass} style={mainStyle}>
-      {label !== '' && (
+      {label !== "" && (
         <label htmlFor={name} className={labelClass}>
           {label}
-          {rules?.required ? <span className="forms-req-symbol">*</span> : ' (Optional)'}
+          {rules?.required ? (
+            <span className="forms-req-symbol">*</span>
+          ) : (
+            " (Optional)"
+          )}
         </label>
       )}
       <textarea
         {...field}
         id={name}
-        className={`${inputClass} ${error && 'required-field-error'}`}
+        className={`${inputClass} ${error && "required-field-error"}`}
         onChange={onInputChange}
         {...inputProps}
         onBlur={onInputBlur}
@@ -103,7 +110,7 @@ function TextareaField({
       {errorType?.map(
         (err) =>
           error?.type === err &&
-          error?.message !== '' && (
+          error?.message !== "" && (
             <div key={err} className={errorClass}>
               {error?.message}
             </div>

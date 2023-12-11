@@ -22,9 +22,11 @@ import { fetchNavData } from "@/redux/slices/dashboard";
 import { useRouter } from "next/navigation";
 import useIsHome from "@/hooks/isHome";
 import "../page.module.css";
+import "./dashboard.css";
 import AddNewTab from "@/components/Grid/AddNewTab";
 import { salesforce } from "@/axios/actions/salesforce";
 import { useQuery } from "react-query";
+import { setShowAddPanel } from "@/redux/slices/common";
 
 export default function RootLayout({
   children,
@@ -35,7 +37,7 @@ export default function RootLayout({
   const urlParams = useGetUrlParams();
   const router = useRouter();
   const isHome = useIsHome();
-  const [addTabModal, setAddTabModal] = useState<boolean>(false);
+  const { showAddPanel } = useAppSelector((state) => state.common);
 
   const { viewGridData, selectedGridTab } = useAppSelector(
     (state: any) => state.salesforce
@@ -101,72 +103,73 @@ export default function RootLayout({
       <body>
         <Flex>
           <Sidenav />
-          {!addTabModal && (
-            <Box w="100%" paddingLeft="4.1rem">
-              {!isHome && <Navbar />}
-              {/* grid tab buttons */}
-              <Flex
-                alignItems="flex-start"
-                gap="10px"
-                flex="1 0 0"
-                flexWrap="wrap"
-                px={5}
-                bg="#F7F8FC"
-              >
-                {!isHome &&
-                  metadata?.length &&
-                  viewGridData?.map((item: any) => {
-                    return (
-                      <Button
-                        sx={btnStyle}
-                        key={item.label}
-                        onClick={() => handleTabClick(item)}
-                        id={item._id}
-                        backgroundColor={
-                          selectedGridTab === item._id
-                            ? "bgClr.NeutralColorWhite"
-                            : ""
-                        }
-                      >
-                        {item.label}
-                      </Button>
-                    );
-                  })}
-                {metadata?.length && selectedNav !== "Home" && (
-                  <Button sx={btnStyle} onClick={() => setAddTabModal(true)}>
-                    +
-                  </Button>
-                )}
+          <Box w="100%" paddingLeft="4.1rem">
+            {!isHome && <Navbar />}
+            {/* grid tab buttons */}
+            <Flex
+              alignItems="flex-start"
+              gap="10px"
+              flex="1 0 0"
+              flexWrap="wrap"
+              px={5}
+              bg="#F7F8FC"
+            >
+              {!isHome &&
+                metadata?.length &&
+                viewGridData?.map((item: any) => {
+                  return (
+                    <Button
+                      sx={btnStyle}
+                      key={item.label}
+                      onClick={() => handleTabClick(item)}
+                      id={item._id}
+                      backgroundColor={
+                        selectedGridTab === item._id
+                          ? "bgClr.NeutralColorWhite"
+                          : ""
+                      }
+                    >
+                      {item.label}
+                    </Button>
+                  );
+                })}
+              {metadata?.length && selectedNav !== "Home" && (
+                <Button
+                  sx={btnStyle}
+                  onClick={() => dispatch(setShowAddPanel(true))}
+                >
+                  +
+                </Button>
+              )}
+            </Flex>
+            {/* grid button navigation */}
+            {selectedNav !== "Home" && metadata?.length && (
+              <DynamicButtons buttonData={buttonData} />
+            )}
+            {selectedNav !== "Home" && metadata?.length && (
+              <Flex marginBottom="3rem" gap="5px" px={5}>
+                <RowIcon fontSize={12} />
+                <Text
+                  color="var(--grey-600, #394256)"
+                  textAlign="center"
+                  fontFamily="Poppins"
+                  fontSize="12px"
+                  fontStyle="normal"
+                  fontWeight="500"
+                  lineHeight="120%"
+                >
+                  Drag here to set row groups
+                </Text>
               </Flex>
-              {/* grid button navigation */}
-              {selectedNav !== "Home" && metadata?.length && (
-                <DynamicButtons buttonData={buttonData} />
-              )}
-              {selectedNav !== "Home" && metadata?.length && (
-                <Flex marginBottom="3rem" gap="5px" px={5}>
-                  <RowIcon fontSize={12} />
-                  <Text
-                    color="var(--grey-600, #394256)"
-                    textAlign="center"
-                    fontFamily="Poppins"
-                    fontSize="12px"
-                    fontStyle="normal"
-                    fontWeight="500"
-                    lineHeight="120%"
-                  >
-                    Drag here to set row groups
-                  </Text>
-                </Flex>
-              )}
-              {children}
-            </Box>
-          )}
+            )}
+            {children}
+          </Box>
         </Flex>
-        {addTabModal && !isHome && (
+        {showAddPanel && (
           <AddNewTab
-            show={addTabModal}
-            onHide={() => setAddTabModal(false)}
-            refetch={() => refetch()}
+            show={showAddPanel}
+            onHide={() => dispatch(setShowAddPanel(false))}
+            refetch={() => console.log("hello")}
           />
         )}
       </body>

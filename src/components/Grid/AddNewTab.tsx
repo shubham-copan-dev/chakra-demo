@@ -89,7 +89,6 @@ function AddNewTab({
         }
       });
     }
-
     try {
       if (defaultValues) {
         await salesforce({
@@ -162,7 +161,6 @@ function AddNewTab({
             rules={{
               required: { value: false, message: "" },
             }}
-            placeholder={undefined}
           />
         );
       case "boolean":
@@ -180,7 +178,6 @@ function AddNewTab({
             rules={{
               required: { value: false, message: "" },
             }}
-            placeholder={undefined}
           />
         );
       case "currency":
@@ -388,7 +385,6 @@ function AddNewTab({
                           rules={{
                             required: { value: false, message: "" },
                           }}
-                          placeholder={undefined}
                         />
                         <ReactSelectField
                           key={field.id}
@@ -400,7 +396,6 @@ function AddNewTab({
                           rules={{
                             required: { value: false, message: "" },
                           }}
-                          placeholder={undefined}
                         />
                         {renderField(
                           fieldTypes?.[
