@@ -5,11 +5,17 @@ import { ViewBarBtnStyl } from "@/utilities/constants";
 import { salesforce } from "@/axios/actions/salesforce";
 import { toast } from "react-hot-toast";
 import { useAppSelector } from "@/hooks/redux";
+import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
+import { useDispatch } from "react-redux";
+import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
-  const { viewGridData, gridViewId } = useAppSelector(
+  const dispatch = useDispatch();
+  const { viewGridData, gridViewId, selectedGridTab } = useAppSelector(
     (state: any) => state.salesforce
   );
+  console.log(gridViewId, viewGridData, selectedGridTab, "whjbjh");
+
   // handling Download CSV
   const downloadCsv = async () => {
     const downloadFile = ({ data, fileName, fileType }: any) => {
@@ -51,6 +57,29 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
     );
   };
 
+  const handleClick = () => {
+    dispatch(setRecordData(null));
+    // dispatch(setMetaData(null));
+    // dispatch(
+    //   fetchMetaData({
+    //     method: "GET",
+    //     url: `sf/object/metadata`,
+    //     params: { id: gridViewId, filter: true },
+    //   })
+    // );
+    dispatch(
+      fetchRecords({
+        method: "POST",
+        url: `sf/object/records`,
+        params: {
+          id: selectedGridTab,
+          page: 1,
+          perPage: 20,
+        },
+      })
+    );
+  };
+
   return (
     <Flex justifyContent="space-between" px={5}>
       <Flex>
@@ -84,7 +113,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
           </Flex>
         </Button>
         <Button sx={ViewBarBtnStyl}>
-          <Flex alignItems="center" gap="5px">
+          <Flex alignItems="center" gap="5px" onClick={handleClick}>
             <RepeatIcon />
           </Flex>
         </Button>
