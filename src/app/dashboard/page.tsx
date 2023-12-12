@@ -13,6 +13,7 @@ import {
   Button,
   Input,
   Heading,
+  Spinner,
 } from "@chakra-ui/react";
 import moment from "moment";
 import "./dashboard.css";
@@ -121,6 +122,11 @@ const Dashboard = () => {
             </Flex>
           </Flex>
         </Box>
+      )}
+      {!isHome && (
+        <Flex height="100vh" justifyContent="center" alignItems="center">
+          <Spinner />
+        </Flex>
       )}
     </>
   );
