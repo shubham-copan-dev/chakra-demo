@@ -53,7 +53,7 @@ const Navbar = () => {
             alignItems="center"
           >
             <Image src="/assets/images/icon-notes.png" alt="download"></Image>
-            <Text pt={2}>Notes</Text>
+            <Text>Notes</Text>
           </Flex>
         </Flex>
         <Box position="relative">

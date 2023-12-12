@@ -98,43 +98,74 @@ function AddNewTab({
     }
     try {
       if (defaultValues) {
-        dispatch(setRecordData(null));
+        // dispatch(setRecordData(null));
         await salesforce({
           method: "PATCH",
           url: `metaData/${selectedGridTab}`,
           data: formData,
+        }).then(() => {
+          dispatch(setRecordData(null));
+          dispatch(
+            fetchSalesforceData({
+              method: "GET",
+              url: `object/${selectedNav}/views`,
+              params: { view: "grid" },
+            })
+          );
+          setTimeout(() => {
+            dispatch(
+              fetchMetaData({
+                method: "GET",
+                url: `sf/object/metadata`,
+                params: { id: defaultGridViewId, filter: true },
+              })
+            );
+            dispatch(
+              fetchRecords({
+                method: "POST",
+                url: `sf/object/records`,
+                params: {
+                  id: defaultGridViewId,
+                  page: 1,
+                  perPage: defaultGrid?.query?.limit,
+                },
+              })
+            );
+          }, 100);
         });
-      } else await salesforce({ method: "POST", url: "views", data: formData });
-      dispatch(setRecordData(null));
-      dispatch(setMetaData(null));
-      dispatch(setGridData(null));
-      dispatch(
-        fetchSalesforceData({
-          method: "GET",
-          url: `object/${selectedNav}/views`,
-          params: { view: "grid" },
-        })
-      );
-      setTimeout(() => {
+      } else {
+        await salesforce({ method: "POST", url: "views", data: formData });
+        dispatch(setRecordData(null));
+        dispatch(setMetaData(null));
+        dispatch(setGridData(null));
         dispatch(
-          fetchMetaData({
+          fetchSalesforceData({
             method: "GET",
-            url: `sf/object/metadata`,
-            params: { id: defaultGridViewId, filter: true },
+            url: `object/${selectedNav}/views`,
+            params: { view: "grid" },
           })
         );
-        dispatch(
-          fetchRecords({
-            method: "POST",
-            url: `sf/object/records`,
-            params: {
-              id: defaultGridViewId,
-              page: 1,
-              perPage: defaultGrid?.query?.limit,
-            },
-          })
-        );
-      }, 100);
+        setTimeout(() => {
+          dispatch(
+            fetchMetaData({
+              method: "GET",
+              url: `sf/object/metadata`,
+              params: { id: defaultGridViewId, filter: true },
+            })
+          );
+          dispatch(
+            fetchRecords({
+              method: "POST",
+              url: `sf/object/records`,
+              params: {
+                id: defaultGridViewId,
+                page: 1,
+                perPage: defaultGrid?.query?.limit,
+              },
+            })
+          );
+        }, 100);
+      }
 
       if (refetch) refetch();
       onHide();

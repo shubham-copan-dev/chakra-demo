@@ -242,7 +242,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
                 <Button sx={ViewBarBtnStyl}>More</Button>
               </PopoverTrigger>
               <Portal>
-                <PopoverContent width="auto">
+                <PopoverContent width="auto" border="none">
                   <PopoverBody display="flex" flexDir="column" p={0}>
                     <Button
                       colorScheme="blue"
