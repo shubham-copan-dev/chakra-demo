@@ -23,6 +23,7 @@ import {
 } from "@/utilities/constants";
 import { setSelectedNav } from "@/redux/slices/dashboard";
 import { updateUrl } from "@/utilities/constants";
+import { setNavTabClicked } from "@/redux/slices/common";
 
 const Sidenav = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +35,9 @@ const Sidenav = () => {
   );
   const { isSucess, defaultGridViewId, viewGridData, gridViewId, defaultGrid } =
     useAppSelector((state: any) => state.salesforce);
+  const { isFullScreen, isNavTabClicked } = useAppSelector(
+    (state: any) => state.common
+  );
 
   const renderMenuItem = (
     IconComponent: React.ComponentType<any>,
@@ -49,6 +53,7 @@ const Sidenav = () => {
 
   // onclick functionality on navigation click
   const handleClick = (dashboard: string) => {
+    dispatch(setNavTabClicked(true));
     dispatch(setSelectedNav(dashboard));
     dispatch(setRecordData(null));
     dispatch(setMetaData(null));
@@ -64,7 +69,7 @@ const Sidenav = () => {
   };
 
   useEffect(() => {
-    if (isSucess) {
+    if (isSucess && isNavTabClicked) {
       dispatch(
         fetchMetaData({
           method: "GET",

@@ -24,7 +24,7 @@ import { salesforce } from "@/axios/actions/salesforce";
 import { useAppSelector } from "@/hooks/redux";
 import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
 import { useDispatch } from "react-redux";
-import { setFullScreen } from "@/redux/slices/common";
+import { setFullScreen, setNavTabClicked } from "@/redux/slices/common";
 import AddNewTab from "@/components/Grid/AddNewTab";
 import { useState } from "react";
 import { customVariant } from "@/utilities/constants";
@@ -334,7 +334,10 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
       <Flex>
         <Button
           sx={ViewBarBtnStyl}
-          onClick={() => dispatch(setFullScreen(!isFullScreen))}
+          onClick={() => {
+            dispatch(setNavTabClicked(false));
+            dispatch(setFullScreen(!isFullScreen));
+          }}
         >
           <Flex alignItems="center" gap="5px">
             <Image
