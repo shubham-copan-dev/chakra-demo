@@ -1,4 +1,22 @@
-import { Flex, Button, Text, Box, Image, useToast } from "@chakra-ui/react";
+import {
+  Flex,
+  Button,
+  Text,
+  Box,
+  Image,
+  useToast,
+  Popover,
+  PopoverTrigger,
+  Portal,
+  PopoverContent,
+  PopoverBody,
+  ButtonGroup,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverFooter,
+  PopoverHeader,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { ArrowUpDownIcon, RepeatIcon, SettingsIcon } from "@chakra-ui/icons"; // Assuming SettingsIcon is from Chakra UI icons
 import { ChevronDownIcon, RowIcon } from "@/chakraConfig/icons";
 import { ViewBarBtnStyl } from "@/utilities/constants";
@@ -7,6 +25,8 @@ import { useAppSelector } from "@/hooks/redux";
 import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
 import { useDispatch } from "react-redux";
 import { setFullScreen } from "@/redux/slices/common";
+import AddNewTab from "@/components/Grid/AddNewTab";
+import { useState } from "react";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
@@ -15,7 +35,9 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
     (state: any) => state.salesforce
   );
   const { isFullScreen } = useAppSelector((state: any) => state.common);
-
+  const [editTabModal, setEditTabModal] = useState<any>(false);
+  const [tabData, setTabData] = useState<any | null>(null);
+  const { isOpen, onToggle, onClose } = useDisclosure();
   // handling Download CSV
   const downloadCsv = async () => {
     const downloadFile = ({ data, fileName, fileType }: any) => {
@@ -84,6 +106,42 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
     );
   };
 
+  // handling tab edit
+  const handleTabEdit = () => {
+    const tab = viewGridData?.find((fi: any) => fi?._id === selectedGridTab);
+    if (tab) {
+      const defaultValues: any = {
+        view: tab?.view,
+        label: tab?.label,
+        description: tab?.description,
+        query: {
+          type: tab?.query?.type,
+          fields: tab?.query?.fields,
+          object: tab?.query?.object,
+          filter: {
+            type: tab?.query?.filter?.type,
+            expression: tab?.query?.filter?.expression?.map((item: any) => {
+              return { ...item, value: item?.value?.replaceAll("'", "") };
+            }),
+          },
+          limit: tab?.query?.limit,
+        },
+      };
+      setTabData(defaultValues);
+      setEditTabModal(true);
+    }
+  };
+
+  const handleTabDelete = async () => {
+    await salesforce({
+      method: "DELETE",
+      url: `metadata/${selectedGridTab}`,
+    });
+    // dispatch(deleteGridTabs(viewId));
+    // dispatch(setReFetchTabs());
+    // navigate(`/${tabId}`);
+  };
+
   return (
     <Flex justifyContent="space-between" px={5}>
       <Flex>
@@ -111,7 +169,23 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
         <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             <Image src="/assets/images/icon-more.png" alt="download"></Image>
-            <Text>More</Text>
+            <Popover>
+              <PopoverTrigger>
+                <Button>More</Button>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent width="auto">
+                  <PopoverBody display="flex" flexDir="column">
+                    <Button colorScheme="blue" mb={2} onClick={handleTabEdit}>
+                      view
+                    </Button>
+                    <Button colorScheme="blue" onClick={handleTabDelete}>
+                      delete
+                    </Button>
+                  </PopoverBody>
+                </PopoverContent>
+              </Portal>
+            </Popover>
           </Flex>
         </Button>
       </Flex>
@@ -158,6 +232,14 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
           </Flex>
         </Button>
       </Flex>
+      {editTabModal && tabData && (
+        <AddNewTab
+          show={editTabModal}
+          onHide={() => setEditTabModal(false)}
+          defaultValues={tabData}
+          refetch={() => console.log("hello world")}
+        />
+      )}
     </Flex>
   );
 };
