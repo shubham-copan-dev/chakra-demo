@@ -103,52 +103,39 @@ function AddNewTab({
           method: "PATCH",
           url: `metaData/${selectedGridTab}`,
           data: formData,
-        }).then(() => {
-          dispatch(
-            fetchRecords({
-              method: "POST",
-              url: `sf/object/records`,
-              params: {
-                id: selectedGridTab,
-                page: 1,
-                perPage: 20,
-              },
-            })
-          );
         });
-      } else {
-        await salesforce({ method: "POST", url: "views", data: formData });
-        dispatch(setRecordData(null));
-        dispatch(setMetaData(null));
-        dispatch(setGridData(null));
+      } else await salesforce({ method: "POST", url: "views", data: formData });
+      dispatch(setRecordData(null));
+      dispatch(setMetaData(null));
+      dispatch(setGridData(null));
+      dispatch(
+        fetchSalesforceData({
+          method: "GET",
+          url: `object/${selectedNav}/views`,
+          params: { view: "grid" },
+        })
+      );
+      setTimeout(() => {
         dispatch(
-          fetchSalesforceData({
+          fetchMetaData({
             method: "GET",
-            url: `object/${selectedNav}/views`,
-            params: { view: "grid" },
+            url: `sf/object/metadata`,
+            params: { id: defaultGridViewId, filter: true },
           })
         );
-        setTimeout(() => {
-          dispatch(
-            fetchMetaData({
-              method: "GET",
-              url: `sf/object/metadata`,
-              params: { id: defaultGridViewId, filter: true },
-            })
-          );
-          dispatch(
-            fetchRecords({
-              method: "POST",
-              url: `sf/object/records`,
-              params: {
-                id: defaultGridViewId,
-                page: 1,
-                perPage: defaultGrid?.query?.limit,
-              },
-            })
-          );
-        }, 100);
-      }
+        dispatch(
+          fetchRecords({
+            method: "POST",
+            url: `sf/object/records`,
+            params: {
+              id: defaultGridViewId,
+              page: 1,
+              perPage: defaultGrid?.query?.limit,
+            },
+          })
+        );
+      }, 100);
+
       if (refetch) refetch();
       onHide();
     } catch (error) {
