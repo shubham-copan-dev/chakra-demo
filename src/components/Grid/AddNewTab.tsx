@@ -19,6 +19,7 @@ import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
 import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
 import { fetchSalesforceData, setGridData } from "@/redux/slices/salesForce";
 import { Spinner } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 function AddNewTab({
   show,
@@ -412,7 +413,10 @@ function AddNewTab({
                 {expressionFields.map((field, index) => (
                   <>
                     <div className="addexpression-content">
-                      <div className="addexpression-wrapper">
+                      <div
+                        className="addexpression-wrapper"
+                        style={{ alignItems: "center" }}
+                      >
                         <ReactSelectField
                           key={field.id}
                           control={control}
@@ -465,7 +469,7 @@ function AddNewTab({
                           }}
                           className="expression-dlt"
                         >
-                          <span className="icons-delete"></span>
+                          <DeleteIcon />
                         </a>
                       </div>
                     </div>

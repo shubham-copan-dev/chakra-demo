@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Box, Flex, Spinner } from "@chakra-ui/react";
 
 const AuthPage = () => {
   const params = new URLSearchParams(location.hash.substring(1));
@@ -17,7 +18,14 @@ const AuthPage = () => {
     }
   }, [router, token]);
 
-  return <div>Redirecting...</div>;
+  return (
+    <>
+      <Box textAlign="center">Redirecting to Dashboard ...</Box>
+      <Flex height="50vh" justifyContent="center" alignItems="center">
+        <Spinner />
+      </Flex>
+    </>
+  );
 };
 
 export default AuthPage;
