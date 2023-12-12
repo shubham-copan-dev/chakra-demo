@@ -18,7 +18,7 @@ function ControlledUsage() {
   return (
     <>
       <Button mr={5} onClick={onToggle}>
-        Trigger
+        Delete
       </Button>
       <Popover
         returnFocusOnClose={false}

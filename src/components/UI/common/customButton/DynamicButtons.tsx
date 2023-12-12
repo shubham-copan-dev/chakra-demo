@@ -27,6 +27,7 @@ import { useDispatch } from "react-redux";
 import { setFullScreen } from "@/redux/slices/common";
 import AddNewTab from "@/components/Grid/AddNewTab";
 import { useState } from "react";
+import { customVariant } from "@/utilities/constants";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
@@ -137,9 +138,6 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
       method: "DELETE",
       url: `metadata/${selectedGridTab}`,
     });
-    // dispatch(deleteGridTabs(viewId));
-    // dispatch(setReFetchTabs());
-    // navigate(`/${tabId}`);
   };
 
   return (
@@ -171,17 +169,91 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
             <Image src="/assets/images/icon-more.png" alt="download"></Image>
             <Popover>
               <PopoverTrigger>
-                <Button>More</Button>
+                <Button sx={ViewBarBtnStyl}>More</Button>
               </PopoverTrigger>
               <Portal>
                 <PopoverContent width="auto">
-                  <PopoverBody display="flex" flexDir="column">
-                    <Button colorScheme="blue" mb={2} onClick={handleTabEdit}>
-                      view
+                  <PopoverBody display="flex" flexDir="column" p={0}>
+                    <Button
+                      colorScheme="blue"
+                      onClick={handleTabEdit}
+                      sx={{
+                        ...ViewBarBtnStyl,
+                        padding: 25,
+                        _hover: {
+                          backgroundColor: "#EBF1FA",
+                          "&:active": {
+                            backgroundColor: "transparent",
+                          },
+                        },
+                      }}
+                    >
+                      View
                     </Button>
-                    <Button colorScheme="blue" onClick={handleTabDelete}>
-                      delete
+                    {/* <Button colorScheme="blue" onClick={handleTabDelete}> */}
+                    <Button
+                      onClick={onToggle}
+                      sx={{
+                        ...ViewBarBtnStyl,
+                        padding: 25,
+                        color: "red",
+                        _hover: {
+                          backgroundColor: "#EBF1FA",
+                          "&:active": {
+                            backgroundColor: "transparent",
+                          },
+                        },
+                      }}
+                    >
+                      Delete
                     </Button>
+                    <Popover
+                      returnFocusOnClose={false}
+                      isOpen={isOpen}
+                      onClose={onClose}
+                      placement="right"
+                      closeOnBlur={false}
+                    >
+                      <PopoverTrigger>
+                        {/* <Button colorScheme="pink">Popover Target</Button> */}
+                        <Text as="span"></Text>
+                      </PopoverTrigger>
+                      <PopoverContent minWidth="24vw">
+                        <PopoverHeader fontWeight="semibold">
+                          Are you sure ?
+                        </PopoverHeader>
+                        <PopoverArrow />
+                        <PopoverCloseButton />
+                        <PopoverBody fontSize="12px">
+                          Do you really want to delete this view?This Process
+                          cannot be undone.
+                        </PopoverBody>
+                        <PopoverFooter
+                          display="flex"
+                          justifyContent="flex-start"
+                        >
+                          <ButtonGroup size="sm">
+                            <Button
+                              variant="outline"
+                              onClick={onToggle}
+                              fontWeight="400"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              backgroundColor="#BB3E23"
+                              onClick={handleTabDelete}
+                              color="white"
+                              fontWeight="400"
+                              sx={customVariant}
+                            >
+                              Delete
+                            </Button>
+                          </ButtonGroup>
+                        </PopoverFooter>
+                      </PopoverContent>
+                    </Popover>
+                    {/* </Button> */}
                   </PopoverBody>
                 </PopoverContent>
               </Portal>

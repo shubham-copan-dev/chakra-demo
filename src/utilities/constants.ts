@@ -366,3 +366,9 @@ export const ViewBarBtnStyl = {
     },
   },
 };
+
+export const customVariant = {
+    _hover: {
+      bg: "#BB3E23",
+    },
+};
