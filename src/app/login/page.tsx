@@ -90,6 +90,8 @@ const Login = () => {
             options={options}
             placeholder={placeholder}
             handleChnage={handleChnage}
+            hasFn={true}
+            label={""}
           />
           <ReuseButton
             variantType="primary"

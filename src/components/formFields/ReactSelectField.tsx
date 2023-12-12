@@ -30,6 +30,9 @@ interface Field {
   onSelect?: () => void;
   isMulti?: boolean;
   selectProps?: unknown;
+  placeholder?: any;
+  handleChnage?: any;
+  hasFn?: boolean;
 }
 
 /**
@@ -68,6 +71,9 @@ function ReactSelectField({
   onSelect,
   selectProps,
   isMulti,
+  placeholder,
+  handleChnage,
+  hasFn,
 }: Field & typeof defaultProps) {
   // use hooks
   const {
@@ -82,8 +88,9 @@ function ReactSelectField({
 
   // handling select change
   const onSelectChange = (val: any) => {
-    onSelect(val); // send value to provided func
-
+    onSelect(val);
+    // send value to provided func
+    if (hasFn) handleChnage(val);
     if (isMulti)
       return onChange(val?.map((c: { value: string | number }) => c?.value));
     return onChange(val?.value);
@@ -116,6 +123,7 @@ function ReactSelectField({
           isMulti={isMulti}
           className={`${selectClass} ${error && "required-field-error"}`}
           classNamePrefix="custom-react-select"
+          placeholder={placeholder}
           {...selectProps}
         />
         {errorType?.map(
