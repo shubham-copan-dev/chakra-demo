@@ -46,7 +46,6 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const [tabData, setTabData] = useState<any | null>(null);
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
-  const { metadata } = useAppSelector((state: any) => state.metadata);
 
   // handling Download CSV
   const downloadCsv = async () => {
