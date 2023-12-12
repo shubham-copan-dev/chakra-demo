@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Modal, Spinner } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { useFieldArray, useForm } from "react-hook-form";
 // import { useParams } from 'react-router-dom';
 import Select from "react-select";
@@ -18,6 +18,7 @@ import { operators, updateUrl } from "@/utilities/constants";
 import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
 import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
 import { fetchSalesforceData, setGridData } from "@/redux/slices/salesForce";
+import { Spinner } from "@chakra-ui/react";
 
 function AddNewTab({
   show,
@@ -511,18 +512,10 @@ function AddNewTab({
             type="submit"
             className="btn-salesboost btn btn-primary"
             disabled={isSubmitting}
+            style={{ display: "flex", gap: "1rem" }}
           >
             Save Changes
-            {isSubmitting && (
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-                style={{ marginLeft: "10px" }}
-              />
-            )}
+            {isSubmitting && <Spinner />}
           </Button>
         </Modal.Footer>
       </form>

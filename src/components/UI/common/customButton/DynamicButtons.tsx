@@ -28,17 +28,26 @@ import { setFullScreen } from "@/redux/slices/common";
 import AddNewTab from "@/components/Grid/AddNewTab";
 import { useState } from "react";
 import { customVariant } from "@/utilities/constants";
+import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
+import { fetchSalesforceData, setGridData } from "@/redux/slices/salesForce";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
   const toast = useToast();
-  const { viewGridData, gridViewId, selectedGridTab } = useAppSelector(
-    (state: any) => state.salesforce
-  );
+  const {
+    viewGridData,
+    gridViewId,
+    selectedGridTab,
+    defaultGridViewId,
+    defaultGrid,
+  } = useAppSelector((state: any) => state.salesforce);
   const { isFullScreen } = useAppSelector((state: any) => state.common);
   const [editTabModal, setEditTabModal] = useState<any>(false);
   const [tabData, setTabData] = useState<any | null>(null);
   const { isOpen, onToggle, onClose } = useDisclosure();
+  const { selectedNav } = useAppSelector((state: any) => state.navdata);
+  const { metadata } = useAppSelector((state: any) => state.metadata);
+
   // handling Download CSV
   const downloadCsv = async () => {
     const downloadFile = ({ data, fileName, fileType }: any) => {
@@ -134,10 +143,72 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   };
 
   const handleTabDelete = async () => {
-    await salesforce({
-      method: "DELETE",
-      url: `metadata/${selectedGridTab}`,
+    // Displaying a loading toast before initiating the async operation
+    onToggle();
+    const loadingToast = toast({
+      title: "Deleting...",
+      status: "info",
+      duration: null, // To keep the toast until explicitly closed or updated
+      isClosable: false,
     });
+
+    try {
+      await salesforce({
+        method: "DELETE",
+        url: `metadata/${selectedGridTab}`,
+      });
+
+      // If the deletion was successful, update the loading toast to a success toast
+      toast.update(loadingToast, {
+        title: "Deletion Successful",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      dispatch(setRecordData(null));
+      dispatch(setMetaData(null));
+      dispatch(setGridData(null));
+      dispatch(
+        fetchSalesforceData({
+          method: "GET",
+          url: `object/${selectedNav}/views`,
+          params: { view: "grid" },
+        })
+      );
+      setTimeout(() => {
+        dispatch(
+          fetchMetaData({
+            method: "GET",
+            url: `sf/object/metadata`,
+            params: { id: defaultGridViewId, filter: true },
+          })
+        );
+        dispatch(
+          fetchRecords({
+            method: "POST",
+            url: `sf/object/records`,
+            params: {
+              id: defaultGridViewId,
+              page: 1,
+              perPage: defaultGrid?.query?.limit,
+            },
+          })
+        );
+      }, 100);
+      // You can also perform additional actions after successful deletion if needed
+    } catch (error) {
+      // If there's an error during deletion, update the loading toast to an error toast
+      toast.update(loadingToast, {
+        title: "Error",
+        description: "Failed to delete the item.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      // You might also handle the error or perform additional actions based on the error
+      console.error("Deletion error:", error);
+    }
   };
 
   return (
