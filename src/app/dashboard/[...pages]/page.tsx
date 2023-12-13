@@ -112,7 +112,6 @@ const DashboardPage = () => {
 
   const handlingColumnDefs = (): any | undefined => {
     if (metadata) {
-      debugger;
       const newColumnMeta = metadata
         ?.filter?.((fil: any) =>
           selectedViewBy === "all"

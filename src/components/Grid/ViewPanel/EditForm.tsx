@@ -22,6 +22,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { fieldTypes, getDirtyFields } from "@/utilities/constants";
 import CustomAlertPopuop from "@/components/UI/common/alertPopup";
+import { inherits } from "util";
 
 // handling filed switch
 export const fieldSwitch = (
@@ -244,7 +245,17 @@ const EditForm = ({ isOpen, onClose }: any, props: any) => {
             </ModalBody>
 
             <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
+              <Button
+                colorScheme="blue"
+                mr={3}
+                onClick={onClose}
+                fontWeight="100"
+                fontSize="13px"
+                _hover={{}}
+                bg="transparent"
+                color="bgClr.PrimaryActions"
+                border="1px solid #DCE3EE"
+              >
                 Close
               </Button>
               <Button
@@ -254,6 +265,16 @@ const EditForm = ({ isOpen, onClose }: any, props: any) => {
                 isLoading={isSubmitting}
                 isDisabled={isSubmitting}
                 gap="5px"
+                fontWeight="100"
+                fontSize="13px"
+                bg={
+                  selectedRows?.length
+                    ? "bgClr.PrimaryActions"
+                    : "bgClr.Grey300"
+                }
+                color="bgClr.NeutralColorWhite"
+                cursor={selectedRows?.length ? "pointer" : "not-allowed"}
+                _hover={{}}
               >
                 Update
                 {isSubmitting && <Spinner height="1rem" width="1rem" />}
