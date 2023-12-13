@@ -17,7 +17,12 @@ import {
   PopoverHeader,
   useDisclosure,
 } from "@chakra-ui/react";
-import { ArrowUpDownIcon, RepeatIcon, SettingsIcon } from "@chakra-ui/icons"; // Assuming SettingsIcon is from Chakra UI icons
+import {
+  ArrowUpDownIcon,
+  DragHandleIcon,
+  RepeatIcon,
+  SettingsIcon,
+} from "@chakra-ui/icons"; // Assuming SettingsIcon is from Chakra UI icons
 import { ChevronDownIcon, RowIcon } from "@/chakraConfig/icons";
 import { ViewBarBtnStyl } from "@/utilities/constants";
 import { salesforce } from "@/axios/actions/salesforce";
@@ -26,10 +31,16 @@ import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
 import { useDispatch } from "react-redux";
 import { setFullScreen, setNavTabClicked } from "@/redux/slices/common";
 import AddNewTab from "@/components/Grid/AddNewTab";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { customVariant } from "@/utilities/constants";
 import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
 import { fetchSalesforceData, setGridData } from "@/redux/slices/salesForce";
+import {
+  setEditedFields,
+  setFieldUpdateMode,
+} from "@/redux/slices/fieldUpdate";
+import { setReset } from "@/redux/slices/common";
+import EditForm from "@/components/Grid/ViewPanel/EditForm";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
@@ -42,10 +53,14 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
     defaultGrid,
   } = useAppSelector((state: any) => state.salesforce);
   const { isFullScreen } = useAppSelector((state: any) => state.common);
+  const { fieldUpdateMode, editedFields } = useAppSelector(
+    (state: any) => state.fieldupdate
+  );
   const [editTabModal, setEditTabModal] = useState<any>(false);
   const [tabData, setTabData] = useState<any | null>(null);
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
+  const [showEditForm, setShowEditForm] = useState(false);
 
   // handling Download CSV
   const downloadCsv = async () => {
@@ -209,6 +224,84 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
       console.error("Deletion error:", error);
     }
   };
+  const onclose = () => {
+    setShowEditForm(false);
+  };
+  // handling save
+  const handleSave = async () => {
+    debugger;
+    await salesforce({
+      method: "PATCH",
+      url: `bulkUpdate/records`,
+      data: {
+        allOrNone: true,
+        records: editedFields,
+      },
+    });
+    dispatch(setEditedFields(null));
+  };
+
+  // handling field updating mode buttons
+  const handlingFieldUpdateModeButton = (mode: string) => {
+    switch (mode) {
+      case "instant":
+        return (
+          <button
+            className="btn list-btn"
+            type="button"
+            onClick={() => dispatch(setFieldUpdateMode("submit"))}
+          >
+            <DragHandleIcon />
+          </button>
+        );
+      case "submit":
+        return (
+          <>
+            <Button
+              sx={ViewBarBtnStyl}
+              onClick={() => {
+                dispatch(setFieldUpdateMode("instant"));
+                dispatch(setEditedFields(null));
+                // reSetValues();
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              sx={{
+                ...ViewBarBtnStyl,
+                bg: !editedFields?.length
+                  ? "bgClr.Grey300"
+                  : "bgClr.PrimaryActions",
+                color: !editedFields?.length
+                  ? "typoClr.NeutralColorBlack"
+                  : "typoClr.NeutralColorWhite",
+                height: "2rem",
+                padding: "0px 14px",
+              }}
+              onClick={handleSave}
+              isDisabled={!editedFields?.length}
+            >
+              Save
+            </Button>
+            {editedFields?.length && (
+              <Button
+                sx={ViewBarBtnStyl}
+                onClick={() => {
+                  dispatch(setEditedFields(null));
+                  dispatch(setReset(1));
+                }}
+              >
+                Discard
+              </Button>
+            )}
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <Flex justifyContent="space-between" px={5}>
@@ -332,6 +425,11 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
         </Button>
       </Flex>
       <Flex>
+        <Button sx={ViewBarBtnStyl}>
+          <Flex alignItems="center" gap="5px">
+            {handlingFieldUpdateModeButton(fieldUpdateMode)}
+          </Flex>
+        </Button>
         <Button
           sx={ViewBarBtnStyl}
           onClick={() => {
@@ -371,7 +469,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
             <Text>View: all</Text>
           </Flex>
         </Button>
-        <Button sx={ViewBarBtnStyl}>
+        <Button sx={ViewBarBtnStyl} onClick={() => setShowEditForm(true)}>
           <Flex alignItems="center" gap="5px">
             <Text>Bulk Update</Text>
           </Flex>
@@ -385,6 +483,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
           refetch={() => console.log("hello world")}
         />
       )}
+      {<EditForm isOpen={showEditForm} onClose={onclose} />}
     </Flex>
   );
 };

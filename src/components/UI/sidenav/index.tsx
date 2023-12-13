@@ -24,6 +24,7 @@ import {
 import { setSelectedNav } from "@/redux/slices/dashboard";
 import { updateUrl } from "@/utilities/constants";
 import { setNavTabClicked } from "@/redux/slices/common";
+import { fetchViewMetaData } from "@/redux/slices/viewmetadata";
 
 const Sidenav = () => {
   const dispatch = useAppDispatch();
@@ -64,6 +65,13 @@ const Sidenav = () => {
         method: "GET",
         url: `object/${dashboard}/views`,
         params: { view: "grid" },
+      })
+    );
+    dispatch(
+      fetchViewMetaData({
+        method: "GET",
+        url: `object/${dashboard}/views`,
+        params: { view: "tab" },
       })
     );
   };

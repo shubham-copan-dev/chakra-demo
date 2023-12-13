@@ -18,34 +18,24 @@ import { ValueSetterParams } from "ag-grid-community";
 import { ActionView } from "@/components/Grid/ViewPanel/GridView/CustomColumnView";
 import useIsHome from "@/hooks/isHome";
 import AddNewTab from "@/components/Grid/AddNewTab";
+import { setEditedFields } from "@/redux/slices/fieldUpdate";
 
-const DashboardPage = ({ params }: any) => {
+const DashboardPage = () => {
   const dispatch = useAppDispatch();
-  const {
-    defaultGridViewId,
-    viewGridData,
-    gridViewId,
-    defaultGrid,
-    selectedGridTab,
-  } = useAppSelector((state: any) => state.salesforce);
-  const { records, isRecordLoaded } = useAppSelector(
-    (state: any) => state.records
+  const { fieldUpdateMode, selectedViewBy } = useAppSelector(
+    (state: any) => state.fieldupdate
   );
-  const { metadata, metaLoader } = useAppSelector(
-    (state: any) => state.metadata
-  );
-  const toast = useToast();
-  const { selectedNav } = useAppSelector((state: any) => state.navdata);
+  const { records } = useAppSelector((state: any) => state.records);
+  const { metadata } = useAppSelector((state: any) => state.metadata);
+  // const toast = useToast();
   const isHome = useIsHome();
   const path = usePathname();
-  const page = path.split("/");
-  const selectedViewBy = "all";
-  const fieldUpdateMode = "instant";
   const [isGrouped, setIsGrouped] = useState<boolean>(false);
   const viewBySelected = viewByMeta?.find(
     (fil) => fil?.label === selectedViewBy
   );
   const viewByNames = viewBySelected?.query?.fields?.map((item) => item?.name);
+  // const { resetSet } = useAppSelector((state: any) => state.common);
 
   const handleFilterType = (type: string, isFilterable: boolean) => {
     if (isFilterable) {
@@ -122,6 +112,7 @@ const DashboardPage = ({ params }: any) => {
 
   const handlingColumnDefs = (): any | undefined => {
     if (metadata) {
+      debugger;
       const newColumnMeta = metadata
         ?.filter?.((fil: any) =>
           selectedViewBy === "all"
@@ -178,17 +169,19 @@ const DashboardPage = ({ params }: any) => {
             valueSetter: (params: ValueSetterParams) => {
               const newObj = { ...params.data, [item?.name]: params.newValue };
               dispatch(updateRecord(newObj));
-              // if (fieldUpdateMode === 'submit') {
-              //   dispatch(
-              //     setEditedFields({
-              //       id: params.data.Id,
-              //       attributes: {
-              //         type: params.data.attributes.type,
-              //       },
-              //       [item?.name]: params.newValue,
-              //     })
-              //   );
-              // } else {
+              if (fieldUpdateMode === "submit") {
+                debugger;
+                dispatch(
+                  setEditedFields({
+                    id: params.data.Id,
+                    attributes: {
+                      type: params.data.attributes.type,
+                    },
+                    [item?.name]: params.newValue,
+                  })
+                );
+              }
+              //  else {
               //   toast.promise(onFieldEditDone(params), {
               //     loading: 'Updating',
               //     success: 'Record updated successfully',
