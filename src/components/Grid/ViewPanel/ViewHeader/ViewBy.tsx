@@ -1,14 +1,29 @@
 import React, { useState } from "react";
-import { Dropdown, ListGroup } from "react-bootstrap";
-
+// import { Dropdown, ListGroup } from "react-bootstrap";
+import {
+  Box,
+  List,
+  ListItem,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+} from "@chakra-ui/react";
 import { salesforce } from "@/axios/actions/salesforce";
 // import CustomConfirmAlert from '@/components/UI/ConfirmAlert';
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 // import { deleteViewByMeta, setReFetchViewBy, setSelectedViewBy } from '@/redux/slices/salesForce';
 import { setSelectedViewBy } from "@/redux/slices/fieldUpdate";
 import { deleteViewByMeta } from "@/redux/slices/viewmetadata";
-
+import { ViewBarBtnStyl } from "@/utilities/constants";
 import AddEditViewBy from "./AddEditViewBy";
+import {
+  AddIcon,
+  ChevronDownIcon,
+  DeleteIcon,
+  EditIcon,
+} from "@chakra-ui/icons";
 
 function ViewBy() {
   // use hooks
@@ -44,50 +59,46 @@ function ViewBy() {
 
   return (
     <>
-      <ListGroup.Item>
-        <Dropdown className="view-by-dropdown">
-          <Dropdown.Toggle id="dropdown-basic">
-            View by : {selectedViewBy?.toUpperCase()}{" "}
-            <span
-              className="icons icons-drop-down"
-              style={{ margin: "10px" }}
-            ></span>
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <ListGroup>
-              <ListGroup.Item>
-                <Dropdown.Item
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    dispatch(setSelectedViewBy("all"));
-                  }}
-                  className="d-flex justify-content-between"
-                  style={{ color: selectedViewBy === "all" ? "#3478f6" : "" }}
-                >
-                  ALL
-                </Dropdown.Item>
-              </ListGroup.Item>
-              {viewByMeta?.map((item: any) => {
-                return (
-                  <ListGroup.Item key={item?._id}>
-                    <Dropdown.Item
-                      href="#"
+      <List>
+        <ListItem>
+          <Menu>
+            <MenuButton
+              as="button"
+              className="view-by-dropdown"
+              sx={ViewBarBtnStyl}
+              fontSize="13px"
+            >
+              View by : {selectedViewBy?.toUpperCase()} <ChevronDownIcon />
+            </MenuButton>
+            <MenuList>
+              <List>
+                <ListItem fontSize="13px">
+                  <MenuItem
+                    onClick={(e) => {
+                      e.preventDefault();
+                      dispatch(setSelectedViewBy("all"));
+                    }}
+                    className="d-flex justify-content-between"
+                    color={selectedViewBy === "all" ? "#3478f6" : ""}
+                  >
+                    ALL
+                  </MenuItem>
+                </ListItem>
+                {viewByMeta?.map((item: any) => (
+                  <ListItem key={item?._id} fontSize="13px" display="flex">
+                    <MenuItem
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(setSelectedViewBy(item?.label));
                       }}
                       className="d-flex justify-content-between"
-                      style={{
-                        color: selectedViewBy === item.label ? "#3478f6" : "",
-                      }}
+                      color={selectedViewBy === item.label ? "#3478f6" : ""}
+                      flex="1"
                     >
                       {item?.label}
-                    </Dropdown.Item>
-                    <div className="icons-wrapper">
-                      <Dropdown.Item
-                        href="#"
+                    </MenuItem>
+                    <Box className="icons-wrapper" display="flex">
+                      <MenuItem
                         onClick={(e) => {
                           e.preventDefault();
                           // CustomConfirmAlert({
@@ -101,37 +112,40 @@ function ViewBy() {
                           //   errorMessage: 'Error while Deleting View',
                           // });
                         }}
-                        className="icons-delete"
-                      ></Dropdown.Item>
-                      <Dropdown.Item
-                        href="#"
+                        flex="1"
+                      >
+                        <DeleteIcon />
+                      </MenuItem>
+                      <MenuItem
                         onClick={(e) => {
                           e.preventDefault();
                           handleEdit(item);
                         }}
-                        className="icons-edit"
-                      ></Dropdown.Item>
-                    </div>
-                  </ListGroup.Item>
-                );
-              })}
-
-              <ListGroup.Item>
-                <Dropdown.Item
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setAddEditModal(true);
-                  }}
-                  className="d-flex align-items-center"
-                >
-                  <span className="icons-add"></span>New Contract
-                </Dropdown.Item>
-              </ListGroup.Item>
-            </ListGroup>
-          </Dropdown.Menu>
-        </Dropdown>
-      </ListGroup.Item>
+                        flex="1"
+                      >
+                        <EditIcon />
+                      </MenuItem>
+                    </Box>
+                  </ListItem>
+                ))}
+                <ListItem>
+                  <MenuItem
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setAddEditModal(true);
+                    }}
+                    fontSize="13px"
+                    gap="1rem"
+                  >
+                    <AddIcon />
+                    New Contract
+                  </MenuItem>
+                </ListItem>
+              </List>
+            </MenuList>
+          </Menu>
+        </ListItem>
+      </List>
       {addEditModal && (
         <AddEditViewBy
           show={addEditModal}

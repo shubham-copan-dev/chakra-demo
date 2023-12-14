@@ -206,10 +206,11 @@ function AddEditViewBy(props: {
         dialogClassName="custom-modal notes-modal dialog-md"
         show={props.show}
         onHide={props.handleClose}
+        style={{ width: "65vw", height: "68vh" }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="msform">
           <Modal.Body>
-            <div className="main-wrapper d-flex">
+            <div className="main-wrapper d-flex" style={{ display: "flex" }}>
               {/* - - Left navigation - - - */}
               <div className={`left-panel ${collapsed ? "collapsed" : ""}`}>
                 <a

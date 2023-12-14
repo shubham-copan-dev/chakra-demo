@@ -484,7 +484,14 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
             <RepeatIcon />
           </Flex>
         </Button>
-        <Divider orientation="vertical" h="1rem" mx="1rem" />
+        <Divider
+          orientation="vertical"
+          h="1rem"
+          mx="1rem"
+          sx={{
+            borderColor: "gray", // Line color for vertical orientation
+          }}
+        />
         {/* <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             <ChevronDownIcon />
@@ -492,7 +499,14 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
           </Flex>
         </Button> */}
         <ViewBy />
-        <Divider orientation="vertical" h="1rem" mx="1rem" />
+        <Divider
+          orientation="vertical"
+          h="1rem"
+          mx="1rem"
+          sx={{
+            borderColor: "gray", // Line color for vertical orientation
+          }}
+        />
         <Button
           isDisabled={!((selectedRows?.length as any) > 1)}
           sx={{
