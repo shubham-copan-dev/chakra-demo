@@ -29,6 +29,15 @@ const metaDataSlice = createSlice({
       const state = init;
       state.metadata = action.payload;
     },
+    updateColumnMeta(init, action) {
+      const state = init;
+      if (state.metadata) {
+        const copyColumns = [...state.metadata];
+        const index = copyColumns?.findIndex((fi) => fi?.name === action.payload?.name);
+        copyColumns?.splice(index, 1, action.payload);
+        state.metadata = copyColumns;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -52,5 +61,5 @@ const metaDataSlice = createSlice({
 });
 
 // reducers exports
-export const { setMetaData } = metaDataSlice.actions;
+export const { setMetaData,updateColumnMeta } = metaDataSlice.actions;
 export default metaDataSlice.reducer;

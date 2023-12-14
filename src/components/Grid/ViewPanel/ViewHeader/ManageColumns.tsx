@@ -1,18 +1,17 @@
 import { ChangeEvent, useRef, useState } from "react";
-import { Dropdown, Form, ListGroup, Spinner } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Dropdown, Form, ListGroup } from "react-bootstrap";
+// import { useParams } from "react-router-dom";
 
-import { salesForce } from "@/axios/actions/salesForce";
+import { salesforce } from "@/axios/actions/salesforce";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import {
-  setColumnMeta,
-  updateColumnMeta,
-  updateGridTabs,
-} from "@/redux/slices/salesForce";
-
+import { updateGridTabs } from "@/redux/slices/salesForce";
+import { setMetaData, updateColumnMeta } from "@/redux/slices/gridmetadata";
+import "./managecolumn.css";
+import { Spinner } from "@chakra-ui/react";
+// setColumnMeta,updateColumnMeta,
 function ManageColumns({ onHide }: { onHide: () => void }) {
   // use hooks
-  const { viewId } = useParams();
+  const { selectedGridTab }: any = useAppSelector((state) => state.salesforce);
   const dispatch = useAppDispatch();
 
   // use refs
@@ -20,21 +19,26 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
   const dragItem = useRef<any>();
 
   // global states
-  const { columnMeta, selectedViewBy, viewByMeta, gridTabs } = useAppSelector(
-    (state) => state.sales
-  );
+  const { metadata } = useAppSelector((state) => state.metadata);
+  const { selectedViewBy } = useAppSelector((state) => state.fieldupdate);
+  const { viewByMeta } = useAppSelector((state) => state.Viewmetadata);
+  const { viewGridData } = useAppSelector((state) => state.salesforce);
 
   // constants
-  const currentTab = gridTabs?.find((fi) => fi?._id === viewId);
+  const currentTab = Array.isArray(viewGridData)
+    ? viewGridData.find((fi: any) => fi?._id === selectedGridTab)
+    : null;
   let labels: { [key: string]: string } = {};
-  columnMeta?.map((item) => {
+  metadata?.map((item: any) => {
     labels = { ...labels, [item.name]: item?.label };
   });
 
   const viewBySelected = viewByMeta?.find(
-    (fil) => fil?.label === selectedViewBy
+    (fil: any) => fil?.label === selectedViewBy
   );
-  const viewByNames = viewBySelected?.query?.fields?.map((item) => item?.name);
+  const viewByNames = viewBySelected?.query?.fields?.map(
+    (item: any) => item?.name
+  );
 
   // local states
   const [onGoingRequests, setOnGoingRequests] = useState<string[]>([]);
@@ -46,7 +50,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
   // handling column
   const handleColumn = async (e: ChangeEvent<HTMLInputElement>) => {
     const { checked, name } = e.target;
-    const copyObj = columnMeta?.find((fi) => fi?.name === name);
+    const copyObj = metadata?.find((fi: any) => fi?.name === name);
     if (copyObj) {
       if (currentTab && !onGoingRequests?.includes(name)) {
         const newFields = currentTab?.query?.fields?.map((item) => {
@@ -65,9 +69,9 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
           })
         );
         setOnGoingRequests((prev) => [...prev, name]);
-        await salesForce({
+        await salesforce({
           method: "PATCH",
-          url: `metadata/field/${viewId}`,
+          url: `metadata/field/${selectedGridTab}`,
           data: {
             query: {
               fields: newFields,
@@ -92,7 +96,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
 
   // handling checked
   const handleChecked = (name: string) => {
-    const copyObj = columnMeta?.find((fi) => fi?.name === name);
+    const copyObj = metadata?.find((fi) => fi?.name === name);
     return copyObj?.uiMetadata?.isVisible;
   };
 
@@ -147,9 +151,9 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
           })
         );
         setOnGoingRequests((prev) => [...prev, name]);
-        await salesForce({
+        await salesforce({
           method: "PATCH",
-          url: `metadata/field/${viewId}`,
+          url: `metadata/field/${selectedGridTab}`,
           data: {
             query: {
               fields: newFields,
@@ -168,7 +172,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
           newOrder = { ...newOrder, [item.name]: item.columnOrder };
         });
 
-        const newColumnMeta = columnMeta?.map((item) => {
+        const newColumnMeta = metadata?.map((item: any) => {
           if (newOrder?.[item.name] >= 0) {
             return {
               ...item,
@@ -181,7 +185,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
           return item;
         });
 
-        dispatch(setColumnMeta(newColumnMeta));
+        dispatch(setMetaData(newColumnMeta));
 
         dragItem.current = null;
         dragItemNode.current = null;
@@ -193,13 +197,13 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
   // handling render list
   const renderList = () => {
     return currentTab?.query?.fields
-      ?.filter?.((fil) =>
+      ?.filter?.((fil: any) =>
         selectedViewBy === "all" ? fil : viewByNames?.includes(fil?.name)
       )
-      ?.sort((a, b) => {
+      ?.sort((a: any, b: any) => {
         return (a?.columnOrder ?? 0) - (b?.columnOrder ?? 0);
       })
-      .map((item, itemI: number) => {
+      .map((item: any, itemI: number) => {
         return (
           <ListGroup.Item
             key={item?.name}
@@ -222,6 +226,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
                 itemI,
               });
             }}
+            style={{}}
           >
             <span className="icons-dots"></span>
             <Form.Check
@@ -235,13 +240,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
               label={labels?.[item.name]}
             />
             {dragEnteredPosition === itemI && <p className="dragging-line"></p>}
-            {onGoingRequests?.includes(item.name) && (
-              <Spinner
-                style={{ height: "10px", width: "10px" }}
-                animation="border"
-                variant="dark"
-              />
-            )}
+            {onGoingRequests?.includes(item.name) && <Spinner />}
           </ListGroup.Item>
         );
       });
@@ -249,7 +248,16 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
 
   return (
     <>
-      <Dropdown.Menu className="custom-dropdown-menu" show>
+      <Dropdown.Menu
+        className="custom-dropdown-menu"
+        show
+        style={{
+          position: "absolute",
+          zIndex: 9999,
+          top: "2rem",
+          width: "10vw",
+        }}
+      >
         <div className="modal-content">
           <div className="modal-header">
             <div className="modal-heading-content">

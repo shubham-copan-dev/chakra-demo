@@ -44,6 +44,10 @@ const salesforceSlice = createSlice({
       const state = init;
       state.selectedGridTab = action.payload;
     },
+    updateGridTabs(init, action) {
+      const state = init;
+      state.viewGridData = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -73,6 +77,6 @@ const salesforceSlice = createSlice({
 });
 
 // reducers exports
-export const { setGridData, setGridId, setSelectedGridTab } =
+export const { setGridData, setGridId, setSelectedGridTab,updateGridTabs } =
   salesforceSlice.actions;
 export default salesforceSlice.reducer;

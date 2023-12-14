@@ -45,6 +45,7 @@ export default function RootLayout({
   const { metadata } = useAppSelector((state: any) => state.metadata);
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
   const { isFullScreen } = useAppSelector((state: any) => state.common);
+  console.log(viewGridData, "grid");
 
   //handling click event on Grid tab click
   const handleTabClick = (item: any) => {
@@ -116,6 +117,7 @@ export default function RootLayout({
             >
               {!isHome &&
                 metadata?.length &&
+                viewGridData?.length &&
                 viewGridData?.map((item: any) => {
                   return (
                     <Button

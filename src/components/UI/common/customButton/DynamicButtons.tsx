@@ -43,6 +43,7 @@ import {
 import { setReset } from "@/redux/slices/common";
 import EditForm from "@/components/Grid/ViewPanel/EditForm";
 import Filters from "@/components/Grid/ViewPanel/ViewHeader/Filters";
+import ManageColumns from "@/components/Grid/ViewPanel/ViewHeader/ManageColumns";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showFilters, setShowFilter] = useState(false);
+  const [manageColumnPopup, setManageColumnPopup] = useState<boolean>(false);
 
   // handling Download CSV
   const downloadCsv = async () => {
@@ -319,11 +321,22 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
             />
           </Flex>
         </Button>
-        <Button sx={ViewBarBtnStyl}>
+        <Button
+          sx={ViewBarBtnStyl}
+          position="relative"
+          onClick={() => setManageColumnPopup(!manageColumnPopup)}
+        >
           <Flex alignItems="center" gap="5px">
             <SettingsIcon />
             <Text>Manage Columns</Text>
           </Flex>
+          {manageColumnPopup && (
+            <ManageColumns
+              onHide={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
+          )}
         </Button>
         <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
