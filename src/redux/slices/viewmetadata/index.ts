@@ -2,6 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { salesforce } from "@/axios/actions/salesforce";
 import { Props } from "@/axios/interface";
 
+
+const initialState = {
+  viewByMeta: null,
+  viewmetaLoader:true,
+    error: null,
+  };
+
+
 export const fetchViewMetaData: any = createAsyncThunk(
   "fetchViewMetaData/fetchViewData",
   async (props: Props) => {
@@ -14,12 +22,6 @@ export const fetchViewMetaData: any = createAsyncThunk(
     }
   }
 );
-
-const initialState = {
-viewByMeta: null,
-viewmetaLoader:true,
-  error: null,
-};
 
 const ViewMetaDataSlice = createSlice({
   name: "viewmetadata",

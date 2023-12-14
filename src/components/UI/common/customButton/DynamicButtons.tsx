@@ -42,6 +42,7 @@ import {
 } from "@/redux/slices/fieldUpdate";
 import { setReset } from "@/redux/slices/common";
 import EditForm from "@/components/Grid/ViewPanel/EditForm";
+import Filters from "@/components/Grid/ViewPanel/ViewHeader/Filters";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [showFilters, setShowFilter] = useState(false);
 
   // handling Download CSV
   const downloadCsv = async () => {
@@ -231,7 +233,6 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   };
   // handling save
   const handleSave = async () => {
-    debugger;
     await salesforce({
       method: "PATCH",
       url: `bulkUpdate/records`,
@@ -308,10 +309,14 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   return (
     <Flex justifyContent="space-between" px={5}>
       <Flex>
-        <Button sx={ViewBarBtnStyl}>
-          <Flex alignItems="center" gap="5px">
+        <Button sx={ViewBarBtnStyl} onClick={() => setShowFilter(true)}>
+          <Flex alignItems="center" gap="5px" position="relative">
             <Image src="/assets/images/icon-filter.png" alt="download"></Image>
             <Text>Filters</Text>
+            <Filters
+              isOpen={showFilters}
+              onClose={() => setShowFilter(false)}
+            />
           </Flex>
         </Button>
         <Button sx={ViewBarBtnStyl}>

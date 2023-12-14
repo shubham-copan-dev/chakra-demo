@@ -1,11 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeEvent, useRef, useState } from 'react';
-import { Dropdown, Form, ListGroup, Spinner } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { ChangeEvent, useRef, useState } from "react";
+import { Dropdown, Form, ListGroup, Spinner } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 
-import { salesForce } from '@/axios/actions/salesForce';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { setColumnMeta, updateColumnMeta, updateGridTabs } from '@/redux/slices/salesForce';
+import { salesForce } from "@/axios/actions/salesForce";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import {
+  setColumnMeta,
+  updateColumnMeta,
+  updateGridTabs,
+} from "@/redux/slices/salesForce";
 
 function ManageColumns({ onHide }: { onHide: () => void }) {
   // use hooks
@@ -28,13 +31,17 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
     labels = { ...labels, [item.name]: item?.label };
   });
 
-  const viewBySelected = viewByMeta?.find((fil) => fil?.label === selectedViewBy);
+  const viewBySelected = viewByMeta?.find(
+    (fil) => fil?.label === selectedViewBy
+  );
   const viewByNames = viewBySelected?.query?.fields?.map((item) => item?.name);
 
   // local states
   const [onGoingRequests, setOnGoingRequests] = useState<string[]>([]);
   const [dragging, setDragging] = useState<boolean>(false);
-  const [dragEnteredPosition, setDragEnteredPosition] = useState<number | null>(null);
+  const [dragEnteredPosition, setDragEnteredPosition] = useState<number | null>(
+    null
+  );
 
   // handling column
   const handleColumn = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -52,11 +59,14 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
           return item;
         });
         dispatch(
-          updateGridTabs({ ...currentTab, query: { ...currentTab.query, fields: newFields } })
+          updateGridTabs({
+            ...currentTab,
+            query: { ...currentTab.query, fields: newFields },
+          })
         );
         setOnGoingRequests((prev) => [...prev, name]);
         await salesForce({
-          method: 'PATCH',
+          method: "PATCH",
           url: `metadata/field/${viewId}`,
           data: {
             query: {
@@ -72,7 +82,10 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
         });
       }
       dispatch(
-        updateColumnMeta({ ...copyObj, uiMetadata: { ...copyObj.uiMetadata, isVisible: checked } })
+        updateColumnMeta({
+          ...copyObj,
+          uiMetadata: { ...copyObj.uiMetadata, isVisible: checked },
+        })
       );
     }
   };
@@ -87,13 +100,13 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
   const handleDragEnd = () => {
     setDragging(false);
     setDragEnteredPosition(null);
-    dragItemNode.current.removeEventListener('dragend', handleDragEnd);
+    dragItemNode.current.removeEventListener("dragend", handleDragEnd);
   };
 
   // handling dragging
   const handleDragStart = (e: any, item: { itemI: number }) => {
     dragItemNode.current = e.target;
-    dragItemNode.current.addEventListener('dragend', handleDragEnd);
+    dragItemNode.current.addEventListener("dragend", handleDragEnd);
     dragItem.current = item;
 
     setTimeout(() => {
@@ -128,11 +141,14 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
         });
 
         dispatch(
-          updateGridTabs({ ...currentTab, query: { ...currentTab.query, fields: newFields } })
+          updateGridTabs({
+            ...currentTab,
+            query: { ...currentTab.query, fields: newFields },
+          })
         );
         setOnGoingRequests((prev) => [...prev, name]);
         await salesForce({
-          method: 'PATCH',
+          method: "PATCH",
           url: `metadata/field/${viewId}`,
           data: {
             query: {
@@ -177,7 +193,9 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
   // handling render list
   const renderList = () => {
     return currentTab?.query?.fields
-      ?.filter?.((fil) => (selectedViewBy === 'all' ? fil : viewByNames?.includes(fil?.name)))
+      ?.filter?.((fil) =>
+        selectedViewBy === "all" ? fil : viewByNames?.includes(fil?.name)
+      )
       ?.sort((a, b) => {
         return (a?.columnOrder ?? 0) - (b?.columnOrder ?? 0);
       })
@@ -185,7 +203,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
         return (
           <ListGroup.Item
             key={item?.name}
-            draggable={selectedViewBy === 'all'}
+            draggable={selectedViewBy === "all"}
             onDragStart={(e) => handleDragStart(e, { itemI })}
             onDragOver={(e) => {
               e.preventDefault();
@@ -211,7 +229,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
               type="checkbox"
               id={item?.name}
               name={item?.name}
-              style={{ marginRight: '10px' }}
+              style={{ marginRight: "10px" }}
               checked={handleChecked(item?.name)}
               onChange={handleColumn}
               label={labels?.[item.name]}
@@ -219,7 +237,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
             {dragEnteredPosition === itemI && <p className="dragging-line"></p>}
             {onGoingRequests?.includes(item.name) && (
               <Spinner
-                style={{ height: '10px', width: '10px' }}
+                style={{ height: "10px", width: "10px" }}
                 animation="border"
                 variant="dark"
               />
