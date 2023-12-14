@@ -1,36 +1,37 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
-import { Button, Modal, Spinner } from 'react-bootstrap';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
-import Select from 'react-select';
+import { useEffect, useState } from "react";
+import { Button, Modal, Spinner } from "react-bootstrap";
+import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+// import { useParams } from 'react-router-dom';
+import Select from "react-select";
 
-import { salesForce } from '@/axios/actions/salesForce';
-import CustomConfirmAlert from '@/components/UI/ConfirmAlert';
-import { InputField, TextareaField } from '@/components/formFields';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { salesforce } from "@/axios/actions/salesforce";
+// import CustomConfirmAlert from '@/components/UI/ConfirmAlert';
+import { InputField, TextareaField } from "@/components/formFields";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
   deleteViewByMeta,
   pushToViewBy,
-  setReFetchViewBy,
-  setSelectedViewBy,
   updateViewByMeta,
-} from '@/redux/slices/salesForce';
-import { AddNewTabInterface, ViewByInterface } from '@/redux/slices/salesForce/interface';
+} from "@/redux/slices/viewmetadata";
+import { setSelectedViewBy } from "@/redux/slices/fieldUpdate";
+import {
+  AddNewTabInterface,
+  ViewByInterface,
+} from "@/redux/slices/salesForce/interface";
 
-import '../../notes.css';
+import "../../notes.css";
 
 const handlingDefaultValues = (
   values: ViewByInterface | null,
-  tabId: string
+  selectedNav: string
 ): AddNewTabInterface => {
   return {
-    view: 'tab',
-    label: values ? values?.label : '',
-    description: values ? values?.description : '',
+    view: "tab",
+    label: values ? values?.label : "",
+    description: values ? values?.description : "",
     query: {
-      type: 'SELECT',
+      type: "SELECT",
       fields: values
         ? values?.query?.fields?.map((item) => {
             return {
@@ -40,9 +41,9 @@ const handlingDefaultValues = (
             };
           })
         : [],
-      object: tabId,
+      object: selectedNav,
       filter: {
-        type: 'AND',
+        type: "AND",
         expression: [],
       },
       limit: 20,
@@ -56,19 +57,27 @@ function AddEditViewBy(props: {
   defaultValues: ViewByInterface | null;
 }) {
   //   use hooks
-  const { tabId } = useParams();
+  // const { selectedNav } = useParams();
   const dispatch = useAppDispatch();
 
   // global states
-  const { viewByMeta, allFields, selectedViewBy } = useAppSelector((state) => state.sales);
+  const { metadata } = useAppSelector((state: any) => state.metadata);
+  const { selectedNav } = useAppSelector((state: any) => state.navdata);
+  const { selectedViewBy } = useAppSelector((state) => state.fieldupdate);
+  const { viewByMeta }: any = useAppSelector((state) => state.Viewmetadata);
+  // const { viewByMeta, allFields, selectedViewBy } = useAppSelector(
+  //   (state) => state.sales
+  // );
 
   // local states
-  const [selectedView, setSelectedView] = useState<ViewByInterface | null>(null);
-  const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [addingNew, setAddingNew] = useState<boolean>(false);
-  const [selectedFields, setSelectedFields] = useState<{ label: string; value: string }[] | null>(
+  const [selectedView, setSelectedView] = useState<ViewByInterface | null>(
     null
   );
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [addingNew, setAddingNew] = useState<boolean>(false);
+  const [selectedFields, setSelectedFields] = useState<
+    { label: string; value: string }[] | null
+  >(null);
   const [values, setValues] = useState<AddNewTabInterface | undefined>();
 
   // hook form
@@ -78,64 +87,74 @@ function AddEditViewBy(props: {
     watch,
     formState: { isSubmitting },
   } = useForm<AddNewTabInterface>({
-    defaultValues: tabId ? handlingDefaultValues(props?.defaultValues ?? null, tabId) : undefined,
+    defaultValues: selectedNav
+      ? handlingDefaultValues(props?.defaultValues ?? null, selectedNav)
+      : undefined,
     values: values,
   });
 
   // handling hook form array fields
-  const { fields, replace } = useFieldArray({ control, name: 'query.fields' });
+  const { fields, replace } = useFieldArray({ control, name: "query.fields" });
 
   // onsubmit handler
   const onSubmit = async (formData: AddNewTabInterface) => {
     try {
       if (selectedView) {
-        await salesForce({
-          method: 'PATCH',
+        await salesforce({
+          method: "PATCH",
           url: `metadata/${selectedView?._id}`,
           data: formData,
         });
         dispatch(updateViewByMeta({ ...selectedView, ...formData }));
-        dispatch(setReFetchViewBy());
+        // dispatch(setReFetchViewBy());
       } else if (addingNew) {
-        const resp = await salesForce({ method: 'POST', url: 'views', data: formData });
+        const resp = await salesforce({
+          method: "POST",
+          url: "views",
+          data: formData,
+        });
         setAddingNew(false);
         dispatch(pushToViewBy(resp?.data?.data));
         setSelectedView(resp?.data?.data);
 
         setValues(resp?.data?.data); // these values will be set to form
-        dispatch(setReFetchViewBy());
+        // dispatch(setReFetchViewBy());
       }
-      toast.success(`View ${selectedView ? 'updated' : 'added'} successfully`);
+      toast.success(`View ${selectedView ? "updated" : "added"} successfully`);
     } catch (error) {
-      console.log(error, 'error');
+      console.log(error, "error");
     }
   };
 
   // handling onSelectChange
   const onSelectChange = (values: any) => {
     setSelectedFields(values);
-    const newArray = values?.map((item: { label: string; value: string }, i: number) => {
-      return {
-        name: item?.value,
-        columnOrder: i + 1,
-        isVisible: true,
-      };
-    });
+    const newArray = values?.map(
+      (item: { label: string; value: string }, i: number) => {
+        return {
+          name: item?.value,
+          columnOrder: i + 1,
+          isVisible: true,
+        };
+      }
+    );
     replace(newArray);
   };
 
   // handling note delete
   const handleDelete = async () => {
-    await salesForce({
-      method: 'DELETE',
+    await salesforce({
+      method: "DELETE",
       url: `metadata/${selectedView?._id}`,
     });
     dispatch(deleteViewByMeta(selectedView?._id));
-    dispatch(setReFetchViewBy());
+    // dispatch(setReFetchViewBy());
     handlingDiscardNewView();
-    const deletedView = viewByMeta?.find((item) => item?._id === selectedView?._id);
+    const deletedView = viewByMeta?.find(
+      (item: any) => item?._id === selectedView?._id
+    );
     if (deletedView && deletedView?.label === selectedViewBy) {
-      dispatch(setSelectedViewBy('all'));
+      dispatch(setSelectedViewBy("all"));
     }
   };
 
@@ -144,7 +163,7 @@ function AddEditViewBy(props: {
     setSelectedView(null);
     setAddingNew(true);
     setSelectedFields(null);
-    tabId && setValues(handlingDefaultValues(null, tabId));
+    selectedNav && setValues(handlingDefaultValues(null, selectedNav));
   };
 
   // handling discard new view
@@ -153,14 +172,15 @@ function AddEditViewBy(props: {
       setAddingNew(false);
       setSelectedView(viewByMeta?.[0]);
       setSelectedFields(
-        viewByMeta?.[0]?.query?.fields?.map((item) => {
+        viewByMeta?.[0]?.query?.fields?.map((item: any) => {
           return {
             label: item?.name,
             value: item?.name,
           };
         })
       );
-      tabId && setValues(handlingDefaultValues(viewByMeta?.[0], tabId));
+      selectedNav &&
+        setValues(handlingDefaultValues(viewByMeta?.[0], selectedNav));
     }
   };
 
@@ -191,7 +211,7 @@ function AddEditViewBy(props: {
           <Modal.Body>
             <div className="main-wrapper d-flex">
               {/* - - Left navigation - - - */}
-              <div className={`left-panel ${collapsed ? 'collapsed' : ''}`}>
+              <div className={`left-panel ${collapsed ? "collapsed" : ""}`}>
                 <a
                   href="#"
                   onClick={(e) => {
@@ -210,7 +230,7 @@ function AddEditViewBy(props: {
                     </div>
                     <span
                       className="icons-add icon m-0"
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: "pointer" }}
                       onClick={handleAddNewView}
                     ></span>
                   </div>
@@ -223,7 +243,7 @@ function AddEditViewBy(props: {
                             e.preventDefault();
                           }}
                         >
-                          {watch('label') !== '' ? watch('label') : 'Unnamed'}
+                          {watch("label") !== "" ? watch("label") : "Unnamed"}
                         </a>
                         <span
                           className="icons-delete icon"
@@ -233,11 +253,13 @@ function AddEditViewBy(props: {
                         ></span>
                       </li>
                     )}
-                    {viewByMeta?.map((item) => {
+                    {viewByMeta?.map((item: any) => {
                       return (
                         <li
                           key={item?._id}
-                          className={selectedView?._id === item?._id ? 'active' : ''}
+                          className={
+                            selectedView?._id === item?._id ? "active" : ""
+                          }
                         >
                           <a
                             href="#"
@@ -246,33 +268,36 @@ function AddEditViewBy(props: {
                               setAddingNew(false);
                               setSelectedView(item);
                               setSelectedFields(
-                                item?.query?.fields?.map((item) => {
+                                item?.query?.fields?.map((item: any) => {
                                   return {
                                     label: item?.name,
                                     value: item?.name,
                                   };
                                 })
                               );
-                              tabId && setValues(handlingDefaultValues(item, tabId));
+                              selectedNav &&
+                                setValues(
+                                  handlingDefaultValues(item, selectedNav)
+                                );
                             }}
                           >
                             {item?.label}
                           </a>
                           <span
                             className="icons-delete icon"
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: "pointer" }}
                             onClick={() => {
                               // props.handleClose();
-                              CustomConfirmAlert({
-                                yes: () => handleDelete(),
-                                heading: 'Are you sure?',
-                                message: `Do you really want to delete this View? This process cannot be undone.`,
-                                noLabel: 'Cancel',
-                                yesLabel: 'Delete',
-                                loadingMessage: 'Deleting',
-                                successMessage: 'View Deleted Successfully',
-                                errorMessage: 'Error while Deleting View',
-                              });
+                              // CustomConfirmAlert({
+                              //   yes: () => handleDelete(),
+                              //   heading: 'Are you sure?',
+                              //   message: `Do you really want to delete this View? This process cannot be undone.`,
+                              //   noLabel: 'Cancel',
+                              //   yesLabel: 'Delete',
+                              //   loadingMessage: 'Deleting',
+                              //   successMessage: 'View Deleted Successfully',
+                              //   errorMessage: 'Error while Deleting View',
+                              // });
                             }}
                           />
                         </li>
@@ -280,7 +305,11 @@ function AddEditViewBy(props: {
                     })}
                     {!viewByMeta && (
                       <li>
-                        <Spinner style={{ margin: '10%' }} animation="border" variant="dark" />
+                        <Spinner
+                          style={{ margin: "10%" }}
+                          animation="border"
+                          variant="dark"
+                        />
                       </li>
                     )}
                     {viewByMeta?.length === 0 && (
@@ -294,10 +323,12 @@ function AddEditViewBy(props: {
                 </div>
               </div>
               {/* - - right content section - - - */}
-              <div className="right-panel" style={{ width: '100px' }}>
+              <div className="right-panel" style={{ width: "100px" }}>
                 <div className="right-panel-top">
                   <div className="right-panel-header d-flex justify-content-between align-items-center">
-                    <h3>{addingNew ? 'Add New' : `Editing ${selectedView?.label}`}</h3>
+                    <h3>
+                      {addingNew ? "Add New" : `Editing ${selectedView?.label}`}
+                    </h3>
                     <span className="icons-cross"></span>
                   </div>
                   <div className="form-step-content">
@@ -305,33 +336,33 @@ function AddEditViewBy(props: {
                       <div className="row g-3">
                         <InputField
                           control={control}
-                          label={'View Name'}
-                          name={'label'}
+                          label={"View Name"}
+                          name={"label"}
                           mainClass="col-sm-12"
                           inputProps={{
                             placeholder: `Enter View Name`,
                           }}
                           rules={{
-                            required: { value: true, message: '' },
+                            required: { value: true, message: "" },
                             maxLength: {
                               value: 56,
-                              message: 'Maximum 56 characters are allowed',
+                              message: "Maximum 56 characters are allowed",
                             },
                           }}
                         />
                         <TextareaField
                           control={control}
-                          label={'Description'}
-                          name={'description'}
+                          label={"Description"}
+                          name={"description"}
                           mainClass="col-sm-12"
                           inputProps={{
-                            placeholder: 'Enter Description',
+                            placeholder: "Enter Description",
                           }}
                           rules={{
-                            required: { value: true, message: '' },
+                            required: { value: true, message: "" },
                             maxLength: {
                               value: 256,
-                              message: 'Maximum 256 characters are allowed',
+                              message: "Maximum 256 characters are allowed",
                             },
                           }}
                         />
@@ -339,7 +370,7 @@ function AddEditViewBy(props: {
                         <Select
                           value={selectedFields}
                           onChange={onSelectChange}
-                          options={allFields?.map((item) => {
+                          options={metadata?.map((item: any) => {
                             return {
                               label: item?.label,
                               value: item?.name,
@@ -381,7 +412,7 @@ function AddEditViewBy(props: {
                   size="sm"
                   role="status"
                   aria-hidden="true"
-                  style={{ marginLeft: '10px' }}
+                  style={{ marginLeft: "10px" }}
                 />
               )}
             </Button>

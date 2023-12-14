@@ -248,16 +248,7 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
 
   return (
     <>
-      <Dropdown.Menu
-        className="custom-dropdown-menu"
-        show
-        style={{
-          position: "absolute",
-          zIndex: 9999,
-          top: "2rem",
-          width: "10vw",
-        }}
-      >
+      <Dropdown.Menu className="custom-dropdown-menu" show>
         <div className="modal-content">
           <div className="modal-header">
             <div className="modal-heading-content">

@@ -31,6 +31,28 @@ const ViewMetaDataSlice = createSlice({
         const state = init;
         state.viewByMeta = action.payload;
       },
+      deleteViewByMeta(init, action) {
+        const state = init;
+        if (state.viewByMeta) {
+          const copyMeta = [...state.viewByMeta];
+          const index = copyMeta?.findIndex((fi) => fi?._id === action.payload);
+          copyMeta?.splice(index, 1);
+          state.viewByMeta = copyMeta;
+        }
+      },
+      pushToViewBy(init, action) {
+        const state = init;
+        state.viewByMeta?.push(action?.payload);
+      },
+      updateViewByMeta(init, action) {
+        const state = init;
+        if (state.viewByMeta) {
+          const copyViews = [...state.viewByMeta];
+          const indexOfRecord = copyViews?.findIndex((item) => item?._id === action.payload?._id);
+          copyViews.splice(indexOfRecord, 1, action.payload);
+          state.viewByMeta = copyViews;
+        }
+      },
   },
   extraReducers: (builder) => {
     builder
@@ -53,5 +75,5 @@ const ViewMetaDataSlice = createSlice({
 });
 
 // reducers exports
-export const { setViewByMeta } = ViewMetaDataSlice.actions;
+export const { setViewByMeta,deleteViewByMeta,pushToViewBy,updateViewByMeta } = ViewMetaDataSlice.actions;
 export default ViewMetaDataSlice.reducer;

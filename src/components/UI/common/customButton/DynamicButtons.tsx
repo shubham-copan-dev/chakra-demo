@@ -44,6 +44,7 @@ import { setReset } from "@/redux/slices/common";
 import EditForm from "@/components/Grid/ViewPanel/EditForm";
 import Filters from "@/components/Grid/ViewPanel/ViewHeader/Filters";
 import ManageColumns from "@/components/Grid/ViewPanel/ViewHeader/ManageColumns";
+import ViewBy from "@/components/Grid/ViewPanel/ViewHeader/ViewBy";
 
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
@@ -484,12 +485,13 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
           </Flex>
         </Button>
         <Divider orientation="vertical" h="1rem" mx="1rem" />
-        <Button sx={ViewBarBtnStyl}>
+        {/* <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             <ChevronDownIcon />
             <Text>View: all</Text>
           </Flex>
-        </Button>
+        </Button> */}
+        <ViewBy />
         <Divider orientation="vertical" h="1rem" mx="1rem" />
         <Button
           isDisabled={!((selectedRows?.length as any) > 1)}

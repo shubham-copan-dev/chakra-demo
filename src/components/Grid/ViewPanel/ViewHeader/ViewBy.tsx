@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Dropdown, ListGroup } from 'react-bootstrap';
+import React, { useState } from "react";
+import { Dropdown, ListGroup } from "react-bootstrap";
 
-import { salesForce } from '@/axios/actions/salesForce';
-import CustomConfirmAlert from '@/components/UI/ConfirmAlert';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { deleteViewByMeta, setReFetchViewBy, setSelectedViewBy } from '@/redux/slices/salesForce';
-import { ViewByInterface } from '@/redux/slices/salesForce/interface';
+import { salesforce } from "@/axios/actions/salesforce";
+// import CustomConfirmAlert from '@/components/UI/ConfirmAlert';
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+// import { deleteViewByMeta, setReFetchViewBy, setSelectedViewBy } from '@/redux/slices/salesForce';
+import { setSelectedViewBy } from "@/redux/slices/fieldUpdate";
+import { deleteViewByMeta } from "@/redux/slices/viewmetadata";
 
-import AddEditViewBy from './AddEditViewBy';
+import AddEditViewBy from "./AddEditViewBy";
 
 function ViewBy() {
   // use hooks
@@ -15,28 +16,29 @@ function ViewBy() {
 
   // local states
   const [addEditModal, setAddEditModal] = useState<boolean>(false);
-  const [defaultValues, setDefaultValues] = useState<ViewByInterface | null>(null);
+  const [defaultValues, setDefaultValues] = useState<any | null>(null);
 
   // global states
-  const { selectedViewBy, viewByMeta } = useAppSelector((state) => state.sales);
+  const { viewByMeta }: any = useAppSelector((state) => state.Viewmetadata);
+  const { selectedViewBy } = useAppSelector((state: any) => state.fieldupdate);
 
   // handling view edit
-  const handleEdit = (obj: ViewByInterface) => {
+  const handleEdit = (obj: any) => {
     setDefaultValues(obj);
     setAddEditModal(true);
   };
 
   // handling delete
   const handleDelete = async (id: string) => {
-    await salesForce({
-      method: 'DELETE',
+    await salesforce({
+      method: "DELETE",
       url: `metadata/${id}`,
     });
     dispatch(deleteViewByMeta(id));
-    dispatch(setReFetchViewBy());
-    const deletedView = viewByMeta?.find((item) => item?._id === id);
+    // dispatch(setReFetchViewBy());
+    const deletedView = viewByMeta?.find((item: any) => item?._id === id);
     if (deletedView && deletedView?.label === selectedViewBy) {
-      dispatch(setSelectedViewBy('all'));
+      dispatch(setSelectedViewBy("all"));
     }
   };
 
@@ -45,8 +47,11 @@ function ViewBy() {
       <ListGroup.Item>
         <Dropdown className="view-by-dropdown">
           <Dropdown.Toggle id="dropdown-basic">
-            View by : {selectedViewBy?.toUpperCase()}{' '}
-            <span className="icons icons-drop-down" style={{ margin: '10px' }}></span>
+            View by : {selectedViewBy?.toUpperCase()}{" "}
+            <span
+              className="icons icons-drop-down"
+              style={{ margin: "10px" }}
+            ></span>
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
@@ -56,15 +61,15 @@ function ViewBy() {
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    dispatch(setSelectedViewBy('all'));
+                    dispatch(setSelectedViewBy("all"));
                   }}
                   className="d-flex justify-content-between"
-                  style={{ color: selectedViewBy === 'all' ? '#3478f6' : '' }}
+                  style={{ color: selectedViewBy === "all" ? "#3478f6" : "" }}
                 >
                   ALL
                 </Dropdown.Item>
               </ListGroup.Item>
-              {viewByMeta?.map((item) => {
+              {viewByMeta?.map((item: any) => {
                 return (
                   <ListGroup.Item key={item?._id}>
                     <Dropdown.Item
@@ -74,7 +79,9 @@ function ViewBy() {
                         dispatch(setSelectedViewBy(item?.label));
                       }}
                       className="d-flex justify-content-between"
-                      style={{ color: selectedViewBy === item.label ? '#3478f6' : '' }}
+                      style={{
+                        color: selectedViewBy === item.label ? "#3478f6" : "",
+                      }}
                     >
                       {item?.label}
                     </Dropdown.Item>
@@ -83,16 +90,16 @@ function ViewBy() {
                         href="#"
                         onClick={(e) => {
                           e.preventDefault();
-                          CustomConfirmAlert({
-                            yes: () => handleDelete(item?._id),
-                            heading: 'Are you sure?',
-                            message: `Do you really want to delete this View? This process cannot be undone.`,
-                            noLabel: 'Cancel',
-                            yesLabel: 'Delete',
-                            loadingMessage: 'Deleting',
-                            successMessage: 'View Deleted Successfully',
-                            errorMessage: 'Error while Deleting View',
-                          });
+                          // CustomConfirmAlert({
+                          //   yes: () => handleDelete(item?._id),
+                          //   heading: 'Are you sure?',
+                          //   message: `Do you really want to delete this View? This process cannot be undone.`,
+                          //   noLabel: 'Cancel',
+                          //   yesLabel: 'Delete',
+                          //   loadingMessage: 'Deleting',
+                          //   successMessage: 'View Deleted Successfully',
+                          //   errorMessage: 'Error while Deleting View',
+                          // });
                         }}
                         className="icons-delete"
                       ></Dropdown.Item>
