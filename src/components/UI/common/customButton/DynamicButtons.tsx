@@ -16,6 +16,7 @@ import {
   PopoverFooter,
   PopoverHeader,
   useDisclosure,
+  Divider,
 } from "@chakra-ui/react";
 import {
   ArrowUpDownIcon,
@@ -53,6 +54,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
     defaultGrid,
   } = useAppSelector((state: any) => state.salesforce);
   const { isFullScreen } = useAppSelector((state: any) => state.common);
+  const { selectedRows } = useAppSelector((state) => state.fieldupdate);
   const { fieldUpdateMode, editedFields } = useAppSelector(
     (state: any) => state.fieldupdate
   );
@@ -424,7 +426,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
           </Flex>
         </Button>
       </Flex>
-      <Flex>
+      <Flex alignItems="center">
         <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             {handlingFieldUpdateModeButton(fieldUpdateMode)}
@@ -463,13 +465,31 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
             <RepeatIcon />
           </Flex>
         </Button>
+        <Divider orientation="vertical" h="1rem" mx="1rem" />
         <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             <ChevronDownIcon />
             <Text>View: all</Text>
           </Flex>
         </Button>
-        <Button sx={ViewBarBtnStyl} onClick={() => setShowEditForm(true)}>
+        <Divider orientation="vertical" h="1rem" mx="1rem" />
+        <Button
+          isDisabled={!((selectedRows?.length as any) > 1)}
+          sx={{
+            ...ViewBarBtnStyl,
+            bg:
+              (selectedRows?.length as any) > 1
+                ? "bgClr.PrimaryActions"
+                : "bgClr.Grey300",
+            color:
+              (selectedRows?.length as any) > 1
+                ? "bgClr.NeutralColorWhite"
+                : "",
+          }}
+          onClick={() => setShowEditForm(true)}
+          border="1px solid #DCE3EE"
+          height="2rem"
+        >
           <Flex alignItems="center" gap="5px">
             <Text>Bulk Update</Text>
           </Flex>
