@@ -21,6 +21,14 @@ import {
 } from "@/redux/slices/salesForce/interface";
 
 import "../../notes.css";
+import { Box, Text } from "@chakra-ui/react";
+import {
+  AddIcon,
+  ChevronLeftIcon,
+  CloseIcon,
+  DeleteIcon,
+} from "@chakra-ui/icons";
+import ConfirmPopup from "@/components/UI/common/confirmPopup";
 
 const handlingDefaultValues = (
   values: ViewByInterface | null,
@@ -53,6 +61,7 @@ const handlingDefaultValues = (
 
 function AddEditViewBy(props: {
   show: boolean;
+  handleDelete: () => any;
   handleClose: () => void;
   defaultValues: ViewByInterface | null;
 }) {
@@ -79,6 +88,7 @@ function AddEditViewBy(props: {
     { label: string; value: string }[] | null
   >(null);
   const [values, setValues] = useState<AddNewTabInterface | undefined>();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   // hook form
   const {
@@ -206,7 +216,7 @@ function AddEditViewBy(props: {
         dialogClassName="custom-modal notes-modal dialog-md"
         show={props.show}
         onHide={props.handleClose}
-        style={{ width: "65vw", height: "68vh" }}
+        style={{ width: "65vw", height: "56vh" }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="msform">
           <Modal.Body>
@@ -222,18 +232,21 @@ function AddEditViewBy(props: {
                   style={{ zIndex: 2 }}
                   className="icons-collapse"
                 >
-                  <span className="icons-drop-down"></span>
+                  <ChevronLeftIcon />
                 </a>
                 <div className="left-navigation">
                   <div className="nav-heading-top">
                     <div className="heading">
                       <h3>Views</h3>
                     </div>
-                    <span
+                    {/* <span
                       className="icons-add icon m-0"
                       style={{ cursor: "pointer" }}
                       onClick={handleAddNewView}
-                    ></span>
+                    ></span> */}
+                    <Text cursor="pointer" onClick={handleAddNewView}>
+                      <AddIcon />
+                    </Text>
                   </div>
                   <ul className="navlist">
                     {addingNew && (
@@ -261,6 +274,7 @@ function AddEditViewBy(props: {
                           className={
                             selectedView?._id === item?._id ? "active" : ""
                           }
+                          style={{ minHeight: "45px" }}
                         >
                           <a
                             href="#"
@@ -281,6 +295,7 @@ function AddEditViewBy(props: {
                                   handlingDefaultValues(item, selectedNav)
                                 );
                             }}
+                            style={{ width: "100%" }}
                           >
                             {item?.label}
                           </a>
@@ -288,19 +303,12 @@ function AddEditViewBy(props: {
                             className="icons-delete icon"
                             style={{ cursor: "pointer" }}
                             onClick={() => {
-                              // props.handleClose();
-                              // CustomConfirmAlert({
-                              //   yes: () => handleDelete(),
-                              //   heading: 'Are you sure?',
-                              //   message: `Do you really want to delete this View? This process cannot be undone.`,
-                              //   noLabel: 'Cancel',
-                              //   yesLabel: 'Delete',
-                              //   loadingMessage: 'Deleting',
-                              //   successMessage: 'View Deleted Successfully',
-                              //   errorMessage: 'Error while Deleting View',
-                              // });
+                              // e.preventDefault();
+                              setIsConfirmOpen(true);
                             }}
-                          />
+                          >
+                            <DeleteIcon />
+                          </span>
                         </li>
                       );
                     })}
@@ -326,11 +334,14 @@ function AddEditViewBy(props: {
               {/* - - right content section - - - */}
               <div className="right-panel" style={{ width: "100px" }}>
                 <div className="right-panel-top">
-                  <div className="right-panel-header d-flex justify-content-between align-items-center">
+                  <div
+                    className="right-panel-header d-flex justify-content-between align-items-center"
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
                     <h3>
                       {addingNew ? "Add New" : `Editing ${selectedView?.label}`}
                     </h3>
-                    <span className="icons-cross"></span>
+                    <CloseIcon onClick={props.handleClose} cursor="pointer" />
                   </div>
                   <div className="form-step-content">
                     <div className="form-wrapper">
@@ -367,20 +378,21 @@ function AddEditViewBy(props: {
                             },
                           }}
                         />
-
-                        <Select
-                          value={selectedFields}
-                          onChange={onSelectChange}
-                          options={metadata?.map((item: any) => {
-                            return {
-                              label: item?.label,
-                              value: item?.name,
-                            };
-                          })}
-                          isMulti={true}
-                          className={`simpledropdown  col-sm-12`}
-                          classNamePrefix="custom-react-select"
-                        />
+                        <Box mt={2}>
+                          <Select
+                            value={selectedFields}
+                            onChange={onSelectChange}
+                            options={metadata?.map((item: any) => {
+                              return {
+                                label: item?.label,
+                                value: item?.name,
+                              };
+                            })}
+                            isMulti={true}
+                            className={`simpledropdown  col-sm-12`}
+                            classNamePrefix="custom-react-select"
+                          />
+                        </Box>
                       </div>
                     </div>
                   </div>
@@ -395,6 +407,11 @@ function AddEditViewBy(props: {
               type="button"
               onClick={props.handleClose}
               className="btn-bordered"
+              style={{
+                color: "#3478F6",
+                border: "1px solid #DCE3EE",
+                backgroundColor: "#fff",
+              }}
             >
               Cancel
             </Button>
@@ -420,6 +437,13 @@ function AddEditViewBy(props: {
           </Modal.Footer>
         </form>
       </Modal>
+      {isConfirmOpen && (
+        <ConfirmPopup
+          isOpen={isConfirmOpen}
+          onClose={() => setIsConfirmOpen(false)}
+          handleClick={handleDelete}
+        />
+      )}
     </>
   );
 }

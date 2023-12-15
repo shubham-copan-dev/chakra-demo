@@ -142,6 +142,7 @@ function ViewBy() {
       </List>
       {addEditModal && (
         <AddEditViewBy
+          handleDelete={handleDelete}
           show={addEditModal}
           handleClose={() => {
             setAddEditModal(false);
