@@ -63,7 +63,7 @@ function ViewBy() {
   return (
     <>
       <List>
-        <ListItem fontSize="13px">
+        <ListItem fontSize="13px" border="none">
           <Menu>
             <MenuButton
               as="button"
@@ -72,7 +72,7 @@ function ViewBy() {
             >
               View by : {selectedViewBy?.toUpperCase()} <ChevronDownIcon />
             </MenuButton>
-            <MenuList>
+            <MenuList border="none">
               <List>
                 <ListItem fontSize="13px">
                   <MenuItem

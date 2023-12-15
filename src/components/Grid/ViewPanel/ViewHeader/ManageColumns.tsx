@@ -62,12 +62,12 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
           }
           return item;
         });
-        dispatch(
-          updateGridTabs({
-            ...currentTab,
-            query: { ...currentTab.query, fields: newFields },
-          })
-        );
+        // dispatch(
+        //   updateGridTabs({
+        //     ...currentTab,
+        //     query: { ...currentTab.query, fields: newFields },
+        //   })
+        // );
         setOnGoingRequests((prev) => [...prev, name]);
         await salesforce({
           method: "PATCH",
