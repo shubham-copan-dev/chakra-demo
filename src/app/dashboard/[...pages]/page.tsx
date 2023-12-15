@@ -8,7 +8,7 @@ import {
   capsLetter,
   fieldTypes,
   updateUrl,
-  viewByMeta,
+  // viewByMeta,
 } from "@/utilities/constants";
 import { fetchRecords, updateRecord } from "@/redux/slices/gridrecords";
 import { fetchMetaData } from "@/redux/slices/gridmetadata";
@@ -31,6 +31,8 @@ const DashboardPage = () => {
   const isHome = useIsHome();
   const path = usePathname();
   const [isGrouped, setIsGrouped] = useState<boolean>(false);
+  const { viewByMeta }: any = useAppSelector((state) => state.Viewmetadata);
+
   const viewBySelected = viewByMeta?.find(
     (fil) => fil?.label === selectedViewBy
   );
@@ -169,7 +171,6 @@ const DashboardPage = () => {
               const newObj = { ...params.data, [item?.name]: params.newValue };
               dispatch(updateRecord(newObj));
               if (fieldUpdateMode === "submit") {
-                debugger;
                 dispatch(
                   setEditedFields({
                     id: params.data.Id,
