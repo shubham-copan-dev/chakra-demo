@@ -29,7 +29,7 @@ import ConfirmPopup from "@/components/UI/common/confirmPopup";
 function ViewBy() {
   // use hooks
   const dispatch = useAppDispatch();
-
+  const { selectedGridTab }: any = useAppSelector((state) => state.salesforce);
   // local states
   const [addEditModal, setAddEditModal] = useState<boolean>(false);
   const [defaultValues, setDefaultValues] = useState<any | null>(null);
@@ -50,7 +50,7 @@ function ViewBy() {
   const handleDelete = async (id: string) => {
     await salesforce({
       method: "DELETE",
-      url: `metadata/${id}`,
+      url: `metadata/${selectedGridTab}`,
     });
     dispatch(deleteViewByMeta(id));
     // dispatch(setReFetchViewBy());
@@ -72,7 +72,7 @@ function ViewBy() {
             >
               View by : {selectedViewBy?.toUpperCase()} <ChevronDownIcon />
             </MenuButton>
-            <MenuList border="none">
+            <MenuList border="none" boxShadow="0 4px 12px rgba(0, 0, 0, 0.3)">
               <List>
                 <ListItem fontSize="13px">
                   <MenuItem

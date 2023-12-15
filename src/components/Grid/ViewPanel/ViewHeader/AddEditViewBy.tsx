@@ -216,7 +216,7 @@ function AddEditViewBy(props: {
         dialogClassName="custom-modal notes-modal dialog-md"
         show={props.show}
         onHide={props.handleClose}
-        style={{ width: "65vw", height: "56vh" }}
+        style={{ width: "65vw", height: "50vh" }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="msform">
           <Modal.Body>
