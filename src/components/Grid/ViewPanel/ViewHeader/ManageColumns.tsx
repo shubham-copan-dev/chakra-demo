@@ -8,6 +8,7 @@ import { updateGridTabs } from "@/redux/slices/salesForce";
 import { setMetaData, updateColumnMeta } from "@/redux/slices/gridmetadata";
 import "./managecolumn.css";
 import { Spinner } from "@chakra-ui/react";
+import { CloseIcon } from "@chakra-ui/icons";
 // setColumnMeta,updateColumnMeta,
 function ManageColumns({ onHide }: { onHide: () => void }) {
   // use hooks
@@ -250,13 +251,20 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
     <>
       <Dropdown.Menu className="custom-dropdown-menu" show>
         <div className="modal-content">
-          <div className="modal-header">
+          <div
+            className="modal-header"
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              marginBottom: "1.2rem",
+            }}
+          >
             <div className="modal-heading-content">
               <h3 className="modal-title">Manage Columns</h3>
               {/* <p>Deep dive into data by setting up your perefrences.</p> */}
             </div>
             <button type="button" className="close" onClick={onHide}>
-              <span className="icons-cross"></span>
+              <CloseIcon fontSize={9} />
             </button>
           </div>
         </div>
