@@ -1,50 +1,65 @@
+import React from "react";
 import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   Button,
-  ButtonGroup,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverFooter,
-  PopoverHeader,
-  PopoverTrigger,
   useDisclosure,
 } from "@chakra-ui/react";
+import { customVariant } from "@/utilities/constants";
 
-function ControlledUsage() {
-  const { isOpen, onToggle, onClose } = useDisclosure();
+const ConfirmPopup = ({ isOpen, onClose, handleClick }: any) => {
+  const { onOpen } = useDisclosure();
 
   return (
-    <>
-      <Button mr={5} onClick={onToggle}>
-        Delete
-      </Button>
-      <Popover
-        returnFocusOnClose={false}
-        isOpen={isOpen}
-        onClose={onClose}
-        placement="right"
-        closeOnBlur={false}
-      >
-        <PopoverTrigger>
-          <Button colorScheme="pink">Popover Target</Button>
-        </PopoverTrigger>
-        <PopoverContent>
-          <PopoverHeader fontWeight="semibold">Confirmation</PopoverHeader>
-          <PopoverArrow />
-          <PopoverCloseButton />
-          <PopoverBody>Are you sure you want to delete this view ?</PopoverBody>
-          <PopoverFooter display="flex" justifyContent="flex-end">
-            <ButtonGroup size="sm">
-              <Button variant="outline">Cancel</Button>
-              <Button colorScheme="red">Delete</Button>
-            </ButtonGroup>
-          </PopoverFooter>
-        </PopoverContent>
-      </Popover>
-    </>
-  );
-}
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent minWidth="25rem">
+        <ModalHeader>Are You Sure</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody fontSize="13px">
+          Are you sure you want to delete this view? This process cannot be
+          undone
+        </ModalBody>
 
-export default ControlledUsage;
+        <ModalFooter>
+          <Button
+            colorScheme="blue"
+            mr={3}
+            onClick={onClose}
+            fontWeight="100"
+            fontSize="13px"
+            _hover={{}}
+            bg="transparent"
+            color="bgClr.PrimaryActions"
+            border="1px solid #DCE3EE"
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={handleClick}
+            backgroundColor="#BB3E23"
+            color="white"
+            fontWeight="400"
+            sx={customVariant}
+            fontSize="13px"
+          >
+            Delete
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+export default ConfirmPopup;
+// backgroundColor="#BB3E23"
+//                               onClick={handleTabDelete}
+//                               color="white"
+//                               fontWeight="400"
+//                               sx={customVariant}

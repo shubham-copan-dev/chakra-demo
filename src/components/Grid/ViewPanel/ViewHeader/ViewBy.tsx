@@ -24,6 +24,7 @@ import {
   DeleteIcon,
   EditIcon,
 } from "@chakra-ui/icons";
+import ConfirmPopup from "@/components/UI/common/confirmPopup";
 
 function ViewBy() {
   // use hooks
@@ -36,6 +37,8 @@ function ViewBy() {
   // global states
   const { viewByMeta }: any = useAppSelector((state) => state.Viewmetadata);
   const { selectedViewBy } = useAppSelector((state: any) => state.fieldupdate);
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   // handling view edit
   const handleEdit = (obj: any) => {
@@ -60,13 +63,12 @@ function ViewBy() {
   return (
     <>
       <List>
-        <ListItem>
+        <ListItem fontSize="13px">
           <Menu>
             <MenuButton
               as="button"
               className="view-by-dropdown"
               sx={ViewBarBtnStyl}
-              fontSize="13px"
             >
               View by : {selectedViewBy?.toUpperCase()} <ChevronDownIcon />
             </MenuButton>
@@ -101,16 +103,7 @@ function ViewBy() {
                       <MenuItem
                         onClick={(e) => {
                           e.preventDefault();
-                          // CustomConfirmAlert({
-                          //   yes: () => handleDelete(item?._id),
-                          //   heading: 'Are you sure?',
-                          //   message: `Do you really want to delete this View? This process cannot be undone.`,
-                          //   noLabel: 'Cancel',
-                          //   yesLabel: 'Delete',
-                          //   loadingMessage: 'Deleting',
-                          //   successMessage: 'View Deleted Successfully',
-                          //   errorMessage: 'Error while Deleting View',
-                          // });
+                          setIsConfirmOpen(true);
                         }}
                         flex="1"
                       >
@@ -136,6 +129,7 @@ function ViewBy() {
                     }}
                     fontSize="13px"
                     gap="1rem"
+                    color="bgClr.PrimaryActions"
                   >
                     <AddIcon />
                     New Contract
@@ -154,6 +148,13 @@ function ViewBy() {
             setDefaultValues(null);
           }}
           defaultValues={defaultValues}
+        />
+      )}
+      {isConfirmOpen && (
+        <ConfirmPopup
+          isOpen={isConfirmOpen}
+          onClose={() => setIsConfirmOpen(false)}
+          handleClick={handleDelete}
         />
       )}
     </>
