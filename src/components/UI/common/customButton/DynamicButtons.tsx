@@ -332,11 +332,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
             <Text>Manage Columns</Text>
           </Flex>
           {manageColumnPopup && (
-            <ManageColumns
-              onHide={function (): void {
-                throw new Error("Function not implemented.");
-              }}
-            />
+            <ManageColumns onHide={() => setManageColumnPopup(true)} />
           )}
         </Button>
         <Button sx={ViewBarBtnStyl}>

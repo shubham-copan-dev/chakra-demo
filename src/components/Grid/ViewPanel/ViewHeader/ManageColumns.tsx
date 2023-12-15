@@ -7,14 +7,15 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { updateGridTabs } from "@/redux/slices/salesForce";
 import { setMetaData, updateColumnMeta } from "@/redux/slices/gridmetadata";
 import "./managecolumn.css";
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
+import { useToast } from "@chakra-ui/react";
 // setColumnMeta,updateColumnMeta,
 function ManageColumns({ onHide }: { onHide: () => void }) {
   // use hooks
   const { selectedGridTab }: any = useAppSelector((state) => state.salesforce);
   const dispatch = useAppDispatch();
-
+  const toast = useToast();
   // use refs
   const dragItemNode = useRef<any>();
   const dragItem = useRef<any>();
@@ -70,15 +71,66 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
         //   })
         // );
         setOnGoingRequests((prev) => [...prev, name]);
-        await salesforce({
-          method: "PATCH",
-          url: `metadata/field/${selectedGridTab}`,
-          data: {
-            query: {
-              fields: newFields,
+        try {
+          setOnGoingRequests((prev) => [...prev, name]);
+
+          // Show pending toast
+          const pendingToast = toast({
+            title: "Updating...",
+            description: <Spinner size="sm" />,
+            status: "info",
+            duration: null, // Indefinite duration for pending state
+            isClosable: true,
+            position: "top",
+          });
+
+          const response = await salesforce({
+            method: "PATCH",
+            url: `metadata/field/${selectedGridTab}`,
+            data: {
+              query: {
+                fields: newFields,
+              },
             },
-          },
-        });
+          });
+
+          // Close the pending toast when request is fulfilled
+          toast.close(pendingToast);
+
+          // Show success toast upon successful update
+          toast({
+            title: "Update Successful",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+            position: "top",
+          });
+
+          setOnGoingRequests((prev) => {
+            const copy = [...prev];
+            const index = copy?.findIndex((fi) => fi === name);
+            copy?.splice(index, 1);
+            return copy;
+          });
+
+          dispatch(
+            updateColumnMeta({
+              ...copyObj,
+              uiMetadata: { ...copyObj.uiMetadata, isVisible: checked },
+            })
+          );
+        } catch (error) {
+          // Show error toast if there's an error
+          toast({
+            title: "Update Failed",
+            description: "Failed to update fields.",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+
+          console.error(error);
+        }
         setOnGoingRequests((prev) => {
           const copy = [...prev];
           const index = copy?.findIndex((fi) => fi === name);
