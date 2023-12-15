@@ -7,8 +7,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { updateGridTabs } from "@/redux/slices/salesForce";
 import { setMetaData, updateColumnMeta } from "@/redux/slices/gridmetadata";
 import "./managecolumn.css";
-import { Flex, Spinner } from "@chakra-ui/react";
-import { CloseIcon } from "@chakra-ui/icons";
+import { Divider, Flex, Spinner } from "@chakra-ui/react";
+import { CloseIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { useToast } from "@chakra-ui/react";
 // setColumnMeta,updateColumnMeta,
 function ManageColumns({ onHide }: { onHide: () => void }) {
@@ -279,9 +279,14 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
                 itemI,
               });
             }}
-            style={{}}
+            style={{
+              marginTop: "1rem",
+              display: "flex",
+              paddingLeft: "1rem",
+              gap: "10px",
+            }}
           >
-            <span className="icons-dots"></span>
+            <DragHandleIcon />
             <Form.Check
               className="form-group-checkbox"
               type="checkbox"
@@ -307,8 +312,8 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
             className="modal-header"
             style={{
               display: "flex",
-              justifyContent: "space-around",
-              marginBottom: "1.2rem",
+              justifyContent: "space-between",
+              padding: "1rem",
             }}
           >
             <div className="modal-heading-content">
@@ -316,9 +321,10 @@ function ManageColumns({ onHide }: { onHide: () => void }) {
               {/* <p>Deep dive into data by setting up your perefrences.</p> */}
             </div>
             <button type="button" className="close" onClick={onHide}>
-              <CloseIcon fontSize={9} />
+              <CloseIcon fontSize={10} />
             </button>
           </div>
+          <Divider />
         </div>
         <ListGroup>{renderList()}</ListGroup>
       </Dropdown.Menu>
