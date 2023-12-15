@@ -148,7 +148,7 @@ export default function RootLayout({
             {selectedNav !== "Home" && metadata?.length && (
               <DynamicButtons buttonData={buttonData} />
             )}
-            {selectedNav !== "Home" && metadata?.length && (
+            {/* {selectedNav !== "Home" && metadata?.length && (
               <Flex marginBottom="1rem" gap="5px" px={5}>
                 <RowIcon fontSize={12} />
                 <Text
@@ -163,7 +163,7 @@ export default function RootLayout({
                   Drag here to set row groups
                 </Text>
               </Flex>
-            )}
+            )} */}
             {children}
           </Box>
         </Flex>

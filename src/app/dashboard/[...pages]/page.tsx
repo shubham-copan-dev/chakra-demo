@@ -12,13 +12,13 @@ import {
 } from "@/utilities/constants";
 import { fetchRecords, updateRecord } from "@/redux/slices/gridrecords";
 import { fetchMetaData } from "@/redux/slices/gridmetadata";
-import GridView from "@/components/UI/grid";
 import GridDemo from "@/components/gridview";
 import { ValueSetterParams } from "ag-grid-community";
 import { ActionView } from "@/components/Grid/ViewPanel/GridView/CustomColumnView";
 import useIsHome from "@/hooks/isHome";
 import AddNewTab from "@/components/Grid/AddNewTab";
 import { setEditedFields } from "@/redux/slices/fieldUpdate";
+import GridView from "@/components/gridview";
 
 const DashboardPage = () => {
   const dispatch = useAppDispatch();
@@ -235,9 +235,7 @@ const DashboardPage = () => {
           </Flex>
         )}
         {/* show grid data after record fetched */}
-        {metadata?.length && !isHome && records?.length && (
-          <GridDemo columnDefs={handlingColumnDefs()} records={records} />
-        )}
+        {metadata?.length && !isHome && records?.length && <GridView />}
         {/* loader if record fetching on pending state */}
         {metadata?.length && !isHome && !records?.length && (
           <Flex height="100%" alignItems="center" justifyContent="center">

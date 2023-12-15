@@ -310,7 +310,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   };
 
   return (
-    <Flex justifyContent="space-between" px={5}>
+    <Flex justifyContent="space-between" px={5} marginBottom="-4.5rem">
       <Flex>
         <Button sx={ViewBarBtnStyl} onClick={() => setShowFilter(true)}>
           <Flex alignItems="center" gap="5px" position="relative">
