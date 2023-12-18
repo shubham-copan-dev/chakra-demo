@@ -213,6 +213,7 @@ function ViewHeader({
 
   // handling Download CSV
   const downloadCsv = async () => {
+    debugger;
     const downloadFile = ({ data, fileName, fileType }: any) => {
       const blob = new Blob([data], { type: fileType });
 
@@ -229,7 +230,6 @@ function ViewHeader({
     };
 
     const tab = gridTabs?.find((fi) => fi?._id === viewId);
-
     toast.promise(
       salesForce({
         method: "POST",

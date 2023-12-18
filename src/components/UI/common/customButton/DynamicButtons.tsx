@@ -93,14 +93,13 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
       });
     };
 
-    const tab = viewGridData?.find((fi: any) => fi?._id === gridViewId);
-
+    const tab = viewGridData?.find((fi: any) => fi?._id === selectedGridTab);
     try {
       const resp = await salesforce({
         method: "POST",
         url: `sf/object/metadata/CSV`,
         params: {
-          id: gridViewId,
+          id: selectedGridTab,
         },
       });
 
