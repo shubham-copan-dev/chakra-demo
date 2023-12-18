@@ -1,26 +1,17 @@
 import { useEffect, useState } from "react";
-import { Button, Modal, Spinner } from "react-bootstrap";
-// import { createReactEditorJS } from 'react-editor-js';
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-// import { useParams } from "react-router-dom";
-
-// import Header from '@editorjs/header';
-// import { CheckList } from '@editorjs';
-// import Code from '@editorjs/code';
-// import Delimiter from '@editorjs/delimiter';
-// import Embed from '@editorjs/embed';
-// import Header from '@editorjs/header';
-// import Image from '@editorjs/image';
-// import InlineCode from '@editorjs/inline-code';
-// import LinkTool from '@editorjs/link';
-// import List from '@editorjs/list';
-// import Marker from '@editorjs/marker';
-// import Quote from '@editorjs/quote';
-// import Raw from '@editorjs/raw';
-// import SimpleImage from '@editorjs/simple-image';
-// import Table from '@editorjs/table';
-// import Warning from '@editorjs/warning';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Box,
+} from "@chakra-ui/react";
 import { note } from "@/axios/actions/note";
 // import CustomConfirmAlert from "@/components/UI/ConfirmAlert";
 import {
@@ -39,10 +30,11 @@ import { NoteInterface } from "@/redux/slices/note/interface";
 import { RecordsInterface } from "@/redux/slices/salesForce/interface";
 
 import "./notes.css";
+import { AddIcon, ChevronLeftIcon } from "@chakra-ui/icons";
 
 // const ReactEditorJS = createReactEditorJS();
 
-function AddEditNotes(props: { show: boolean; handleClose: () => void }) {
+function AddEditNotes({ isOpen, onClose }: any) {
   //   use hooks
   // const { tabId } = useParams();
   const { selectedNav } = useAppSelector((state: any) => state.navdata);
@@ -146,243 +138,153 @@ function AddEditNotes(props: { show: boolean; handleClose: () => void }) {
   return (
     <>
       <Modal
-        dialogClassName="custom-modal notes-modal dialog-md"
-        show={props.show}
-        onHide={props.handleClose}
+        isOpen={isOpen}
+        onClose={onClose}
+        size="xl" // Example: Adjust size as needed
       >
+        <ModalOverlay />
         <form onSubmit={handleSubmit(onSubmit)} className="msform">
-          <Modal.Body>
-            <div className="main-wrapper d-flex">
-              {/* - - Left navigation - - - */}
-              <div className={`left-panel ${collapsed ? "collapsed" : ""}`}>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    setCollapsed((prev) => !prev);
-                    e.preventDefault();
-                  }}
-                  style={{ zIndex: 2 }}
-                  className="icons-collapse"
+          <ModalContent minWidth="85vw">
+            <ModalBody>
+              <Box className="main-wrapper d-flex" style={{ display: "flex" }}>
+                {/* Left navigation */}
+                <Box
+                  className={`left-panel ${collapsed ? "collapsed" : ""}`}
+                  style={{ flex: "1" }}
                 >
-                  <span className="icons-drop-down"></span>
-                </a>
-                <div className="left-navigation">
-                  <div className="nav-heading-top">
-                    <div className="heading">
-                      <span className="icons-notes icon"></span>{" "}
-                      <h3>My Notes</h3>
-                    </div>
-                    <span
-                      className="icons-add icon m-0"
-                      style={{ cursor: "pointer" }}
-                      onClick={handleAddNewNote}
-                    ></span>
-                  </div>
-                  <ul className="navlist">
-                    {addingNew && (
-                      <li className="active">
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                          }}
-                        >
-                          {watch("heading") !== ""
-                            ? watch("heading")
-                            : "Untitled"}
-                        </a>
-                        <span
-                          className="icons-delete icon"
-                          onClick={() => {
-                            handlingDiscardNewNote();
-                          }}
-                        ></span>
-                      </li>
-                    )}
-                    {notes?.map((item) => {
-                      return (
-                        <li
-                          key={item?._id}
-                          className={
-                            selectedNote?._id === item?._id ? "active" : ""
-                          }
-                        >
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setAddingNew(false);
-                              setSelectedNote(item);
-                              setValue("heading", item?.heading);
-                              setValue("description", item?.description);
-                              setValue("content", item?.content);
-                            }}
-                          >
-                            {item?.heading}
-                          </a>
-                          <span
-                            className="icons-delete icon"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              // props.handleClose();
-                              // CustomConfirmAlert({
-                              //   yes: () => handleDelete(),
-                              //   heading: "Are you sure?",
-                              //   message: `Do you really want to delete this Note? This process cannot be undone.`,
-                              //   noLabel: "Cancel",
-                              //   yesLabel: "Delete",
-                              //   loadingMessage: "Deleting",
-                              //   successMessage: "Note Deleted Successfully",
-                              //   errorMessage: "Error while Deleting Note",
-                              // });
-                            }}
-                          />
-                        </li>
-                      );
-                    })}
-                    {!notes && (
-                      <li>
-                        <Spinner
-                          style={{ margin: "10%" }}
-                          animation="border"
-                          variant="dark"
-                        />
-                      </li>
-                    )}
-                    {notes?.length === 0 && (
-                      <li>
-                        <a href="#" onClick={(e) => e.preventDefault()}>
-                          No Records
-                        </a>
-                      </li>
-                    )}
-                  </ul>
-                  {/* <div className="nav-heading-top">
-                    <div className="heading">
-                      <span className="icons-Template-icon icon"></span> <h3>Templates</h3>
-                    </div>
-                  </div>
-                  <ul className="navlist">
-                    <li>
-                      <a href="#">Discovery Call</a>
-                      <span className="icons-notes icon"></span>
-                    </li>
-                    <li>
-                      <a href="#">Deal Plan</a>
-                      <span className="icons-notes icon"></span>
-                    </li>
-                    <li>
-                      <a href="#">Opportunity Summary</a>
-                      <span className="icons-notes icon"></span>
-                    </li>
-                  </ul> */}
-                  {/* <div className="nav-heading-top">
-                    <div className="heading">
-                      <span className="icons-delete icon"></span> <h3>Trash</h3>
-                    </div>
-                  </div> */}
-                </div>
-              </div>
-              {/* - - right content section - - - */}
-              <div className="right-panel">
-                <div className="right-panel-top">
-                  <div className="right-panel-header d-flex justify-content-between align-items-center">
-                    <h3>
-                      {addingNew
-                        ? watch("heading") !== ""
-                          ? watch("heading")
-                          : "Untitled"
-                        : selectedNote?.heading}
-                    </h3>
-                    {/* <div className="buttons-wrapper">
-                      <a href="#" className="btn-border-sm btn-bordered">
-                        <span className="icons-link-icon icon"></span> Link this note to Salesforce
-                      </a>
-                      <a href="#" className="btn-border-sm btn-bordered">
-                        <span className="icons-share-icons icon"></span> Share
-                      </a>
-                    </div> */}
-                  </div>
-                  <div className="content-form">
-                    <InputField
-                      control={control}
-                      name="heading"
-                      mainStyle={{ width: "100%" }}
-                      inputProps={{
-                        placeholder: "Give your draft a title",
+                  <Box className={`left-panel ${collapsed ? "collapsed" : ""}`}>
+                    {/* <a
+                      href="#"
+                      onClick={(e) => {
+                        setCollapsed((prev) => !prev);
+                        e.preventDefault();
                       }}
-                      rules={{
-                        required: { value: true, message: "" },
-                        maxLength: {
-                          value: 56,
-                          message: "Maximum 56 characters are allowed",
-                        },
-                      }}
-                    />
-                    <TextareaField
-                      control={control}
-                      name="description"
-                      inputClass="form-control"
-                      mainStyle={{ width: "100%" }}
-                      inputProps={{
-                        placeholder: "An idea? what about it",
-                      }}
-                      rules={{
-                        required: { value: true, message: "" },
-                        maxLength: {
-                          value: 256,
-                          message: "Maximum 256 characters are allowed",
-                        },
-                      }}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <EditorField
-                    control={control}
-                    name="content"
-                    defaultValue={addingNew ? "" : selectedNote?.content}
-                  />
-                  {/* <ReactEditorJS
-                  // tools={{ header: Header }}
-                  /> */}
-                </div>
-              </div>
-              <div className="linktoshare-panel">Link To Share</div>
-            </div>
-          </Modal.Body>
-          {/* - - Footer - - - */}
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={props.handleClose}
-              className="btn-bordered"
-            >
-              Cancel
-            </Button>
+                      style={{ zIndex: 2 }}
+                      className="icons-collapse"
+                    >
+                      <ChevronLeftIcon />
+                    </a> */}
+                    <Box className="left-navigation" style={{ width: "100%" }}>
+                      {/* Content for left navigation */}
+                      <Box
+                        className="nav-heading-top"
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          paddingRight: "2rem",
+                        }}
+                      >
+                        <Box className="heading">
+                          <span className="icons-notes icon"></span>{" "}
+                          <h3>My Notes</h3>
+                        </Box>
+                        <AddIcon onClick={handleAddNewNote} cursor="pointer" />
+                      </Box>
+                      <ul className="navlist">
+                        {/* List items for notes */}
+                        {/* Replace or include your list items here */}
+                      </ul>
+                      {/* Additional sections if needed */}
+                    </Box>
+                  </Box>
+                </Box>
 
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={isSubmitting}
-              className="btn-salesboost"
-            >
-              Save Note
-              {isSubmitting && (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  style={{ marginLeft: "10px" }}
-                />
-              )}
-            </Button>
-          </Modal.Footer>
+                {/* Right content section */}
+                <Box className="right-panel" style={{ flex: "2" }}>
+                  <Box className="right-panel-top">
+                    <Box className="right-panel-header d-flex justify-content-between align-items-center">
+                      <h3 style={{ textAlign: "center" }}>
+                        {addingNew
+                          ? watch("heading") !== ""
+                            ? watch("heading")
+                            : "Untitled"
+                          : selectedNote?.heading}
+                      </h3>
+                      {/* Buttons-wrapper */}
+                    </Box>
+                    <Box className="content-form">
+                      <InputField
+                        control={control}
+                        name="heading"
+                        mainStyle={{ width: "100%" }}
+                        inputProps={{
+                          placeholder: "Give your draft a title",
+                        }}
+                        rules={{
+                          required: { value: true, message: "" },
+                          maxLength: {
+                            value: 56,
+                            message: "Maximum 56 characters are allowed",
+                          },
+                        }}
+                      />
+                      <TextareaField
+                        control={control}
+                        name="description"
+                        inputClass="form-control"
+                        mainStyle={{ width: "100%" }}
+                        inputProps={{
+                          placeholder: "An idea? what about it",
+                        }}
+                        rules={{
+                          required: { value: true, message: "" },
+                          maxLength: {
+                            value: 256,
+                            message: "Maximum 256 characters are allowed",
+                          },
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                  <Box>
+                    <EditorField
+                      control={control}
+                      name="content"
+                      defaultValue={addingNew ? "" : selectedNote?.content}
+                    />
+                    {/* Additional content */}
+                  </Box>
+                </Box>
+                <Box className="linktoshare-panel" style={{ flex: "1" }}>
+                  Link To Share
+                </Box>
+              </Box>
+            </ModalBody>
+            {/* Footer */}
+            <ModalFooter gap="1rem">
+              <Button
+                variant="outline"
+                onClick={onClose}
+                fontWeight="100"
+                fontSize="13px"
+                _hover={{}}
+                bg="transparent"
+                color="bgClr.PrimaryActions"
+                border="1px solid #DCE3EE"
+              >
+                Cancel
+              </Button>
+
+              <Button
+                colorScheme="blue"
+                type="submit"
+                isLoading={isSubmitting}
+                loadingText="Saving..."
+                fontWeight="100"
+                fontSize="13px"
+                bg="bgClr.PrimaryActions"
+                color="bgClr.NeutralColorWhite"
+                cursor="pointer"
+                _hover={{}}
+              >
+                Save Note
+              </Button>
+            </ModalFooter>
+          </ModalContent>
         </form>
       </Modal>
+      ;
     </>
   );
 }

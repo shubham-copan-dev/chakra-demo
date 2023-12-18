@@ -7,7 +7,7 @@ import AddEditNotes from "@/components/Grid/AddEditNotes";
 
 const Navbar = () => {
   const { control } = useForm();
-  const [notesMOdal, setNotesMOdal] = useState<boolean>(false);
+  const [notesModal, setNotesModal] = useState<boolean>(false);
 
   return (
     <Flex
@@ -49,7 +49,7 @@ const Navbar = () => {
           fontWeight="fontWeights.medium"
           lineHeight="120%"
           onClick={() => {
-            setNotesMOdal(true);
+            setNotesModal(true);
           }}
           cursor="pointer"
         >
@@ -92,10 +92,10 @@ const Navbar = () => {
           mt={0}
         />
       </Flex>
-      {notesMOdal && (
+      {notesModal && (
         <AddEditNotes
-          show={notesMOdal}
-          handleClose={() => setNotesMOdal(false)}
+          isOpen={notesModal} // Change show to isOpen
+          onClose={() => setNotesModal(false)} // Change handleClose to onClose
         />
       )}
     </Flex>
