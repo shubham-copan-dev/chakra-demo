@@ -17,6 +17,7 @@ import {
   PopoverHeader,
   useDisclosure,
   Divider,
+  Spinner,
 } from "@chakra-ui/react";
 import {
   ArrowUpDownIcon,
@@ -49,6 +50,7 @@ import ViewBy from "@/components/Grid/ViewPanel/ViewHeader/ViewBy";
 const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   const dispatch = useDispatch();
   const toast = useToast();
+  const [isSaving, setIsSaving] = useState(false);
   const {
     viewGridData,
     gridViewId,
@@ -235,15 +237,22 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   };
   // handling save
   const handleSave = async () => {
-    await salesforce({
-      method: "PATCH",
-      url: `bulkUpdate/records`,
-      data: {
-        allOrNone: true,
-        records: editedFields,
-      },
-    });
-    dispatch(setEditedFields(null));
+    setIsSaving(true);
+    try {
+      await salesforce({
+        method: "PATCH",
+        url: `bulkUpdate/records`,
+        data: {
+          allOrNone: true,
+          records: editedFields,
+        },
+      });
+      setIsSaving(false);
+      dispatch(setEditedFields(null));
+    } catch (err) {
+      console.error(err);
+      setIsSaving(false);
+    }
   };
 
   // handling field updating mode buttons
@@ -284,10 +293,13 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
                 height: "2rem",
                 padding: "0px 14px",
               }}
+              display="flex"
+              alignItems="center"
               onClick={handleSave}
               isDisabled={!editedFields?.length}
             >
-              Save
+              <Text>Save</Text>
+              {isSaving && <Spinner />}
             </Button>
             {editedFields?.length && (
               <Button
