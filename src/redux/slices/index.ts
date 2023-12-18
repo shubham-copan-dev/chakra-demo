@@ -8,6 +8,7 @@ import metaDataSlice from "./gridmetadata";
 import dashboardSlice from "./dashboard";
 import fieldUpdateSlice from "./fieldUpdate";
 import ViewMetaDataSlice from "./viewmetadata";
+import NoteSlice from "./note"
 import CommonSlice from "./common";
 
 // combine reducer
@@ -20,6 +21,6 @@ const rootReducer = combineReducers({
   Viewmetadata: ViewMetaDataSlice,
   records: recordDataslice,
   metadata: metaDataSlice,
+  note: NoteSlice,
 });
-
 export default rootReducer;

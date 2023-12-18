@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import ReuseButton from "../common/ReuseButton";
 import { useForm } from "react-hook-form";
 import { Box, Flex, Image, Input, Text } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
+import AddEditNotes from "@/components/Grid/AddEditNotes";
 
 const Navbar = () => {
   const { control } = useForm();
+  const [notesMOdal, setNotesMOdal] = useState<boolean>(false);
+
   return (
     <Flex
       justifyContent="space-between"
@@ -45,6 +48,10 @@ const Navbar = () => {
           fontStyle="normal"
           fontWeight="fontWeights.medium"
           lineHeight="120%"
+          onClick={() => {
+            setNotesMOdal(true);
+          }}
+          cursor="pointer"
         >
           <Flex
             fontSize="13px"
@@ -85,6 +92,12 @@ const Navbar = () => {
           mt={0}
         />
       </Flex>
+      {notesMOdal && (
+        <AddEditNotes
+          show={notesMOdal}
+          handleClose={() => setNotesMOdal(false)}
+        />
+      )}
     </Flex>
   );
 };
