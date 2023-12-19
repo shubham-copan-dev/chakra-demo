@@ -27,6 +27,7 @@ import AddNewTab from "@/components/Grid/AddNewTab";
 import { salesforce } from "@/axios/actions/salesforce";
 import { useQuery } from "react-query";
 import { setShowAddPanel } from "@/redux/slices/common";
+import { setSelectedRows } from "@/redux/slices/fieldUpdate";
 
 export default function RootLayout({
   children,
@@ -49,12 +50,11 @@ export default function RootLayout({
 
   //handling click event on Grid tab click
   const handleTabClick = (item: any) => {
-    console.log(item, "any");
     if (item._id === selectedGridTab) return;
     dispatch(setSelectedGridTab(item._id));
     dispatch(setGridId(item._id));
     dispatch(setRecordData(null));
-
+    dispatch(setSelectedRows(null))
     dispatch(
       fetchMetaData({
         method: "GET",

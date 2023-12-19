@@ -25,6 +25,7 @@ import { setSelectedNav } from "@/redux/slices/dashboard";
 import { updateUrl } from "@/utilities/constants";
 import { setNavTabClicked } from "@/redux/slices/common";
 import { fetchViewMetaData } from "@/redux/slices/viewmetadata";
+import { setSelectedRows } from "@/redux/slices/fieldUpdate";
 
 const Sidenav = () => {
   const dispatch = useAppDispatch();
@@ -59,6 +60,7 @@ const Sidenav = () => {
     dispatch(setRecordData(null));
     dispatch(setMetaData(null));
     dispatch(setGridId(null));
+    dispatch(setSelectedRows(null))
 
     dispatch(
       fetchSalesforceData({

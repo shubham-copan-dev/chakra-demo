@@ -21,6 +21,7 @@ import {
 } from "@chakra-ui/react";
 import {
   ArrowUpDownIcon,
+  CalendarIcon,
   DragHandleIcon,
   HamburgerIcon,
   RepeatIcon,
@@ -62,6 +63,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   } = useAppSelector((state: any) => state.salesforce);
   const { isFullScreen } = useAppSelector((state: any) => state.common);
   const { selectedRows } = useAppSelector((state) => state.fieldupdate);
+  const { panelView } = useAppSelector((state) => state.fieldupdate);
   const { fieldUpdateMode, editedFields } = useAppSelector(
     (state: any) => state.fieldupdate
   );
@@ -460,15 +462,24 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
             {handlingFieldUpdateModeButton(fieldUpdateMode)}
           </Flex>
         </Button>
-        <Button
+        {panelView === 'grid' && <Button
           sx={ViewBarBtnStyl}
           onClick={() => {dispatch(setPanelView('kanban'))
           }}
         >
           <Flex alignItems="center" gap="5px">
+            <CalendarIcon />
+          </Flex>
+        </Button>}
+        {panelView === 'kanban' && <Button
+          sx={ViewBarBtnStyl}
+          onClick={() => {dispatch(setPanelView('grid'))
+          }}
+        >
+          <Flex alignItems="center" gap="5px">
             <HamburgerIcon />
           </Flex>
-        </Button>
+        </Button>}
         <Button
           sx={ViewBarBtnStyl}
           onClick={() => {
