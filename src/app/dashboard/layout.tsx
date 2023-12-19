@@ -10,7 +10,7 @@ import useGetUrlParams from "@/hooks/queryParams";
 import ReuseButton from "@/components/UI/common/ReuseButton";
 import { setGridId } from "@/redux/slices/salesForce";
 import { btnStyle } from "@/components/UI/common/customButton/buttonStyle";
-import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
+import { fetchRecords, setRecordData, setRecordRejected } from "@/redux/slices/gridrecords";
 import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
 import GridDemo from "@/components/aggrid";
 import { setSelectedGridTab } from "@/redux/slices/salesForce";
@@ -52,6 +52,7 @@ export default function RootLayout({
   const handleTabClick = (item: any) => {
     if (item._id === selectedGridTab) return;
     dispatch(setSelectedGridTab(item._id));
+    dispatch(setRecordRejected(false))
     dispatch(setGridId(item._id));
     dispatch(setRecordData(null));
     dispatch(setSelectedRows(null))

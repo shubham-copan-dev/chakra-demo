@@ -13,7 +13,7 @@ import React, { useEffect } from "react";
 import { fetchSalesforceData, setGridId } from "@/redux/slices/salesForce";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { usePathname } from "next/navigation";
-import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
+import { fetchRecords, setRecordData, setRecordRejected } from "@/redux/slices/gridrecords";
 import { fetchMetaData, setMetaData } from "@/redux/slices/gridmetadata";
 import {
   staticDashboards,
@@ -56,6 +56,7 @@ const Sidenav = () => {
   // onclick functionality on navigation click
   const handleClick = (dashboard: string) => {
     dispatch(setNavTabClicked(true));
+    dispatch(setRecordRejected(false))
     dispatch(setSelectedNav(dashboard));
     dispatch(setRecordData(null));
     dispatch(setMetaData(null));

@@ -26,7 +26,7 @@ const DashboardPage = () => {
   const { fieldUpdateMode, selectedViewBy } = useAppSelector(
     (state: any) => state.fieldupdate
   );
-  const { records } = useAppSelector((state: any) => state.records);
+  const { records,isRecordRejected } = useAppSelector((state: any) => state.records);
   const { metadata } = useAppSelector((state: any) => state.metadata);
   // const toast = useToast();
   const isHome = useIsHome();
@@ -34,6 +34,7 @@ const DashboardPage = () => {
   const [isGrouped, setIsGrouped] = useState<boolean>(false);
   const { viewByMeta }: any = useAppSelector((state) => state.Viewmetadata);
   const { panelView } = useAppSelector((state) => state.fieldupdate);
+console.log(isRecordRejected,'reject');
 
 
   const viewBySelected = viewByMeta?.find(
@@ -244,11 +245,12 @@ const DashboardPage = () => {
         {panelView === 'grid' && metadata?.length && !isHome && records?.length && <GridView />}
         {panelView === 'kanban' && metadata?.length && !isHome && records?.length && <KanbanView />}
         {/* loader if record fetching on pending state */}
-        {metadata?.length && !isHome && !records?.length && (
+        {metadata?.length && !isHome && !records?.length && !isRecordRejected && (
           <Flex height="100%" alignItems="center" justifyContent="center">
             <Spinner />
           </Flex>
         )}
+        {isRecordRejected && <Box>No records found</Box>}
       </Flex>
     </div>
   );

@@ -18,6 +18,8 @@ export const fetchRecords: any = createAsyncThunk(
 const initialState = {
   records: null,
   isRecordLoaded: false,
+  isRecordRejected:false,
+  rejectedRowErrormsg:null,
   error: null,
 };
 
@@ -32,6 +34,10 @@ const recordDataSlice = createSlice({
     setRecordLoading(init, action) {
       const state = init;
       state.recordLoading = action.payload;
+    },
+    setRecordRejected(init, action) {
+      const state = init;
+      state.isRecordRejected = action.payload;
     },
     updateRecord(init, action) {
       const state = init;
@@ -52,20 +58,25 @@ const recordDataSlice = createSlice({
         state.isRecordLoaded = false;
       })
       .addCase(fetchRecords.fulfilled, (init, action) => {
+        debugger
         const state = init;
         state.records = null;
         state.isRecordLoaded = true;
         state.records = action.payload.data.data.records;
       })
       .addCase(fetchRecords.rejected, (init, action) => {
+        debugger
         const state = init;
         state.isRecordLoaded = true;
+        state.isRecordRejected = true;
         console.log("failed", action);
         (state.error as any) = action.error.message;
+        console.log(action.error.message,'redux');
+        
       });
   },
 });
 
 // reducers exports
-export const { setRecordData, updateRecord } = recordDataSlice.actions;
+export const { setRecordData, updateRecord,setRecordRejected } = recordDataSlice.actions;
 export default recordDataSlice.reducer;
