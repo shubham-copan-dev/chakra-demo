@@ -58,14 +58,16 @@ const recordDataSlice = createSlice({
         state.isRecordLoaded = false;
       })
       .addCase(fetchRecords.fulfilled, (init, action) => {
-        debugger
         const state = init;
         state.records = null;
         state.isRecordLoaded = true;
         state.records = action.payload.data.data.records;
+        if(action.payload.data.data.records.length === 0){
+          state.isRecordRejected = true;
+          state.records = null;
+        }
       })
       .addCase(fetchRecords.rejected, (init, action) => {
-        debugger
         const state = init;
         state.isRecordLoaded = true;
         state.isRecordRejected = true;
