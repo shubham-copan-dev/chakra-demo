@@ -11,5 +11,4 @@ export declare interface FieldUpdateState {
   | null;
   selectedRows: any[] | null;
   selectedViewBy: string;
-  panelView: string;
 }

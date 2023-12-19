@@ -7,7 +7,6 @@ const initialState = {
   editedFields: null,
   selectedRows: null,
   selectedViewBy: 'all',
-  panelView: 'grid',
 } as FieldUpdateState;
 
 const fieldUpdateSlice = createSlice({
@@ -45,10 +44,6 @@ const fieldUpdateSlice = createSlice({
       const state = init;
       state.selectedViewBy = action.payload;
     },
-    setPanelView(init, action) {
-      const state = init;
-      state.panelView = action.payload;
-    },
   },
 });
 
@@ -58,8 +53,7 @@ export const {
   setFieldUpdateMode,
   setEditedFields,
   setSelectedRows,
-  setSelectedViewBy,
-  setPanelView
+  setSelectedViewBy
 } = fieldUpdateSlice.actions;
 
 export default fieldUpdateSlice.reducer;

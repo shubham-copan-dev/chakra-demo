@@ -30,7 +30,6 @@ import {
 } from "../Grid/ViewPanel/GridView/CustomColumnView";
 import DateTimeCell from "../Grid/ViewPanel/GridView/GridCustomFields/DateTimeCell";
 import NumberField from "../Grid/ViewPanel/GridView/GridCustomFields/NumberField";
-import { Box } from "@chakra-ui/react";
 // import "./gridView.css";
 
 function GridView() {
@@ -56,9 +55,9 @@ function GridView() {
 
   // constants
   const viewBySelected = viewByMeta?.find(
-    (fil:any) => fil?.label === selectedViewBy
+    (fil) => fil?.label === selectedViewBy
   );
-  const viewByNames = viewBySelected?.query?.fields?.map((item:any) => item?.name);
+  const viewByNames = viewBySelected?.query?.fields?.map((item) => item?.name);
 
   // handling cell edit
   const onFieldEditDone = async (params: any) => {
@@ -226,18 +225,18 @@ function GridView() {
   const handlingColumnDefs = (): ColDef[] | undefined => {
     if (metadata) {
       const newColumnMeta = metadata
-        ?.filter?.((fil:any) =>
+        ?.filter?.((fil) =>
           selectedViewBy === "all"
             ? fil?.uiMetadata?.isVisible
             : viewByNames?.includes(fil?.name)
         )
-        ?.sort((a:any, b:any) => {
+        ?.sort((a, b) => {
           return (
             (a?.uiMetadata?.columnOrder ?? 0) -
             (b?.uiMetadata?.columnOrder ?? 0)
           );
         })
-        ?.map((item:any) => {
+        ?.map((item) => {
           return {
             field: item?.name,
             headerName: capsLetter(item?.label),
@@ -274,7 +273,7 @@ function GridView() {
             cellEditorSelector: (params: ICellEditorParams) =>
               cellEditorSelector(
                 params,
-                item?.picklistValues?.map((pick:any) => pick?.label)
+                item?.picklistValues?.map((pick) => pick?.label)
               ),
             enableCellChangeFlash: true,
             type: item?.type,
@@ -350,7 +349,14 @@ function GridView() {
   //     />
   //   );
   return (
-    <Box>
+    <div
+      // className={`ag-theme-alpine${themeMode === 'dark' ? '-dark' : ''}`}
+      className={`ag-theme-alpine`}
+      style={{
+        width: "100%",
+        height: fullscreen ? "100vh" : 700,
+      }}
+    >
       <AgGridReact
         ref={gridRef} // Ref for accessing Grid's API
         rowGroupPanelShow="always"
@@ -374,8 +380,9 @@ function GridView() {
         singleClickEdit={true}
         pagination={true}
         paginationPageSize={10}
+        // onPaginationChanged={(pa: any) => console.log(pa, 'pagination')}
       />
-    </Box>
+    </div>
   );
 }
 

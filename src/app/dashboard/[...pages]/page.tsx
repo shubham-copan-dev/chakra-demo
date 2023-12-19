@@ -34,9 +34,9 @@ const DashboardPage = () => {
   const { viewByMeta }: any = useAppSelector((state) => state.Viewmetadata);
 
   const viewBySelected = viewByMeta?.find(
-    (fil:any) => fil?.label === selectedViewBy
+    (fil) => fil?.label === selectedViewBy
   );
-  const viewByNames = viewBySelected?.query?.fields?.map((item:any) => item?.name);
+  const viewByNames = viewBySelected?.query?.fields?.map((item) => item?.name);
   // const { resetSet } = useAppSelector((state: any) => state.common);
 
   const handleFilterType = (type: string, isFilterable: boolean) => {
