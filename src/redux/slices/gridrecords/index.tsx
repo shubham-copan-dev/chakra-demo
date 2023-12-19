@@ -64,7 +64,7 @@ const recordDataSlice = createSlice({
         state.records = action.payload.data.data.records;
         if(action.payload.data.data.records.length === 0){
           state.isRecordRejected = true;
-          state.records = null;
+          // state.records = null;
         }
       })
       .addCase(fetchRecords.rejected, (init, action) => {

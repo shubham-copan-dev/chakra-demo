@@ -243,14 +243,14 @@ console.log(isRecordRejected,'reject');
         )}
         {/* show grid data after record fetched */}
         {panelView === 'grid' && metadata?.length && !isHome && records?.length && <GridView />}
-        {panelView === 'kanban' && metadata?.length && !isHome && records?.length && <KanbanView />}
+        {panelView === 'kanban' && metadata?.length && !isHome && <KanbanView />}
         {/* loader if record fetching on pending state */}
         {metadata?.length && !isHome && !records?.length && !isRecordRejected && (
           <Flex height="100%" alignItems="center" justifyContent="center">
             <Spinner />
           </Flex>
         )}
-        {isRecordRejected && <Box>No records found</Box>}
+        {isRecordRejected && panelView !== 'kanban' && <Box>No records found</Box>}
       </Flex>
     </div>
   );

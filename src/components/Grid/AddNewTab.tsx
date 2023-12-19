@@ -548,7 +548,7 @@ function AddNewTab({
             style={{ display: "flex", gap: "1rem" }}
           >
             Save Changes
-            {isSubmitting && <Spinner />}
+            {isSubmitting && <Spinner size="sm" />}
           </Button>
         </Modal.Footer>
       </form>

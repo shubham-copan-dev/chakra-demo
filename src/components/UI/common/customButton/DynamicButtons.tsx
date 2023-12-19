@@ -31,7 +31,7 @@ import { ChevronDownIcon, RowIcon } from "@/chakraConfig/icons";
 import { ViewBarBtnStyl } from "@/utilities/constants";
 import { salesforce } from "@/axios/actions/salesforce";
 import { useAppSelector } from "@/hooks/redux";
-import { fetchRecords, setRecordData } from "@/redux/slices/gridrecords";
+import { fetchRecords, setRecordData, setRecordRejected } from "@/redux/slices/gridrecords";
 import { useDispatch } from "react-redux";
 import { setFullScreen, setNavTabClicked } from "@/redux/slices/common";
 import AddNewTab from "@/components/Grid/AddNewTab";
@@ -169,6 +169,8 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
   };
 
   const handleTabDelete = async () => {
+    dispatch(setRecordRejected(false))
+
     // Displaying a loading toast before initiating the async operation
     onToggle();
     const loadingToast = toast({
@@ -296,14 +298,15 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
                   : "typoClr.NeutralColorWhite",
                 height: "2rem",
                 padding: "0px 14px",
+                flexDirection:"row",
+                alignItems:"center",
+                display:"flex"
               }}
-              display="flex"
-              alignItems="center"
               onClick={handleSave}
               isDisabled={!editedFields?.length}
             >
               <Text>Save</Text>
-              {isSaving && <Spinner />}
+              {isSaving && <Spinner size="sm" />}
             </Button>
             {editedFields?.length && (
               <Button
