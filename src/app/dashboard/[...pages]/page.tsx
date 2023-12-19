@@ -19,6 +19,7 @@ import useIsHome from "@/hooks/isHome";
 import AddNewTab from "@/components/Grid/AddNewTab";
 import { setEditedFields } from "@/redux/slices/fieldUpdate";
 import GridView from "@/components/gridview";
+import KanbanView from "@/components/Grid/ViewPanel/KanbanView";
 
 const DashboardPage = () => {
   const dispatch = useAppDispatch();
@@ -32,11 +33,13 @@ const DashboardPage = () => {
   const path = usePathname();
   const [isGrouped, setIsGrouped] = useState<boolean>(false);
   const { viewByMeta }: any = useAppSelector((state) => state.Viewmetadata);
+  const { panelView } = useAppSelector((state) => state.fieldupdate);
+
 
   const viewBySelected = viewByMeta?.find(
-    (fil) => fil?.label === selectedViewBy
+    (fil:any) => fil?.label === selectedViewBy
   );
-  const viewByNames = viewBySelected?.query?.fields?.map((item) => item?.name);
+  const viewByNames = viewBySelected?.query?.fields?.map((item:any) => item?.name);
   // const { resetSet } = useAppSelector((state: any) => state.common);
 
   const handleFilterType = (type: string, isFilterable: boolean) => {
@@ -220,7 +223,10 @@ const DashboardPage = () => {
   };
 
   return (
-    <div>
+    <div style={{
+      position: panelView === 'kanban' ? 'relative' : 'initial',
+      marginTop: panelView === 'kanban' ? '5rem' : ''
+    }}>
       <Flex
         h="90vh"
         w="100%"
@@ -235,9 +241,10 @@ const DashboardPage = () => {
           </Flex>
         )}
         {/* show grid data after record fetched */}
-        {metadata?.length && !isHome && records?.length && <GridView />}
+        {panelView === 'grid' && metadata?.length && !isHome && records?.length && <GridView />}
+        {panelView === 'kanban' && <KanbanView />}
         {/* loader if record fetching on pending state */}
-        {metadata?.length && !isHome && !records?.length && (
+        {metadata?.length && !isHome && !records?.length && panelView === 'grid' && (
           <Flex height="100%" alignItems="center" justifyContent="center">
             <Spinner />
           </Flex>

@@ -1,13 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
-
-import { salesForce } from '@/axios/actions/salesForce';
+import { salesforce } from '@/axios/actions/salesforce';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { updateRecord } from '@/redux/slices/salesForce';
+import { updateRecord } from '@/redux/slices/gridrecords';
 import { RecordsInterface } from '@/redux/slices/salesForce/interface';
-import { CurrencyFormatter } from '@/utilities';
+import { CurrencyFormatter } from '@/utilities/constants';
 
 import EditForm from '../EditForm';
 import './kanbanView.css';
@@ -25,7 +22,6 @@ interface StageChanged {
 
 function KanbanView() {
   // use hooks
-  const { tabId } = useParams();
   const dispatch = useAppDispatch();
 
   // use refs
@@ -33,7 +29,9 @@ function KanbanView() {
   const dragItemNode = useRef<any>();
 
   // global states
-  const { records, columnMeta } = useAppSelector((state) => state.sales);
+  const { records } = useAppSelector((state: any) => state.records);
+  const { metadata } = useAppSelector((state: any) => state.metadata);
+  const { selectedNav } = useAppSelector((state: any) => state.navdata);
 
   // local states
   const [list, setList] = useState<GroupedList[]>();
@@ -92,9 +90,9 @@ function KanbanView() {
     setDragging(false);
     setDraggable(false);
     try {
-      await salesForce({
+      await salesforce({
         method: 'PATCH',
-        url: `sf/object/${tabId}/record/${itemDraggedTo?.item?.Id}`,
+        url: `sf/object/${selectedNav}/record/${itemDraggedTo?.item?.Id}`,
         data: {
           prop: {
             StageName: itemDraggedTo?.stage,
@@ -124,12 +122,12 @@ function KanbanView() {
 
   // initial stage grouping
   useEffect(() => {
-    if (columnMeta && records) {
+    if (metadata && records) {
       // creating array with all the available stages form column meta
-      const stageData = columnMeta?.find(
-        (fi) => fi?.type === 'picklist' && fi?.name === 'StageName'
+      const stageData = metadata?.find(
+        (fi:any) => fi?.type === 'picklist' && fi?.name === 'StageName'
       );
-      const groupedList = stageData?.picklistValues?.map((item) => {
+      const groupedList = stageData?.picklistValues?.map((item:any) => {
         return {
           title: item?.label,
           items: [],
@@ -137,7 +135,7 @@ function KanbanView() {
       });
 
       // grouping records with stage
-      const groupArrayObject = records.reduce((group: any, arr) => {
+      const groupArrayObject = records.reduce((group: any, arr:any) => {
         const { StageName } = arr;
         group[StageName] = group[StageName] ?? [];
         group[StageName].push(arr);
@@ -145,7 +143,7 @@ function KanbanView() {
       }, {});
 
       // final array with stages and items
-      const newArray = groupedList?.map((item) => {
+      const newArray = groupedList?.map((item:any) => {
         const items = (groupArrayObject[item?.title] ?? []).sort(function (
           a: RecordsInterface,
           b: RecordsInterface
@@ -162,10 +160,10 @@ function KanbanView() {
       });
       setList(newArray); // setting list
     }
-  }, [records, columnMeta]);
+  }, [records, metadata]);
 
   return (
-    <div className="kanban-main">
+    <div className="kanban-main" style={{height:"100%",maxHeight:"100%"}}>
       <div className="drag-n-drop">
         {list &&
           list?.map((grp, grpI) => (
@@ -256,9 +254,9 @@ function KanbanView() {
           ))}
       </div>
 
-      {show && columnMeta && clickedItem && (
+      {show && metadata && clickedItem && (
         <EditForm
-          allColumnData={columnMeta}
+          allColumnData={metadata}
           data={clickedItem}
           show={show}
           handleClose={() => setShow(false)}

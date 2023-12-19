@@ -22,6 +22,7 @@ import {
 import {
   ArrowUpDownIcon,
   DragHandleIcon,
+  HamburgerIcon,
   RepeatIcon,
   SettingsIcon,
 } from "@chakra-ui/icons"; // Assuming SettingsIcon is from Chakra UI icons
@@ -40,6 +41,7 @@ import { fetchSalesforceData, setGridData } from "@/redux/slices/salesForce";
 import {
   setEditedFields,
   setFieldUpdateMode,
+  setPanelView
 } from "@/redux/slices/fieldUpdate";
 import { setReset } from "@/redux/slices/common";
 import EditForm from "@/components/Grid/ViewPanel/EditForm";
@@ -456,6 +458,15 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
         <Button sx={ViewBarBtnStyl}>
           <Flex alignItems="center" gap="5px">
             {handlingFieldUpdateModeButton(fieldUpdateMode)}
+          </Flex>
+        </Button>
+        <Button
+          sx={ViewBarBtnStyl}
+          onClick={() => {dispatch(setPanelView('kanban'))
+          }}
+        >
+          <Flex alignItems="center" gap="5px">
+            <HamburgerIcon />
           </Flex>
         </Button>
         <Button
