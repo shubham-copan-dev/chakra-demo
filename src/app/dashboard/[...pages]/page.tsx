@@ -242,9 +242,9 @@ const DashboardPage = () => {
         )}
         {/* show grid data after record fetched */}
         {panelView === 'grid' && metadata?.length && !isHome && records?.length && <GridView />}
-        {panelView === 'kanban' && <KanbanView />}
+        {panelView === 'kanban' && metadata?.length && !isHome && records?.length && <KanbanView />}
         {/* loader if record fetching on pending state */}
-        {metadata?.length && !isHome && !records?.length && panelView === 'grid' && (
+        {metadata?.length && !isHome && !records?.length && (
           <Flex height="100%" alignItems="center" justifyContent="center">
             <Spinner />
           </Flex>

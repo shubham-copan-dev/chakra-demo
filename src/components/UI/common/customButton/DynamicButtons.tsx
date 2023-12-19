@@ -468,7 +468,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
           }}
         >
           <Flex alignItems="center" gap="5px">
-            <CalendarIcon />
+            <CalendarIcon fontSize={14} />
           </Flex>
         </Button>}
         {panelView === 'kanban' && <Button
@@ -477,7 +477,7 @@ const DynamicButtons = ({ buttonData }: { buttonData: { text: string }[] }) => {
           }}
         >
           <Flex alignItems="center" gap="5px">
-            <HamburgerIcon />
+            <HamburgerIcon fontSize={14} />
           </Flex>
         </Button>}
         <Button
